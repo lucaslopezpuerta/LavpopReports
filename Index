@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavpop Caxias do Sul Weekly Performance Report: 2025-05-11 - 2025-05-17</title>
+    <style type="text/css">
+        /* Base styles for better email client compatibility */
+        html, body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f5f7fa;
+        }
+        
+        /* Container styling */
+        .container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        /* Header styling */
+        .header {
+            padding: 30px 20px;
+            background-color: #10306b;
+            text-align: center;
+            border-bottom: 5px solid #6bbe4c;
+        }
+        
+        .header img {
+            max-width: 130px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .header h1 {
+            color: white;
+            margin: 10px 0 5px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header h2 {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 5px 0;
+            font-size: 18px;
+            font-weight: 400;
+        }
+        
+        /* Section styling */
+        .section {
+            padding: 25px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .section-title {
+            color: #10306b;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 600;
+            border-bottom: 2px solid #e1e8ed;
+            padding-bottom: 10px;
+        }
+        
+        /* Executive summary highlight box */
+        .summary-box {
+            background-color: #f0f7ff;
+            text-align: justify;
+            border-left: 4px solid #6bbe4c;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        /* KPI metrics section */
+        .metrics-row {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .metric-card {
+            box-sizing: border-box;
+            float: left;
+            width: 48%;
+            margin: 1%;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: #757575;
+            margin: 0 0 5px 0;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #10306b;
+        }
+        
+        .metric-change {
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .positive-change {
+            color: #6bbe4c;
+        }
+        
+        .negative-change {
+            color: #f44336;
+        }
+        
+        /* Service mix section */
+        .service-mix {
+            margin-top: 25px;
+        }
+        
+        /* Charts section */
+        .chart-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e1e8ed;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chart-title {
+            margin: 10px 0;
+            color: #424242;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Day analysis tables */
+        .day-analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .day-analysis-table th {
+            background-color: #f5f7fa;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #e1e8ed;
+            color: #616161;
+            font-weight: 600;
+        }
+        
+        .day-analysis-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .day-analysis-table .best-day {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .day-analysis-table .worst-day {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+        
+        /* Customer segments section */
+        .segments-grid {
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .segment-card {
+            box-sizing: border-box;
+            float: left;
+            width: 31%;
+            margin: 1%;
+            padding: 12px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .segment-title {
+            font-size: 16px;
+            color: #424242;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .segment-customer {
+            font-size: 13px;
+            margin: 5px 0;
+        }
+        
+        /* Strategy section */
+        .strategy-container {
+            margin-top: 15px;
+        }
+        
+        .strategy-item {
+            background-color: #f9f9f9;
+            border-left: 3px solid #6bbe4c;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .strategy-title {
+            color: #10306b;
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* Footer styling */
+        .footer {
+            padding: 20px;
+            background-color: #10306b;
+            color: white;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .footer a {
+            color: #90caf9;
+            text-decoration: none;
+        }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 480px) {
+            .metric-card {
+                width: 98%;
+                margin: 1% 1% 10px 1%;
+            }
+            
+            .segment-card {
+                width: 98%;
+                margin: 1% 1% 10px 1%;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo">
+            <h1>Weekly Performance Report</h1>
+            <h2>2025-05-11 to 2025-05-17</h2>
+        </div>
+        
+        <!-- Executive Summary Section -->
+        <div class="section">
+            <h3 class="section-title">Executive Summary</h3>
+            <div class="summary-box">
+                <p>Lavpop Autosserviço Caxias do Sul demonstrated steady week-to-week growth, with net revenue increasing to 2528.71 BRL, marking a 1.4% uplift from the previous week. The total number of operational cycles also saw a moderate rise, reaching 149 – a 3.5% increase. This suggests enhanced customer engagement and utilization of our services. Notably, the service utilization rate improved slightly by 0.7%, achieving an 18% utilization rate this week. This indicates a better match between capacity offerings and customer demand, although there is still room for improvement in maximizing our facility usage.
+
+Analyzing the specifics of our service use, wash cycles constituted 59% of the total and dry cycles 41%, revealing a consistent preference for washing services. Timing patterns also provide insights for operational adjustments; the most significant customer turnout is consistently observed at 10:00 AM, with Saturday being the most favored day for visits. Conversely, Wednesday was the least busy, suggesting potential for targeted promotions or special offers to boost mid-week usage. The identified peak hours were predominantly midday and late afternoon, signaling key times to ensure optimal staffing and operational readiness. Weather analysis underscored a negative correlation with temperature, and slight positive correlations with both rainfall and humidity, which could inform our marketing strategies during various weather conditions to attract more customers. Overall, Lavpop is on a positive trajectory, but with strategic tweaks, particularly in non-peak hours, we can further enhance performance and customer satisfaction.</p>
+            </div>
+            
+            <!-- Weekly KPI Cards -->
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Total Net Revenue</h4>
+                    <p class="metric-value">$2528.71 BRL</p>
+                    <p class="metric-change positive-change">1.4% vs Last Week</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Total Cycles</h4>
+                    <p class="metric-value">149</p>
+                    <p class="metric-change  positive-change">3.5% vs Last Week</p>
+                </div>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Overall Utilization</h4>
+                    <p class="metric-value">18%</p>
+                    <p class="metric-change  positive-change">0.7% vs Last Week</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Revenue Share by Service</h4>
+                    <p class="metric-value">$1539.4 BRL</p> 
+                      <p class="metric-change">Washers Net Revenue</p>
+                      <p class="metric-value">$968.38 BRL</p> 
+                      <p class="metric-change">Dryers Net Revenue</p>                 
+                </div>
+            </div>
+        </div>
+        
+        <!-- Week Performance Chart -->
+        <div class="section">
+            <h3 class="section-title">Weekly Performance</h3>
+            <div class="chart-container">
+               <iframe src="https://drive.google.com/file/d/16XgZzjHv7gLQ7GBWTYGqjbwuBoACU0rT/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Revenue and Cycles by Day</p>
+            </div>
+        </div>
+        
+        <!-- Service Mix Analysis -->
+        <div class="section">
+            <h3 class="section-title">Cycles Analysis</h3>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Washer Cycles</h4>
+                    <p class="metric-value">88</p>
+                    <p class="metric-change">59% of All Cycles</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Dryer Cycles</h4>
+                    <p class="metric-value">61</p>
+                    <p class="metric-change">41% of All Cycles</p>
+                </div>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Washer Utilization</h4>
+                    <p class="metric-value">28%</p>
+                    <p class="metric-change  positive-change">3.5% vs Last Week</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Dryer Utilization</h4>
+                    <p class="metric-value">12%</p>
+                    <p class="metric-change  negative-change">-1% vs Last Week</p>
+                </div>
+            </div>
+            
+            <!-- Service Mix Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1ujZd2QgpJChWtKePNUhPa6ey2hwyikeh/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Cycles Distribution %: Wash vs. Dry</p>
+            </div>
+            
+            <!-- Utilization Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1zFBnK9yqVvvhaoSHWr4B_ZmoHcQj10nf/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Machine Utilization Throughout the Week Hours</p>
+            </div>
+        </div>
+        
+        <!-- Hourly Analysis Section -->
+        <div class="section">
+            <h3 class="section-title">Time Analysis</h3>
+            
+            <!-- Hourly Revenue Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1H9K63o_kgwJ4R5odUVISYVXKdKwLiI77/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Week Revenue Distribution by Hour</p>
+            </div>
+            
+            <!-- Peak Analysis Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1zIEuYUVBc3c7pfrS2YM0KbFuQUtOgIR2/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Peak vs Off-Peak Performance</p>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Best Performing Hour</h4>
+                    <p class="metric-value">10:00</p>
+                    <p class="metric-change">$273.15 BRL Avg. Net Revenue during Peak Hours</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Revenue Differential</h4>
+                    <p class="metric-value">111%</p>
+                    <p class="metric-change">Peak vs. Off-Peak</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Day of Week Analysis -->
+        <div class="section">
+            <h3 class="section-title">Best & Worst Day of Week Analysis</h3>
+            
+            <!-- Best/Worst Day Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1KMQts3CJhsdVE5zGTcXhTXHH2iLEcHXG/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Performance by Best & Worst Day</p>
+            </div>
+            
+            <table class="day-analysis-table">
+                <tr>
+                    <th>Day</th>
+                    <th>Net Revenue</th>
+                    <th>Cycles</th>
+                    <th>Utilization</th>
+                </tr>
+                <tr class="best-day">
+                    <td><strong>Saturday (Best)</strong></td>
+                    <td>$769.69 BRL</td>
+                    <td>45</td>
+                    <td>38%</td>
+                </tr>
+                <tr class="worst-day">
+                    <td><strong>Wednesday (Worst)</strong></td>
+                    <td>$130.67 BRL</td>
+                    <td>8</td>
+                    <td>7%</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Weather Factors -->
+        <div class="section">
+            <h3 class="section-title">Weather Factors</h3>
+            
+            <!-- Weather Correlation Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1Y_d8H1-H02xEeQbNNVRmnrZjZ29kBylU/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Weather Impact on Business</p>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Temperature Correlation</h4>
+                    <p class="metric-value">-0.42</p>
+                    <p class="metric-change"> Negative correlation indicates higher temperatures reduce business</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Rainfall Correlation</h4>
+                    <p class="metric-value">0.14</p>
+                    <p class="metric-change">Positive correlation suggests rainy days slightly increase business</p>
+                </div>
+
+              <div class="metric-card">
+                    <h4 class="metric-title">Humidity Correlation</h4>
+                    <p class="metric-value">0.13</p>
+                    <p class="metric-change">Positive correlation suggests humid days slightly increase business</p>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Customer Segments Section -->
+        <div class="section">
+            <h3 class="section-title">Customer Segments</h3>
+            
+            <div class="segments-grid">
+                <div class="segment-card">
+                    <h4 class="segment-title">Champions</h4>
+                    <p class="segment-customer">Israel Hofman: $2597.35 BRL</p>
+                    <p class="segment-customer">Francisco Ricardo De Oliveira: $1846 BRL</p>
+                </div>
+                
+                <div class="segment-card">
+                    <h4 class="segment-title">Loyal Customers</h4>
+                    <p class="segment-customer">Rodrigo Cesar De Andrade: $1988.8 BRL</p>
+                    <p class="segment-customer">Sir Branquiney Saldanha Junior: $1760.17 BRL</p>
+                </div>
+                
+                <div class="segment-card">
+                    <h4 class="segment-title">Potential Customers</h4>
+                    <p class="segment-customer">Rodrigo Santin $1109.79 BRL</p>
+                    <p class="segment-customer">Brno Cardoso Leal: $626.5 BRL</p>
+                </div>
+            </div>
+        </div>
+
+            <!-- Customers Lapsed and Active %-->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1YaOzDjYomB9Q2Z1wcF0d7EIPXf9s0C9n/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">Customers Active Vs. Lapsed</p>
+            </div>
+        
+        <!-- WhatsApp Metrics -->
+        <div class="section">
+            <h3 class="section-title">WhatsApp Marketing Messages</h3>
+            
+            <!-- WhatsApp Metrics Chart -->
+            <div class="chart-container">
+                <iframe src="https://drive.google.com/file/d/1MosAWZqB3l0GLC8LKLokzo9rjeoh5Obj/preview" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+                <p class="chart-title">WhatsApp Messages Distribution & Cost</p>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <h4 class="metric-title">Messages Sent</h4>
+                    <p class="metric-value">184</p>
+                    <p class="metric-change">Total Cost: $9.491500000000002 USD</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h4 class="metric-title">Messages Received</h4>
+                    <p class="metric-value">17</p>                    
+                </div>
+            
+            <div class="metric-card">
+                <h4 class="metric-title">Top Coupon Usage</h4>
+                <p class="metric-value"> 3</p>
+                 <p class="metric-change">Time(s) Coupon "seca50" was used this week
+            </div>
+        </div>
+        
+        <!-- Strategy Recommendations -->
+        <div class="section">
+            <h3 class="section-title">Strategic Recommendations</h3>
+            <div class="strategy-container">
+    <div class="strategy-item">
+        <h4 class="strategy-title">Launch Off-Peak Pricing Discounts</h4>
+        <p>Utilize MaxPan's time-based pricing to offer 10-15% discounts during consistently underused off-peak hours (e.g., 8 AM–9 AM, 2 PM–4 PM, 8 PM–10 PM). This will help redistribute volume, increase utilization (currently at only 18%), and drive incremental revenue from otherwise idle machines.</p>
+    </div>
+    
+    <div class="strategy-item">
+        <h4 class="strategy-title">Activate Lapsed Customers with WhatsApp-Only Coupons</h4>
+        <p>Since 79.2% of your customers are lapsed and less than 21% return within 90 days, launch a WhatsApp campaign offering a time-limited 20% discount coupon for either a wash or dry cycle. Target the “Potential” and “Lapsed” customers and reinforce visits by promoting the branded laundry bag as a loyalty incentive.</p>
+    </div>
+    
+    <div class="strategy-item">
+        <h4 class="strategy-title">Promote Dryer Usage During Peak Washer Hours</h4>
+        <p>Dryer utilization is critically low (12%) compared to washers (28%). During peak hours like 10 AM, 11 AM, and 6 PM, offer bundled deals (e.g., “Dry for BRL 12.90 with a Wash”) to convert more wash-only users into full-cycle customers and balance out machine usage.</p>
+    </div>
+</div>
+</div>
+                       
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024. All rights reserved.</p>
+            <p>Questions about this report? Contact Gabrielle Vilanova or Lucas López at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a></p>
+            <p>Generated on 2025-05-18T15:13:16.932Z</p>
+        </div>
+    </div>
+</body>
+</html>
