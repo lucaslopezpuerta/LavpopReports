@@ -1,0 +1,2186 @@
+/**
+ * Lavpop Analytics Chart Generator - Enhanced Decision-Oriented Version
+ * Using Google Visualization API instead of Google Charts Service
+ */
+
+// Configuration constants
+const CONFIG = {
+  CHARTS_FOLDER_ID: "1EOSQdtyoEP5YLS9B9cF9Lvzt2RUmS-Ne", // Specified folder ID
+  CHART_RETENTION_DAYS: 0, // Charts older than this will be deleted during cleanup
+  MAX_CHARTS_TO_KEEP: 0, // Maximum number of charts to keep in the folder
+  PERFORM_CLEANUP: true, // Set to false to disable automatic cleanup
+  TIMESTAMP_IN_FILENAMES: true, // Add timestamp to filenames for uniqueness
+  // Brand colors
+  BRAND_COLORS: {
+    PRIMARY: "#2ae01e", // Green (converted from rgba)
+    SECONDARY: "#093eea", // Blue (converted from rgba)
+    NEUTRAL: "#ffffff", // White
+    TEXT: "#333333" // Dark gray for text
+  },
+  // Chart default styling
+  CHART_DEFAULTS: {
+    WIDTH: 650,
+    HEIGHT: 400,
+    FONT_SIZE: 16,
+    TITLE_FONT_SIZE: 20,
+    LEGEND_FONT_SIZE: 14
+  }
+};
+
+/**
+ * Handles POST requests with laundromat analytics data and generates chart URLs
+ */
+function doPost(e) {
+  try {
+    // Log the incoming request for debugging
+    Logger.log("Received POST request");
+    
+    // Ensure content exists
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput(JSON.stringify({
+        error: 'No data received in request'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Parse the incoming data
+    const contents = e.postData.contents;
+    let parsedContents;
+    
+    try {
+      parsedContents = JSON.parse(contents);
+      Logger.log("Successfully parsed JSON");
+    } catch (parseError) {
+      Logger.log("JSON parse error: " + parseError.message);
+      return ContentService.createTextOutput(JSON.stringify({
+        error: 'Invalid JSON: ' + parseError.message
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Extract analytics data from various possible structures
+    let data;
+    
+    if (Array.isArray(parsedContents) && parsedContents.length > 0) {
+      if (parsedContents[0].analyticsResults) {
+        data = parsedContents[0].analyticsResults;
+      } else {
+        data = parsedContents[0];
+      }
+    } else if (parsedContents.analyticsResults) {
+      data = parsedContents.analyticsResults;
+    } else {
+      data = parsedContents;
+    }
+    
+    // Validate we have necessary data
+    if (!data || typeof data !== 'object') {
+      return ContentService.createTextOutput(JSON.stringify({
+        error: 'Invalid data structure. Expected object with analytics data.'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Run chart cleanup if enabled
+    if (CONFIG.PERFORM_CLEANUP) {
+      try {
+        cleanupOldCharts();
+      } catch (cleanupError) {
+        Logger.log("Cleanup error: " + cleanupError.message);
+      }
+    }
+    
+    // Generate chart URLs
+    const chartUrls = generateBusinessFocusedCharts(data);
+    
+    // Return the chart URLs as JSON
+    return ContentService.createTextOutput(JSON.stringify(chartUrls))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    Logger.log("Error in doPost: " + error.message);
+    return ContentService.createTextOutput(JSON.stringify({
+      error: 'Failed to process request: ' + error.message,
+      stack: error.stack
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Generates only the most business-critical charts for weekly decision making
+ */
+function generateBusinessFocusedCharts(data) {
+  // Create an object to hold the decision-focused charts
+  const chartUrls = {
+    performanceOverview: {},
+    operationalInsights: {},
+    customerInsights: {},
+    marketingEffectiveness: {},
+    weatherImpact: {}
+  };
+  
+  // Performance Overview Charts
+  chartUrls.performanceOverview.comparativeperformance = createComparativePerformanceChart(data);
+  chartUrls.performanceOverview.weeklyRevenueTrend = createWeeklyRevenueTrend(data);
+  chartUrls.performanceOverview.revenueComposition = createRevenueComposition(data);
+  chartUrls.performanceOverview.weekOverWeekGrowth = createWeekOverWeekPerformance(data);
+  chartUrls.performanceOverview.revenueGoalProgress = createRevenueGoalProgress(data);
+  
+  // Operational Insights Charts
+  chartUrls.operationalInsights.bestWorstDayComparison = createBestWorstDayComparisonChart(data);
+  chartUrls.operationalInsights.dayOfWeekRevenue = createDayOfWeekRevenue(data);
+  chartUrls.operationalInsights.hourlyUtilization = createHourlyUtilizationHeatMap(data);
+  chartUrls.operationalInsights.hourlyRevenue = createHourlyRevenueChart(data);
+  chartUrls.operationalInsights.peakVsOffPeak = createPeakVsOffPeakChart(data);
+  chartUrls.operationalInsights.serviceMix = createServiceMixChart(data);
+  
+  // Customer Insights Charts
+  chartUrls.customerInsights.customerSegmentPerformance = createSegmentPerformanceChart(data);
+  chartUrls.customerInsights.activeVsLapsed = createActiveVsLapsedChart(data);
+  chartUrls.customerInsights.topGrowingSegments = createTopGrowingSegmentsChart(data);
+  
+  // Marketing Effectiveness Charts
+  chartUrls.marketingEffectiveness.paymentMethodDistribution = createPaymentMethodDistributionChart(data);
+  chartUrls.marketingEffectiveness.couponPerformance = createCouponPerformanceChart(data);
+  chartUrls.marketingEffectiveness.smsMetrics = createSmsMetricsChart(data);
+  
+  //Weather Impact Charts
+  chartUrls.weatherImpact.correlationHeatmap = createWeatherCorrelationHeatmap(data);
+  return chartUrls;
+}
+
+/**
+ * Gets the charts folder specified in configuration
+ */
+function getChartsFolder() {
+  try {
+    return DriveApp.getFolderById(CONFIG.CHARTS_FOLDER_ID);
+  } catch (error) {
+    Logger.log("Error accessing specified folder: " + error.message);
+    // Fallback to creating/using a folder by name
+    const folderName = "Laundromat Analytics Charts";
+    const folderIterator = DriveApp.getFoldersByName(folderName);
+    
+    if (folderIterator.hasNext()) {
+      return folderIterator.next();
+    } else {
+      return DriveApp.createFolder(folderName);
+    }
+  }
+}
+
+/**
+ * Cleans up old chart HTML files from the charts folder
+ */
+function cleanupOldCharts() {
+  const folder = getChartsFolder();
+  const files = folder.getFiles();
+  const fileArray = [];
+  
+  // Collect all chart files
+  while (files.hasNext()) {
+    const file = files.next();
+    if (file.getMimeType() === "text/html") {
+      fileArray.push({
+        file: file,
+        date: file.getDateCreated()
+      });
+    }
+  }
+  
+  // Sort files by creation date (newest first)
+  fileArray.sort((a, b) => b.date - a.date);
+  
+  // Calculate cutoff date for retention policy
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - CONFIG.CHART_RETENTION_DAYS);
+  
+  // Delete files based on our criteria
+  for (let i = 0; i < fileArray.length; i++) {
+    const fileInfo = fileArray[i];
+    
+    // Delete if older than retention period
+    if (fileInfo.date < cutoffDate) {
+      fileInfo.file.setTrashed(true);
+      Logger.log("Deleted old chart: " + fileInfo.file.getName());
+    }
+    
+    // Also delete if beyond our maximum chart count
+    if (i >= CONFIG.MAX_CHARTS_TO_KEEP) {
+      fileInfo.file.setTrashed(true);
+      Logger.log("Deleted excess chart: " + fileInfo.file.getName());
+    }
+  }
+  
+  Logger.log("Chart cleanup completed. Processed " + fileArray.length + " files.");
+}
+
+/**
+ * Creates HTML for a Google Visualization API chart
+ */
+function createChartHtml(chartType, dataTable, options, chartTitle) {
+  // Create a complete HTML page with the chart
+  const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>${chartTitle}</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        ${dataTable}
+
+        // Set chart options
+        var options = ${JSON.stringify(options, null, 2)};
+
+        // Create and draw the chart
+        var chart = new google.visualization.${chartType}(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 3; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100vh;
+        background-color: #f5f5f5;
+      }
+      #chart_div {
+        width: ${CONFIG.CHART_DEFAULTS.WIDTH}px;
+        height: ${CONFIG.CHART_DEFAULTS.HEIGHT}px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  `;
+  
+  return html;
+}
+
+/**
+ * Saves a chart HTML to Google Drive and returns its URL
+ */
+function saveChartAndGetUrl(chartType, dataTable, options, chartName) {
+  // Add timestamp to filename if configured
+  let filename = chartName;
+  if (CONFIG.TIMESTAMP_IN_FILENAMES) {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    filename = `${chartName}_${timestamp}`;
+  }
+  
+  // Create HTML content
+  const html = createChartHtml(chartType, dataTable, options, filename);
+  
+  // Get the charts folder
+  const folder = getChartsFolder();
+  
+  // Create the file in Drive
+  const file = folder.createFile(filename + ".html", html, MimeType.HTML);
+  
+  // Make it accessible to anyone with the link
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  
+  // Return the URL
+  return file.getUrl();
+}
+
+/**
+ * Format a correlation value for display
+ */
+function formatCorrelation(value) {
+  if (value === null || value === undefined) return "N/A";
+  
+  const absValue = Math.abs(value);
+  let strength = "No";
+  
+  if (absValue >= 0.7) strength = "Strong";
+  else if (absValue >= 0.5) strength = "Moderate";
+  else if (absValue >= 0.3) strength = "Weak";
+  else strength = "Very weak";
+  
+  return value.toFixed(2) + ` (${strength})`;
+}
+
+/**
+ * Get descriptive text for correlation direction
+ */
+function getDirectionText(value) {
+  if (value === null || value === undefined) return "shows no clear pattern";
+  
+  const absValue = Math.abs(value);
+  if (absValue < 0.2) return "shows no clear pattern";
+  
+  if (value > 0) return "tends to increase";
+  else return "tends to decrease";
+}
+
+/**
+ * Extract the most significant weather insights from correlations
+ */
+function getMainWeatherInsights(correlations) {
+  // Sort correlations by absolute value to find strongest relationships
+  const sortedCorrs = [...correlations].sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+  
+  // Get the top 3 strongest correlations
+  const topCorrs = sortedCorrs.slice(0, 3).filter(c => Math.abs(c.value) > 0.3);
+  
+  // Generate insight text for each significant correlation
+  return topCorrs.map(corr => {
+    const direction = corr.value > 0 ? "positive" : "negative";
+    const strength = Math.abs(corr.value) > 0.5 ? "strong" : "moderate";
+    
+    if (corr.factor === "Temperature") {
+      if (corr.value < 0) {
+        return `${corr.metric} tends to increase in cooler weather (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      } else {
+        return `${corr.metric} tends to increase in warmer weather (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      }
+    } else if (corr.factor === "Rainfall") {
+      if (corr.value < 0) {
+        return `${corr.metric} tends to decrease on rainy days (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      } else {
+        return `${corr.metric} tends to increase on rainy days (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      }
+    } else if (corr.factor === "Humidity") {
+      if (corr.value < 0) {
+        return `${corr.metric} tends to decrease on humid days (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      } else {
+        return `${corr.metric} tends to increase on humid days (${strength} ${direction} correlation of ${corr.value.toFixed(2)})`;
+      }
+    }
+  }).filter(insight => insight !== undefined);
+}
+/**
+ * Create a chart comparing best day vs. worst day performance metrics
+ * 
+ * This visualization shows a side-by-side comparison of the best and worst performing
+ * days of the week, highlighting key operational metrics.
+ */
+function createBestWorstDayComparisonChart(data) {
+  // Extract best and worst day data
+  const bestDay = data.dayOfWeekAnalysis.bestDay || {};
+  const worstDay = data.dayOfWeekAnalysis.worstDay || {};
+  
+  // Extract the metrics we want to compare
+  const metrics = [
+    {
+      name: 'Net Revenue ($)',
+      best: bestDay.netRevenue || 0,
+      worst: worstDay.netRevenue || 0,
+      formatter: value => '$' + Math.round(value).toLocaleString()
+    },
+    {
+      name: 'Utilization (%)',
+      best: bestDay.utilization || 0,
+      worst: worstDay.utilization || 0,
+      formatter: value => Math.round(value) + '%'
+    },
+    {
+      name: 'Wash Services',
+      best: bestDay.serviceMix?.wash || 0,
+      worst: worstDay.serviceMix?.wash || 0,
+      formatter: value => Math.round(value)
+    },
+    {
+      name: 'Dry Services',
+      best: bestDay.serviceMix?.dry || 0,
+      worst: worstDay.serviceMix?.dry || 0,
+      formatter: value => Math.round(value)
+    }
+  ];
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', '${bestDay.name || "Best Day"}');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn('number', '${worstDay.name || "Worst Day"}');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    
+    data.addRows([
+      ${metrics.map(metric => {
+        return `['${metric.name}', 
+                ${metric.best}, 
+                '${metric.formatter(metric.best)}', 
+                'color: ${CONFIG.BRAND_COLORS.PRIMARY}', 
+                ${metric.worst}, 
+                '${metric.formatter(metric.worst)}', 
+                'color: ${CONFIG.BRAND_COLORS.SECONDARY}']`;
+      }).join(',\n      ')}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: `Best Day (${bestDay.name || "N/A"}) vs. Worst Day (${worstDay.name || "N/A"}) Comparison`,
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    legend: {
+      position: 'top',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    hAxis: {
+      title: 'Metric',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Value',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      minValue: 0
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 12,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    },
+    isStacked: false,
+    bar: { groupWidth: '75%' }
+  };
+  
+  return saveChartAndGetUrl('BarChart', dataTableScript, options, "best_worst_day_comparison");
+}
+/**
+ * Create an enhanced hourly revenue chart
+ * 
+ * This visualization shows revenue patterns throughout the day, highlighting peak hours,
+ * comparing current week vs 4-week average
+ * 
+ */
+function createHourlyRevenueChart(data) {
+  // Extract hourly data - use both current week and 4-week for comparison
+  const weeklyHourlyData = data.hourlyMetrics || [];
+  const fourWeekHourlyData = data.fourWeekHourlyMetrics || [];
+  
+  // Create maps for easier data access by hour
+  const weeklyHourMap = {};
+  const fourWeekHourMap = {};
+  
+  weeklyHourlyData.forEach(hourData => {
+    weeklyHourMap[hourData.hour] = hourData;
+  });
+  
+  fourWeekHourlyData.forEach(hourData => {
+    fourWeekHourMap[hourData.hour] = hourData;
+  });
+  
+  // Find business operating hours (from first to last hour with data)
+  const allHours = [...new Set([
+    ...weeklyHourlyData.map(h => h.hour),
+    ...fourWeekHourlyData.map(h => h.hour)
+  ])].sort((a, b) => a - b);
+  
+  // If no data, return error message
+  if (allHours.length === 0) {
+    return createErrorChart("No Hourly Revenue Data", 
+                          "There is no hourly revenue data available for the selected period.");
+  }
+  
+  const minHour = allHours[0];
+  const maxHour = allHours[allHours.length - 1];
+  
+  // Calculate statistics for business insights
+  const peakAnalysis = data.peakAnalysis || {};
+  const peakHours = peakAnalysis?.peak?.hours || [];
+  const bestHour = peakAnalysis?.peak?.bestHour;
+  
+  // Create rows for data table
+  let rows = '';
+  let maxWeeklyRevenue = 0;
+  let maxFourWeekRevenue = 0;
+  let totalWeeklyRevenue = 0;
+  let dailyPatterns = [];
+  
+  // Pre-calculate max values for scaling
+  for (let hour = minHour; hour <= maxHour; hour++) {
+    const weeklyRevenue = weeklyHourMap[hour]?.netRevenue || 0;
+    const fourWeekRevenue = fourWeekHourMap[hour]?.netRevenue || 0;
+    
+    maxWeeklyRevenue = Math.max(maxWeeklyRevenue, weeklyRevenue);
+    maxFourWeekRevenue = Math.max(maxFourWeekRevenue, fourWeekRevenue);
+    totalWeeklyRevenue += weeklyRevenue;
+    
+    // Collect revenue pattern data
+    if (weeklyRevenue > 0) {
+      dailyPatterns.push({
+        hour,
+        revenue: weeklyRevenue,
+        percentage: 0 // Will calculate after we have total
+      });
+    }
+  }
+  
+  // Calculate percentage of daily revenue for each hour
+  dailyPatterns.forEach(pattern => {
+    pattern.percentage = totalWeeklyRevenue > 0 ? 
+      (pattern.revenue / totalWeeklyRevenue) * 100 : 0;
+  });
+  
+  // Sort hours by percentage to find top revenue hours
+  const topRevenueHours = [...dailyPatterns]
+    .sort((a, b) => b.percentage - a.percentage)
+    .slice(0, 3);
+  
+  // Generate row data for each hour
+  for (let hour = minHour; hour <= maxHour; hour++) {
+    const weeklyData = weeklyHourMap[hour] || { netRevenue: 0 };
+    const fourWeekData = fourWeekHourMap[hour] || { netRevenue: 0 };
+    
+    const weeklyRevenue = weeklyData.netRevenue || 0;
+    const fourWeekRevenue = fourWeekData.netRevenue || 0;
+    
+    // Calculate 4-week average (per day) for fair comparison
+    const avgDailyFourWeekRevenue = fourWeekData.daysActive && fourWeekData.daysActive > 0 ? 
+      fourWeekRevenue / fourWeekData.daysActive : 0;
+    
+    // Format for display
+    const isPeakHour = peakHours.includes(hour);
+    const isBestHour = hour === bestHour;
+    
+    // Create styled tooltip with contextual information
+    const tooltip = `Hour: ${hour}:00\\n` +
+                    `Current Week: $${weeklyRevenue.toFixed(2)}\\n` +
+                    `4-Week Avg: $${avgDailyFourWeekRevenue.toFixed(2)}\\n` +
+                    `${isPeakHour ? 'PEAK HOUR' : ''}`;
+    
+    // Style based on whether this is a peak hour or the best hour
+    let style = '';
+    if (isBestHour) {
+      style = `color: ${CONFIG.BRAND_COLORS.SECONDARY}; opacity: 1.0; stroke-color: #333; stroke-width: 1`;
+    } else if (isPeakHour) {
+      style = `color: ${CONFIG.BRAND_COLORS.PRIMARY}; opacity: 0.9`;
+    } else {
+      style = `color: ${CONFIG.BRAND_COLORS.PRIMARY}; opacity: 0.7`;
+    }
+    
+    // Add formatter values for annotations
+    const annotation = weeklyRevenue > 0 ? '$' + Math.round(weeklyRevenue) : '';
+    
+    rows += `      ['${hour}:00', ${weeklyRevenue}, '${annotation}', '${style}', '${tooltip}', ${avgDailyFourWeekRevenue}],\n`;
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Current Week');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', '4-Week Average');
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  // Define chart options with dual axis display
+  const options = {
+    title: 'Hourly Net Revenue Distribution',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    
+    // Create a combo chart with columns for current week and line for 4-week
+    seriesType: 'bars',
+    series: {
+      0: {type: 'bars', targetAxisIndex: 0},
+      1: {type: 'line', targetAxisIndex: 0, color: CONFIG.BRAND_COLORS.SECONDARY, lineWidth: 3, pointSize: 6}
+    },
+    
+    // Configure axes
+    hAxis: {
+      title: 'Hour of Day',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Net Revenue ($)',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      viewWindow: {
+        min: 0
+      }
+    },
+    legend: {
+      position: 'top',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    },
+    tooltip: {
+      isHtml: true
+    }
+  };  
+  // Get the chart URL
+  return saveChartAndGetUrl('ComboChart', dataTableScript, options, "enhanced_hourly_revenue");
+}
+
+/**
+ * Create a comparative performance bar chart showing revenue and utilization
+ * across current week, previous week, and 4-week average
+ */
+function createComparativePerformanceChart(data) {
+// Extract the necessary data from the analytics object
+  const currentWeekRevenue = data.weeklyMetrics.revenue.net || 0;
+  const currentWeekUtil = data.weeklyMetrics.utilization || 0;
+  
+  const prevWeekRevenue = data.weeklyMetrics.previousWeek?.revenue?.net || 0;
+  const prevWeekUtil = data.weeklyMetrics.previousWeek?.utilization || 0;
+  
+  const fourWeekRevenue = data.fourWeekMetrics.revenue.net || 0;
+  // Calculate daily average revenue for the 4-week period for fair comparison
+  const days = data.analysisWindow?.fourWeek?.days || 28;
+  const fourWeekAvgRevenue = days > 0 ? (fourWeekRevenue / days) * 7 : 0; // Convert to weekly equivalent
+  const fourWeekUtil = data.fourWeekMetrics.utilization || 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    // Create two-axis data table for revenue and utilization
+    data.addColumn('string', 'Time Period');
+    data.addColumn('number', 'Revenue ($)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    
+    data.addRows([
+      ['Current Week', ${currentWeekRevenue}, '$${Math.round(currentWeekRevenue).toLocaleString()}', ${currentWeekUtil}, '${currentWeekUtil}%'],
+      ['Previous Week', ${prevWeekRevenue}, '$${Math.round(prevWeekRevenue).toLocaleString()}', ${prevWeekUtil}, '${prevWeekUtil}%'],
+      ['4-Week Avg', ${fourWeekAvgRevenue}, '$${Math.round(fourWeekAvgRevenue).toLocaleString()}', ${fourWeekUtil}, '${fourWeekUtil}%']
+    ]);
+  `;
+  
+  // Define chart options with dual Y-axes
+  const options = {
+    title: 'Net Revenue and Utilization Comparison',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    
+    // Set up a combo chart with columns for revenue and line for utilization
+    seriesType: 'bars',
+    series: {
+      0: {
+        type: 'bars', 
+        targetAxisIndex: 0,
+        color: CONFIG.BRAND_COLORS.PRIMARY
+      },
+      1: {
+        type: 'bars', 
+        targetAxisIndex: 1,
+        color: CONFIG.BRAND_COLORS.SECONDARY
+      }
+    },
+    
+    // Configure axes
+    hAxis: {
+      title: 'Time Period',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxes: {
+      0: {
+        title: 'Net Revenue ($)',
+        titleTextStyle: {
+          color: CONFIG.BRAND_COLORS.TEXT,
+          fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+        },
+        textStyle: {
+          color: CONFIG.BRAND_COLORS.TEXT,
+          fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE,
+          padding: 10
+        },
+        minValue: 0
+      },
+      1: {
+        title: 'Utilization (%)',
+        titleTextStyle: {
+          color: CONFIG.BRAND_COLORS.TEXT,
+          fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+        },
+        textStyle: {
+          color: CONFIG.BRAND_COLORS.TEXT,
+          fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE,
+          padding: 10
+        },
+        minValue: 0,
+        maxValue: 100
+      }
+    },
+    legend: {
+      position: 'top',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    },
+    chartArea: {
+      width: '60%',
+      height: '70%'
+    }
+  };
+  // Save the enhanced HTML and get the URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "comparative_performance");
+}
+
+/**
+ * Create a weekly revenue trend chart with week-over-week comparison
+ */
+function createWeeklyRevenueTrend(data) {
+  // Extract data
+  const weeklyNet = data.weeklyMetrics.revenue.net || 0;
+  const fourWeekNet = data.fourWeekMetrics.revenue.net || 0;
+  const fourWeekAvg = fourWeekNet / (data.analysisWindow?.fourWeek?.days || 28) * 7; // Weekly average
+  const prevWeekNet = data.weeklyMetrics.previousWeek?.revenue?.net || 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Week');
+    data.addColumn('number', 'Current Week');
+    data.addColumn('number', '4-Week Average');
+    data.addRows([
+      ['Previous', ${prevWeekNet}, null],
+      ['Current', ${weeklyNet}, ${fourWeekAvg}]
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Weekly Net Revenue Trend',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY, CONFIG.BRAND_COLORS.SECONDARY],
+    hAxis: {
+      title: 'Week',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Net Revenue',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    pointSize: 7,
+    legend: {
+      position: 'bottom',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('LineChart', dataTableScript, options, "weekly_revenue_trend");
+}
+
+/**
+ * Create a revenue composition chart showing gross, discount, and net revenue
+ */
+function createRevenueComposition(data) {
+  // Extract data
+  const netRevenue = data.weeklyMetrics.revenue.net || 0;
+  const discountAmount = data.weeklyMetrics.revenue.discount || 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Category');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn('number', 'Discount');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Weekly Revenue', ${netRevenue}, ${discountAmount}, '$${Math.round(netRevenue + discountAmount).toLocaleString()}']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Revenue Composition',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.SECONDARY, CONFIG.BRAND_COLORS.PRIMARY],
+    isStacked: true,
+    hAxis: {
+      title: 'Category',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Amount ($)',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'top',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      },
+      alwaysOutside: true
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "revenue_composition");
+}
+
+/**
+ * Create a week-over-week performance chart for key metrics
+ */
+function createWeekOverWeekPerformance(data) {
+  // Extract data
+  const wow = data.weeklyMetrics.weekOverWeek || {};
+  const netRevenue = wow.netRevenue || 0;
+  const transactions = wow.transactions || 0;
+  const servicesPerTransaction = wow.servicesPerTransaction || 0;
+  const utilization = wow.utilization || 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', 'Change %');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+      ['Net Revenue', ${netRevenue}, '${netRevenue.toFixed(1)}%', '${netRevenue >= 0 ? CONFIG.BRAND_COLORS.PRIMARY : CONFIG.BRAND_COLORS.SECONDARY}'],
+      ['Transactions', ${transactions}, '${transactions.toFixed(1)}%', '${transactions >= 0 ? CONFIG.BRAND_COLORS.PRIMARY : CONFIG.BRAND_COLORS.SECONDARY}'],
+      ['Services/Trans', ${servicesPerTransaction}, '${servicesPerTransaction.toFixed(1)}%', '${servicesPerTransaction >= 0 ? CONFIG.BRAND_COLORS.PRIMARY : CONFIG.BRAND_COLORS.SECONDARY}'],
+      ['Utilization', ${utilization}, '${utilization.toFixed(1)}%', '${utilization >= 0 ? CONFIG.BRAND_COLORS.PRIMARY : CONFIG.BRAND_COLORS.SECONDARY}']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Week-over-Week Growth',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    hAxis: {
+      title: 'Metric',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Percent Change (%)',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      },
+      alwaysOutside: false
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('BarChart', dataTableScript, options, "week_over_week_growth");
+}
+
+/**
+ * Create a gauge chart showing progress toward weekly revenue goal
+ */
+function createRevenueGoalProgress(data) {
+  // Estimate a revenue goal (in a real scenario, this would come from your business plans)
+  // Here we'll use 110% of the 4-week average as a simple goal
+  const fourWeekAvg = data.fourWeekMetrics.revenue.net / (data.analysisWindow?.fourWeek?.days || 28) * 7;
+  const weeklyGoal = Math.round(fourWeekAvg * 1.1);
+  const currentRevenue = data.weeklyMetrics.revenue.net || 0;
+  const progressPercent = Math.min(Math.round((currentRevenue / weeklyGoal) * 100), 100);
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Label');
+    data.addColumn('number', 'Value');
+    data.addRows([
+      ['Progress', ${progressPercent}]
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    redFrom: 0,
+    redTo: 33,
+    yellowFrom: 33,
+    yellowTo: 67,
+    greenFrom: 67,
+    greenTo: 100,
+    minorTicks: 5,
+    min: 0,
+    max: 100,
+    title: 'Weekly Net Revenue Goal Progress',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    animation: {
+      duration: 1000,
+      easing: 'out'
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('Gauge', dataTableScript, options, "revenue_goal_progress");
+}
+
+/**
+ * Create a day of week revenue chart
+ */
+function createDayOfWeekRevenue(data) {
+  // Process data for each day of the week with a consistent order
+  const dayOrder = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayData = data.dayOfWeekAnalysis.allDays || [];
+  const dayMap = {};
+  
+  // Create a map for easier access
+  dayData.forEach(day => {
+    dayMap[day.name] = day;
+  });
+  
+  // Find max revenue for highlighting
+  const maxRevenue = Math.max(...dayData.map(day => day.netRevenue || 0));
+  
+  // Create data table with rows
+  let rows = '';
+  
+  dayOrder.forEach(dayName => {
+    const day = dayMap[dayName] || {name: dayName, netRevenue: 0};
+    const revenue = day.netRevenue || 0;
+    const annotation = '$' + Math.round(revenue).toLocaleString();
+    
+    // Highlight best day
+    const color = revenue === maxRevenue ? CONFIG.BRAND_COLORS.SECONDARY : CONFIG.BRAND_COLORS.PRIMARY;
+    
+    rows += `      ['${dayName}', ${revenue}, '${annotation}', '${color}'],\n`;
+  });
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Day');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Daily Net Revenue by Day of Week',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    hAxis: {
+      title: 'Day of Week',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Net Revenue ($)',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      },
+      alwaysOutside: false
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "day_of_week_revenue");
+}
+
+/**
+ * Create an hourly utilization chart
+ */
+function createHourlyUtilizationHeatMap(data) {
+  // Process hourly data
+  const hourlyData = data.fourWeekHourlyMetrics || []; // Use 4-week for more stable data
+  
+  // Find peak hours (top 33%)
+  const sortedHours = [...hourlyData].sort((a, b) => (b.utilization || 0) - (a.utilization || 0));
+  const peakHourCount = Math.ceil(sortedHours.length * 0.33);
+  const peakHours = new Set(sortedHours.slice(0, peakHourCount).map(h => h.hour));
+  
+  // Order by hour of day
+  hourlyData.sort((a, b) => (a.hour || 0) - (b.hour || 0));
+  
+  // Create rows for data table
+  let rows = '';
+  
+  for (const hour of hourlyData) {
+    const isPeakHour = peakHours.has(hour.hour);
+    const utilization = hour.utilization || 0;
+    const color = isPeakHour ? CONFIG.BRAND_COLORS.SECONDARY : CONFIG.BRAND_COLORS.PRIMARY;
+    const annotation = `${utilization}%`;
+    
+    rows += `      ['${hour.hour}:00', ${utilization}, '${annotation}', '${color}'],\n`;
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Utilization %');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Hourly Machine Utilization',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    hAxis: {
+      title: 'Hour of Day',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Utilization %',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 12,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "hourly_utilization");
+}
+
+/**
+ * Create a peak vs off-peak comparison chart
+ */
+function createPeakVsOffPeakChart(data) {
+  // Get peak data
+  const peak = data.peakAnalysis.peak || {};
+  const offPeak = data.peakAnalysis.offPeak || {};
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', 'Peak Hours');
+    data.addColumn('number', 'Off-Peak Hours');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Avg Net Revenue', ${peak.avgNetRevenue || 0}, ${offPeak.avgNetRevenue || 0}, 
+       '$${Math.round(peak.avgNetRevenue || 0).toLocaleString()}', 
+       '$${Math.round(offPeak.avgNetRevenue || 0).toLocaleString()}'],
+      ['Utilization %', ${peak.avgUtilization || 0}, ${offPeak.avgUtilization || 0}, 
+       '${Math.round(peak.avgUtilization || 0)}%', 
+       '${Math.round(offPeak.avgUtilization || 0)}%'],
+      ['Services/Transaction', ${peak.servicesPerTransaction || 0}, ${offPeak.servicesPerTransaction || 0}, 
+       '${(peak.servicesPerTransaction || 0).toFixed(1)}', 
+       '${(offPeak.servicesPerTransaction || 0).toFixed(1)}']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Peak vs. Off-Peak Performance',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.SECONDARY, CONFIG.BRAND_COLORS.PRIMARY],
+    hAxis: {
+      title: 'Metric',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Value',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'top',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 12,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "peak_vs_offpeak");
+}
+
+/**
+ * Create a service mix pie chart
+ */
+function createServiceMixChart(data) {
+  // Extract data
+  const washServices = data.weeklyMetrics.serviceCounts.wash || 0;
+  const dryServices = data.weeklyMetrics.serviceCounts.dry || 0;
+  const total = washServices + dryServices;
+  
+  // Calculate percentages
+  const washPercent = total > 0 ? Math.round((washServices / total) * 100) : 0;
+  const dryPercent = total > 0 ? Math.round((dryServices / total) * 100) : 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Service Type');
+    data.addColumn('number', 'Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Wash Services', ${washServices}, '${washPercent}%'],
+      ['Dry Services', ${dryServices}, '${dryPercent}%']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Service Mix',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY, CONFIG.BRAND_COLORS.SECONDARY],
+    pieHole: 0.4, // Create a donut chart
+    legend: {
+      position: 'right',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    pieSliceTextStyle: {
+      color: 'white',
+      fontSize: 14,
+      bold: true
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('PieChart', dataTableScript, options, "service_mix");
+}
+
+/**
+ * Create a segment performance chart
+ */
+function createSegmentPerformanceChart(data) {
+  // Extract data
+  const segmentAggregates = data.segmentAggregates || {};
+  const segments = Object.keys(segmentAggregates);
+  
+  // Sort segments by revenue (highest first)
+  segments.sort((a, b) => {
+    const revenueA = segmentAggregates[a]?.spending?.net || 0;
+    const revenueB = segmentAggregates[b]?.spending?.net || 0;
+    return revenueB - revenueA;
+  });
+  
+  // Create rows for data table
+  let rows = '';
+  
+  for (const segment of segments) {
+    const segmentData = segmentAggregates[segment];
+    const revenue = segmentData?.spending?.net || 0;
+    const annotation = '$' + Math.round(revenue).toLocaleString();
+    
+    rows += `      ['${segment}', ${revenue}, '${annotation}'],\n`;
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Segment');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Customer Segment Performance',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY],
+    hAxis: {
+      title: 'Segment',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Total Revenue ($)',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 12,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "segment_performance");
+}
+
+/**
+ * Create an active vs lapsed customers pie chart
+ */
+function createActiveVsLapsedChart(data) {
+  // Extract data
+  const customerMetrics = data.customerLifecycleMetrics || {};
+  const returnRates = customerMetrics.returnRates || {};
+  
+  const activeProportion = returnRates.activeProportion || 0;
+  const lapsedProportion = returnRates.lapsedProportion || 0;
+  
+  // Round to whole percentages
+  const activePercent = Math.round(activeProportion);
+  const lapsedPercent = Math.round(lapsedProportion);
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Status');
+    data.addColumn('number', 'Percentage');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Active', ${activeProportion}, '${activePercent}%'],
+      ['Lapsed', ${lapsedProportion}, '${lapsedPercent}%']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Active vs. Lapsed Customers',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY, CONFIG.BRAND_COLORS.SECONDARY],
+    pieHole: 0.4, // Create a donut chart
+    legend: {
+      position: 'right',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    pieSliceTextStyle: {
+      color: 'white',
+      fontSize: 14,
+      bold: true
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('PieChart', dataTableScript, options, "active_vs_lapsed");
+}
+
+/**
+ * Create a chart showing top growing customer segments
+ */
+function createTopGrowingSegmentsChart(data) {
+  // Extract data
+  const segmentAggregates = data.segmentAggregates || {};
+  const segments = Object.keys(segmentAggregates);
+  
+  // Generate a growth potential score (this is simplified for demo)
+  const growthPotential = {};
+  
+  for (const segment of segments) {
+    const segmentData = segmentAggregates[segment];
+    
+    // Skip if missing key data
+    if (!segmentData || !segmentData.averages) continue;
+    
+    // Simple growth potential formula (demo only)
+    const spendPerCustomer = segmentData.averages.netPerCustomer || 0;
+    const servicesPerTrans = segmentData.averages.servicesPerTransaction || 0;
+    
+    // Higher score = more growth potential
+    growthPotential[segment] = (spendPerCustomer * 0.5) + (servicesPerTrans * 10);
+  }
+  
+  // Sort segments by growth potential (highest first)
+  const sortedSegments = Object.keys(growthPotential)
+      .sort((a, b) => growthPotential[b] - growthPotential[a])
+      .slice(0, 5); // Take top 5
+  
+  // Create rows for data table
+  let rows = '';
+  
+  for (const segment of sortedSegments) {
+    const potential = growthPotential[segment];
+    const annotation = potential.toFixed(1);
+    
+    rows += `      ['${segment}', ${potential}, '${annotation}'],\n`;
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Segment');
+    data.addColumn('number', 'Growth Potential');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Top Customer Segments by Growth Potential',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY],
+    chartArea: {
+      left: 170, // Provide more space for labels on the left
+      width: '60%'
+    },
+    hAxis: {
+      title: 'Growth Potential',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Segment',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 12,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('BarChart', dataTableScript, options, "top_growing_segments");
+}
+
+/**
+ * Create a payment method distribution chart
+ */
+function createPaymentMethodDistributionChart(data) {
+  // Extract data
+  const paymentData = data.paymentAnalytics?.methodDetails || [];
+  
+  // Sort methods by transaction count (highest first)
+  const sortedMethods = [...paymentData].sort((a, b) => 
+    (b.transactionCount || 0) - (a.transactionCount || 0)
+  );
+  
+  // Calculate total transactions for percentages
+  const totalTransactions = sortedMethods.reduce(
+    (sum, method) => sum + (method.transactionCount || 0), 0
+  );
+  
+  // Create rows for data table
+  let rows = '';
+  
+  for (const method of sortedMethods) {
+    const count = method.transactionCount || 0;
+    const percent = totalTransactions > 0 ? Math.round((count / totalTransactions) * 100) : 0;
+    const annotation = `${percent}%`;
+    
+    rows += `      ['${method.method}', ${count}, '${annotation}'],\n`;
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Payment Method');
+    data.addColumn('number', 'Transactions');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Payment Method Distribution',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [
+      CONFIG.BRAND_COLORS.PRIMARY, 
+      CONFIG.BRAND_COLORS.SECONDARY,
+      '#8CED80', // Lighter green
+      '#6B8EF2'  // Lighter blue
+    ],
+    pieHole: 0.4, // Create a donut chart
+    legend: {
+      position: 'right',
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      }
+    },
+    pieSliceTextStyle: {
+      color: 'white',
+      fontSize: 14,
+      bold: true
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('PieChart', dataTableScript, options, "payment_method_distribution");
+}
+
+/**
+ * Create coupon performance chart
+ */
+function createCouponPerformanceChart(data) {
+  // Extract data
+  const couponStats = data.couponStats || [];
+  const topCoupons = couponStats.slice(0, 5); // Show top 5 coupons
+  
+  // Create rows for data table
+  let rows = '';
+  
+  if (topCoupons.length === 0) {
+    // If no coupons used, show a message
+    rows = `      ['No Coupons Used', 0, '0', 'No coupons were used in this period'],\n`;
+  } else {
+    for (const coupon of topCoupons) {
+      const count = coupon.count || 0;
+      const avgNetPerUse = coupon.avgNetPerUse || 0;
+      const servicesPerTransaction = coupon.servicesPerTransaction || 0;
+      
+      const tooltip = `Code: ${coupon.code}\\nUsage: ${count}\\nAvg Revenue: $${avgNetPerUse.toFixed(2)}\\nServices/Trans: ${servicesPerTransaction.toFixed(1)}`;
+      
+      rows += `      ['${coupon.code}', ${count}, '${count}', '${tooltip}'],\n`;
+    }
+  }
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Coupon');
+    data.addColumn('number', 'Usage Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addRows([
+${rows.trim()}
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'Coupon Performance',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY],
+    hAxis: {
+      title: 'Coupon Code',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Usage Count',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "coupon_performance");
+}
+
+/**
+ * Create SMS metrics chart
+ */
+function createSmsMetricsChart(data) {
+  // Extract data
+  const smsMetrics = data.smsMetrics || {};
+  const sent = smsMetrics.sent || 0;
+  const received = smsMetrics.received || 0;
+  
+  // Calculate response rate
+  const responseRate = sent > 0 ? Math.round((received / sent) * 100) : 0;
+  
+  // Create data table definition
+  const dataTableScript = `
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', 'Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Messages Sent', ${sent}, '${sent}'],
+      ['Messages Received', ${received}, '${received}'],
+      ['Response Rate (%)', ${responseRate}, '${responseRate}%']
+    ]);
+  `;
+  
+  // Define chart options
+  const options = {
+    title: 'SMS Campaign Metrics',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    colors: [CONFIG.BRAND_COLORS.PRIMARY, CONFIG.BRAND_COLORS.SECONDARY],
+    hAxis: {
+      title: 'Metric',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    vAxis: {
+      title: 'Count',
+      titleTextStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      },
+      textStyle: {
+        color: CONFIG.BRAND_COLORS.TEXT,
+        fontSize: CONFIG.CHART_DEFAULTS.FONT_SIZE
+      }
+    },
+    legend: {
+      position: 'none'
+    },
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        color: CONFIG.BRAND_COLORS.TEXT,
+        bold: true
+      }
+    }
+  };
+  
+  // Get the chart URL
+  return saveChartAndGetUrl('ColumnChart', dataTableScript, options, "sms_metrics");
+}
+
+/**
+ * Create an enhanced weather correlation heatmap chart
+ * 
+ * This visualization shows how different weather factors (temperature, rainfall, humidity)
+ * correlate with business metrics, using color intensity to show correlation strength.
+ */
+function createWeatherCorrelationHeatmap(data) {
+  // Extract weather correlation data
+  const weatherCorr = data.weatherAnalytics?.correlations || {};
+  
+  // Check if we have correlation data to work with
+  if (!weatherCorr.net || !weatherCorr.transactions || !weatherCorr.totalServices) {
+    // Return a fallback message if no data is available
+    return createErrorChart("Weather Correlation Data Not Available", 
+                          "Please ensure weather data is collected for at least 3 months to generate correlations.");
+  }
+  
+  // Extract correlation values from the data structure
+  const correlations = [
+    // Revenue correlations
+    { 
+      factor: "Temperature", 
+      metric: "Revenue", 
+      value: weatherCorr.net.temperature || 0,
+      formatted: formatCorrelation(weatherCorr.net.temperature)
+    },
+    { 
+      factor: "Rainfall", 
+      metric: "Revenue", 
+      value: weatherCorr.net.rainfall || 0,
+      formatted: formatCorrelation(weatherCorr.net.rainfall)
+    },
+    { 
+      factor: "Humidity", 
+      metric: "Revenue", 
+      value: weatherCorr.net.humidity || 0,
+      formatted: formatCorrelation(weatherCorr.net.humidity)
+    },
+    
+    // Transaction correlations
+    { 
+      factor: "Temperature", 
+      metric: "Transactions", 
+      value: weatherCorr.transactions.temperature || 0,
+      formatted: formatCorrelation(weatherCorr.transactions.temperature)
+    },
+    { 
+      factor: "Rainfall", 
+      metric: "Transactions", 
+      value: weatherCorr.transactions.rainfall || 0,
+      formatted: formatCorrelation(weatherCorr.transactions.rainfall)
+    },
+    { 
+      factor: "Humidity", 
+      metric: "Transactions", 
+      value: weatherCorr.transactions.humidity || 0,
+      formatted: formatCorrelation(weatherCorr.transactions.humidity)
+    },
+    
+    // Service correlations
+    { 
+      factor: "Temperature", 
+      metric: "Services", 
+      value: weatherCorr.totalServices.temperature || 0,
+      formatted: formatCorrelation(weatherCorr.totalServices.temperature)
+    },
+    { 
+      factor: "Rainfall", 
+      metric: "Services", 
+      value: weatherCorr.totalServices.rainfall || 0,
+      formatted: formatCorrelation(weatherCorr.totalServices.rainfall)
+    },
+    { 
+      factor: "Humidity", 
+      metric: "Services", 
+      value: weatherCorr.totalServices.humidity || 0,
+      formatted: formatCorrelation(weatherCorr.totalServices.humidity)
+    }
+  ];
+  
+  // Create a table representation for our heatmap-style chart
+  // We'll organize by weather factor (rows) and business metric (columns)
+  const dataTableScript = `
+    // Create table with weather factors as rows and business metrics as columns
+    data.addColumn('string', 'Weather Factor');
+    data.addColumn('number', 'Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', 'Transactions');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', 'Services');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    
+    data.addRows([
+      // Temperature row
+      ['Temperature', 
+       ${correlations[0].value}, '${correlations[0].formatted}', 
+       'Temperature to Revenue: ${correlations[0].formatted}\\nAs temperature changes, revenue ${getDirectionText(correlations[0].value)}',
+       
+       ${correlations[3].value}, '${correlations[3].formatted}', 
+       'Temperature to Transactions: ${correlations[3].formatted}\\nAs temperature changes, transaction count ${getDirectionText(correlations[3].value)}',
+       
+       ${correlations[6].value}, '${correlations[6].formatted}', 
+       'Temperature to Services: ${correlations[6].formatted}\\nAs temperature changes, service count ${getDirectionText(correlations[6].value)}'
+      ],
+      
+      // Rainfall row
+      ['Rainfall', 
+       ${correlations[1].value}, '${correlations[1].formatted}', 
+       'Rainfall to Revenue: ${correlations[1].formatted}\\nAs rainfall increases, revenue ${getDirectionText(correlations[1].value)}',
+       
+       ${correlations[4].value}, '${correlations[4].formatted}', 
+       'Rainfall to Transactions: ${correlations[4].formatted}\\nAs rainfall increases, transaction count ${getDirectionText(correlations[4].value)}',
+       
+       ${correlations[7].value}, '${correlations[7].formatted}', 
+       'Rainfall to Services: ${correlations[7].formatted}\\nAs rainfall increases, service count ${getDirectionText(correlations[7].value)}'
+      ],
+      
+      // Humidity row
+      ['Humidity', 
+       ${correlations[2].value}, '${correlations[2].formatted}', 
+       'Humidity to Revenue: ${correlations[2].formatted}\\nAs humidity increases, revenue ${getDirectionText(correlations[2].value)}',
+       
+       ${correlations[5].value}, '${correlations[5].formatted}', 
+       'Humidity to Transactions: ${correlations[5].formatted}\\nAs humidity increases, transaction count ${getDirectionText(correlations[5].value)}',
+       
+       ${correlations[8].value}, '${correlations[8].formatted}', 
+       'Humidity to Services: ${correlations[8].formatted}\\nAs humidity increases, service count ${getDirectionText(correlations[8].value)}'
+      ]
+    ]);
+  `;
+  
+  // Define chart options with gradient coloring based on correlation strength
+  const options = {
+    title: 'Weather Impact on Business Performance',
+    titleTextStyle: {
+      color: CONFIG.BRAND_COLORS.TEXT,
+      fontSize: CONFIG.CHART_DEFAULTS.TITLE_FONT_SIZE,
+      bold: true
+    },
+    width: CONFIG.CHART_DEFAULTS.WIDTH,
+    height: CONFIG.CHART_DEFAULTS.HEIGHT,
+    backgroundColor: CONFIG.BRAND_COLORS.NEUTRAL,
+    
+    // Create a heatmap-style visualization using a table
+    // with colored bars representing correlation strength
+    chart: {
+      title: 'Weather Impact on Business Performance'
+    },
+    hAxis: {
+      title: 'Correlation Coefficient',
+      minValue: -1,
+      maxValue: 1,
+      format: '0.00'
+    },
+    vAxis: {
+      title: 'Weather Factor',
+      textStyle: {
+        fontSize: 16,
+        bold: true
+      }
+    },
+    legend: {
+      position: 'bottom',
+      textStyle: {
+        fontSize: CONFIG.CHART_DEFAULTS.LEGEND_FONT_SIZE
+      },
+    },
+    // Use color gradient based on correlation value
+    // Negative correlations: blue, Positive: green
+    colorAxis: {
+      values: [-1, -0.5, 0, 0.5, 1],
+      colors: ['#2233FF', '#93A3FF', '#EEEEEE', '#93EE89', CONFIG.BRAND_COLORS.PRIMARY]
+    },
+    
+    annotations: {
+      textStyle: {
+        fontSize: 14,
+        bold: true,
+        color: CONFIG.BRAND_COLORS.TEXT
+      }
+    },
+    tooltip: {
+      isHtml: true,
+      showColorCode: true
+    }
+  };
+  
+  // Add descriptive subtitle to explain the data
+  const analysisPoints = getMainWeatherInsights(correlations);
+  
+  // Create enhanced HTML with additional explanatory text
+  const enhancedHtml = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Weather Impact Analysis</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'table']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        ${dataTableScript}
+
+        // Set chart options
+        var options = ${JSON.stringify(options, null, 2)};
+
+        // Create and draw the chart
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 20px; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      #chart_div {
+        width: ${CONFIG.CHART_DEFAULTS.WIDTH}px;
+        height: ${CONFIG.CHART_DEFAULTS.HEIGHT}px;
+        margin-bottom: 20px;
+      }
+      .subtitle {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .insight-title {
+        font-weight: bold;
+        margin-top: 10px;
+        color: #333;
+      }
+      .insights {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+      }
+      .insight {
+        margin-bottom: 10px;
+        padding-left: 20px;
+        position: relative;
+      }
+      .insight:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: ${CONFIG.BRAND_COLORS.PRIMARY};
+        font-weight: bold;
+      }
+      .correlation-guide {
+        font-size: 12px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 style="color: ${CONFIG.BRAND_COLORS.TEXT}; text-align: center;">Weather Impact on Business Performance</h2>
+      <p class="subtitle">
+        This chart shows how weather factors correlate with business metrics. 
+        Values range from -1 (strong negative correlation) to +1 (strong positive correlation).
+        A value near 0 means little to no correlation.
+      </p>
+      
+      <div id="chart_div"></div>
+      
+      <div class="insights">
+        <p class="insight-title">Key Weather Insights:</p>
+        ${analysisPoints.map(point => `<p class="insight">${point}</p>`).join('')}
+      </div>
+      
+      <div class="correlation-guide">
+        <strong>How to read this chart:</strong><br>
+        Correlation strength: Strong (> 0.5 or < -0.5), Moderate (0.3 to 0.5 or -0.3 to -0.5), Weak (< 0.3 or > -0.3)<br>
+        <span style="color: ${CONFIG.BRAND_COLORS.PRIMARY}">Green bars</span> show positive correlation (as factor increases, metric increases).<br>
+        <span style="color: ${CONFIG.BRAND_COLORS.SECONDARY}">Blue bars</span> show negative correlation (as factor increases, metric decreases).
+      </div>
+    </div>
+  </body>
+</html>
+  `;  
+  // Save the enhanced HTML and get the URL
+  return saveChartAndGetUrl('BarChart', dataTableScript, options, "weather_correlation_heatmap");
+}
+
+function doGet() {
+  return ContentService.createTextOutput('Laundromat Analytics Chart API is running. Please use POST method to generate charts.');
+}
