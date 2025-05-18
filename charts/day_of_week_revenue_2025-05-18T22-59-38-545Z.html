@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>day_of_week_revenue</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Day');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+['Sunday', 593.7199999999998, '$594', '#2ae01e'],
+      ['Monday', 232.70000000000005, '$233', '#2ae01e'],
+      ['Tuesday', 250.60000000000002, '$251', '#2ae01e'],
+      ['Wednesday', 130.67000000000002, '$131', '#2ae01e'],
+      ['Thursday', 241.65, '$242', '#2ae01e'],
+      ['Friday', 309.67, '$310', '#2ae01e'],
+      ['Saturday', 769.6999999999996, '$770', '#093eea'],
+    ]);
+  
+
+        // Set chart options
+        var options = {
+  "title": "Daily Net Revenue by Day of the Week",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 400,
+  "backgroundColor": "#ffffff",
+  "hAxis": {
+    "title": "Day of Week",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Net Revenue ($)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "legend": {
+    "position": "none"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "color": "#333333",
+      "bold": true
+    },
+    "alwaysOutside": false
+  }
+};
+
+        // Create and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 3; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100vh;
+        background-color: #f5f5f5;
+      }
+      #chart_div {
+        width: 650px;
+        height: 400px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
