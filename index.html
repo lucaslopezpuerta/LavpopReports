@@ -129,8 +129,8 @@
 
         .metric-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        border-color: rgba(107, 190, 76, 0.3);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        border-color: rgba(42, 224, 30, 0.8);
         }
         
         .metric-title {
@@ -646,5 +646,42 @@ Exploring customer behavior and operational details further, we found that the d
             <p>Generated on 2025-05-18T23:00:01.527Z</p>
         </div>
     </div>
+
+        document.addEventListener('DOMContentLoaded', function() {
+        function checkIframeLoaded() {
+        const iframes = document.querySelectorAll('.chart-container iframe');
+        
+        iframes.forEach(iframe => {
+            
+            iframe.onload = function() {
+            
+                try {
+                    iframe.contentWindow.postMessage('resize', '*');
+                } catch (e) {
+                    console.log('Could not send resize message to iframe');
+                }
+                
+      
+                    iframe.classList.add('loaded');
+                };
+            });
+        }
+    
+
+    checkIframeLoaded();
+    
+  
+    window.addEventListener('resize', function() {
+        const iframes = document.querySelectorAll('.chart-container iframe');
+        iframes.forEach(iframe => {
+            try {
+                iframe.contentWindow.postMessage('resize', '*');
+            } catch (e) {
+              
+            }
+        });
+    });
+});
+        
 </body>
 </html>
