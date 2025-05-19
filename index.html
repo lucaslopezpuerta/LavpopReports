@@ -190,15 +190,17 @@
         /* Charts section */
 
         /* Responsive Chart Container */
-.chart-container {
+
+
+    .chart-container {
     position: relative;
     width: 100%;
-    height: 0;
-    padding-bottom: 75%; /* 4:3 aspect ratio - adjust as needed */
+    padding-top: 70%; /* This controls the aspect ratio (height/width) */
+    margin: 25px 0;
     overflow: hidden;
-    margin: 20px 0;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
 }
 
 .chart-container iframe {
@@ -206,6 +208,12 @@
     top: 0;
     left: 0;
     width: 100%;
+    height: 100%;
+    border: 0;
+}
+        .chart-iframe-scaler {
+    width: 1px;
+    min-width: 100%;
     height: 100%;
     border: 0;
 }
@@ -338,11 +346,12 @@
                 margin: 1% 1% 10px 1%;
             }
             .chart-container {
-            padding-bottom: 100%; /* Square aspect ratio on small screens */
+            padding-bottom: 90%; /* Square aspect ratio on small screens */
             }
 
             @media screen and (min-width: 481px) and (max-width: 767px) {
     .chart-container {
+        padding-top: 100%
         padding-bottom: 85%; /* Taller aspect ratio on medium screens */
     }
             .segment-card {
@@ -645,43 +654,6 @@ Exploring customer behavior and operational details further, we found that the d
             <p>Questions about this report? Contact Gabrielle Vilanova or Lucas López at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a></p>
             <p>Generated on 2025-05-18T23:00:01.527Z</p>
         </div>
-    </div>
-
-        document.addEventListener('DOMContentLoaded', function() {
-        function checkIframeLoaded() {
-        const iframes = document.querySelectorAll('.chart-container iframe');
-        
-        iframes.forEach(iframe => {
-            
-            iframe.onload = function() {
-            
-                try {
-                    iframe.contentWindow.postMessage('resize', '*');
-                } catch (e) {
-                    console.log('Could not send resize message to iframe');
-                }
-                
-      
-                    iframe.classList.add('loaded');
-                };
-            });
-        }
-    
-
-    checkIframeLoaded();
-    
-  
-    window.addEventListener('resize', function() {
-        const iframes = document.querySelectorAll('.chart-container iframe');
-        iframes.forEach(iframe => {
-            try {
-                iframe.contentWindow.postMessage('resize', '*');
-            } catch (e) {
-              
-            }
-        });
-    });
-});
-        
+    </div>        
 </body>
 </html>
