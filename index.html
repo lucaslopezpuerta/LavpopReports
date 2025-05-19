@@ -129,6 +129,23 @@
         }
         
         /* Charts section */
+
+        .chart-container {
+          position: relative;
+          width: 100%;
+          /* desired aspect ratio, e.g. 16:9 */
+          padding-top: 56.25%;
+          overflow: hidden;
+        }
+        
+        .chart-container iframe {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%;
+          height: 100%;
+          border: 0;
+        }
+/*
         .chart-container {
             margin: 20px 0;
             text-align: center;
@@ -141,7 +158,7 @@
             border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-        
+        */
         .chart-title {
             margin: 10px 0;
             color: #424242;
@@ -244,14 +261,18 @@
             color: #90caf9;
             text-decoration: none;
         }
+            /* 5. Responsive tweaks */
+    @media (max-width: 600px) {
+      body { padding: 0.5rem; }
+      h1 { font-size: 1.5rem; }
         
-        /* Responsive styles */
+        /* Responsive styles
         @media screen and (max-width: 480px) {
             .metric-card {
                 width: 98%;
                 margin: 1% 1% 10px 1%;
             }
-            
+            */
             .segment-card {
                 width: 98%;
                 margin: 1% 1% 10px 1%;
@@ -280,9 +301,9 @@
         <div class="section">
             <h3 class="section-title">Executive Summary</h3>
             <div class="summary-box">
-                <p>This past week, Lavpop Autosserviço in Caxias do Sul showcased a modest performance enhancement across several metrics, paving the way for targeted operational improvements. The net revenue saw a slight increase of 1.4% over the previous week, totaling 2528.71 BRL. The total number of service cycles also experienced growth, up by 3.5% to 149 cycles. This is coupled with a minor uptick in utilization rates that rose to 18%, a 0.7% increase, suggesting a better usage of services though there remains substantial room for capacity utilization improvement.
+                <p>This past week, Lavpop Autosserviço in Caxias do Sul showcased a modest performance enhancement across several metrics, paving the way for targeted operational improvements. The net revenue slightly increased 1.4% over the previous week, totaling 2528.71 BRL. The total number of service cycles also experienced growth, up by 3.5% to 149 cycles. This is coupled with a minor uptick in utilization rates that rose to 18%, a 0.7% increase, suggesting a better usage of services though there remains substantial room for capacity utilization improvement.
 
-Exploring the customer behavior and operational details further, the distribution of service usage comprised 59% wash cycles and 41% dry cycles. Key operational times were identified, with the busiest hours being 10:00 AM, 11:00 AM, 1:00 PM, 3:00 PM, and 6:00 PM; the peak performance was notably at 10:00 AM. Saturdays emerged as the most favored day for customers, while Wednesdays saw the least traffic. The correlation of weather conditions with service usage presents an interesting insight; a notable negative correlation with temperature (-0.43) suggests lower usage as temperatures increase, whereas slight positive correlations with rainfall (0.14) and humidity (0.14) indicate marginally higher usage during wetter conditions. This information could be pivotal in adjusting business strategies to maximize performance on different weather conditions, possibly explaining the low utilization during surprisingly suitable weather periods.</p>
+Exploring customer behavior and operational details further, we found that the distribution of service usage comprised 59% wash cycles and 41% dry cycles. Key operational times were identified, with the busiest hours being 10:00 AM, 11:00 AM, 1:00 PM, 3:00 PM, and 6:00 PM; the peak performance was notably at 10:00 AM. Saturdays emerged as the most favored day for customers, while Wednesdays saw the least traffic. The correlation of weather conditions with service usage presents an interesting insight; a notable negative correlation with temperature (-0.43) suggests lower usage as temperatures increase, whereas slight positive correlations with rainfall (0.14) and humidity (0.14) indicate marginally higher usage during wetter conditions. This information could be pivotal in adjusting business strategies to maximize performance on different weather conditions, possibly explaining the low utilization during surprisingly suitable weather periods.</p>
             </div>
             
             <!-- Weekly KPI Cards -->
@@ -321,7 +342,7 @@ Exploring the customer behavior and operational details further, the distributio
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-18T22-59-33-440Z.html" width="650" height="400" frameborder="0" scrolling="no"></iframe>
+               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-18T22-59-33-440Z.html" frameborder="0" scrolling="no" loading="lazy"></iframe>
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
         </div>
