@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>best_worst_day_comparison</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', 'Saturday');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn('number', 'Wednesday');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    
+    data.addRows([
+      ['Net Revenue ($)', 
+                769.6999999999996, 
+                '$770', 
+                'color: #2ae01e', 
+                130.67000000000002, 
+                '$131', 
+                'color: #333333'],
+      ['Utilization (%)', 
+                38, 
+                '38%', 
+                'color: #2ae01e', 
+                7, 
+                '7%', 
+                'color: #333333'],
+      ['Wash Services', 
+                28, 
+                '28', 
+                'color: #2ae01e', 
+                4, 
+                '4', 
+                'color: #333333'],
+      ['Dry Services', 
+                17, 
+                '17', 
+                'color: #2ae01e', 
+                4, 
+                '4', 
+                'color: #333333']
+    ]);
+  
+
+        // Set chart options
+        var options = {
+  "title": "Best Day (Saturday) vs. Worst Day (Wednesday) Comparison",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 400,
+  "backgroundColor": "#ffffff",
+  "legend": {
+    "position": "top",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "hAxis": {
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "minValue": 0
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "isStacked": false,
+  "bar": {
+    "groupWidth": "75%"
+  }
+};
+
+        // Create and draw the chart
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 3; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100vh;
+        background-color: #f5f5f5;
+      }
+      #chart_div {
+        width: 650px;
+        height: 400px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
