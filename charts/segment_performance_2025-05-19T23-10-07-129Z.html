@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>segment_performance</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Segment');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+['Champion', 24832.370000000003, '$24,832'],
+      ['Lost', 15468.509999999924, '$15,469'],
+      ['Loyal', 13442.210000000001, '$13,442'],
+      ['Potential', 9577.490000000003, '$9,577'],
+      ['AtRisk', 5753.500000000003, '$5,754'],
+      ['New', 707.0499999999998, '$707'],
+    ]);
+  
+
+        // Set chart options
+        var options = {
+  "title": "Customer Segment Performance",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 430,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e"
+  ],
+  "hAxis": {
+    "title": "Segment",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Total Revenue ($)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "10%",
+    "width": "80%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "color": "#333333",
+      "bold": true
+    }
+  }
+};
+
+        // Create and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+      }
+      #chart_div {
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0px 0px rgba(0,0,0,0.1);
+        background-color: white;  w
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
