@@ -152,20 +152,24 @@
         }
         
         .chart-container {
-           position: relative;
-              overflow: hidden;
-              padding-top: 50%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
-        }            
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 65%; /* Controls aspect ratio - adjust as needed */
+            margin: 25px 0;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }           
        
-        /* Then style the iframe to fit in the container div with full height and width */
-        .responsive-iframe {
-             position: absolute;
-             top: 0;
-             left: 0;
-             bottom: 0;
-             right: 0;
-             width: 100%;
-             height: 100%;
+        .chart-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
         
         .chart-title {
@@ -311,11 +315,7 @@
             }
             
             .chart-container {
-                position: relative;
-                overflow: hidden;              
-                width: 100%;
-                height: 100%;
-                padding-top: 50%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+                padding-bottom: 100%;
              }
             
             .section-title {
@@ -397,7 +397,7 @@
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-              <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-19T11-49-57-257Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+              <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-19T11-49-57-257Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
             
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
