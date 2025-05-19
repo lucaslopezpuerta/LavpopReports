@@ -130,7 +130,7 @@
         .metric-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        border-color: rgba(42, 224, 30, 0.8);
+        border-color: rgba(42, 224, 30, 1.8);
         }
         
         .metric-title {
@@ -168,20 +168,7 @@
         padding-left: 1px;
         }
 
-        .positive-change:before {
-        content: "▲ ";
-        position: absolute;
-        left: 0;
-        font-size: 9px;
-        }
-    
-        .negative-change:before {
-        content: "▼ ";
-        position: absolute;
-        left: 0;
-        font-size: 9px;
-        }
-        
+                
         /* Service mix section */
         .service-mix {
             margin-top: 25px;
@@ -200,7 +187,7 @@
     overflow: hidden;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
+    background-color: white;
 }
 
 .chart-container iframe {
@@ -346,7 +333,7 @@
                 margin: 1% 1% 10px 1%;
             }
             .chart-container {
-            padding-bottom: 90%; /* Square aspect ratio on small screens */
+            padding-bottom: 75%; /* Square aspect ratio on small screens */
             }
 
             @media screen and (min-width: 481px) and (max-width: 767px) {
@@ -423,7 +410,7 @@ Exploring customer behavior and operational details further, we found that the d
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-18T22-59-33-440Z.html" frameborder="0" scrolling="no" loading="lazy"></iframe>
+               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-18T22-59-33-440Z.html" width=100% frameborder="0" scrolling="no" loading="lazy"></iframe>
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
         </div>
