@@ -2,30 +2,27 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lavpop Caxias do Sul Weekly Performance Report: 2025-05-11 - 2025-05-17</title>
     <style type="text/css">
         /* Base styles for better email client compatibility */
         html, body {
-            margin: 0;
-            padding: 0;
-            border: 0;
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', Oxygen-Sans, Ubuntu, sans-serif;
             line-height: 1.6;
             color: #333333;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background-color: #f5f7fa;
+             background-color: #f5f7fa;
         }
         
         /* Container styling */
         .container {
-    width: 100%;
-    max-width: 800px; /* Slightly wider for more breathing room */
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
         
         /* Header styling */
         .header {
@@ -35,7 +32,13 @@
         border-bottom: 5px solid #6bbe4c;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
-
+        
+        .header img {
+            max-width: 130px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
         .header h1 {
         color: white;
         margin: 10px 0 5px;
@@ -45,12 +48,6 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         
-        .header img {
-            max-width: 130px;
-            height: auto;
-            margin-bottom: 15px;
-        }
-                
         .header h2 {
             color: rgba(255, 255, 255, 0.9);
             margin: 5px 0;
@@ -60,13 +57,13 @@
         
         /* Section styling */
         .section {
-        padding: 30px;
-        border-bottom: 1px solid #e1e8ed;
-        transition: all 0.3s ease;
-        background-color: white;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        margin-bottom: 10px;
-        }
+         padding: 25px;
+         border-bottom: 1px solid #e1e8ed;
+         transition: all 0.3s ease;
+         background-color: white;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+         margin-bottom: 2px;
+         }
 
         .section-title {
         color: #10306b;
@@ -80,7 +77,16 @@
         position: relative;
         }
 
-              
+       .section-title:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 60px;
+        height: 2px;
+        background-color: #6bbe4c;
+        }
+        
         /* Executive summary highlight box */
         .summary-box {
         background-color: #f0f7ff;
@@ -96,48 +102,44 @@
         }
         
         /* KPI metrics section */
-        /* Replace float-based metrics with CSS Grid */
-.metrics-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-    gap: 20px; /* Space between cards */
-    margin-bottom: 25px;
-}
-        
+        .metrics-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two equal columns */
+        gap: 20px; /* Space between cards */
+        margin-bottom: 25px;
+         }
+
         .metric-card {
-    /* Remove old float styles */
-    float: none;
-    width: auto;
-    margin: 0;
-    /* Keep other styles */
-    box-sizing: border-box;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    text-align: center;
-}
+        float: none;
+        width: auto;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        }
 
         .metric-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        border-color: rgba(42, 224, 30, 1.8);
+        border-color: rgba(42, 224, 30, 0.8);
         }
-        
+
         .metric-title {
-        font-size: 15px;
+        font-size: 14px;
         color: #555555;
         margin: 0 0 8px 0;
         font-weight: 500;
         }
-        
+
         .metric-value {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0 0 5px 0;
-            color: #10306b;
-            font-feature-settings: "tnum"; /* Use tabular numbers for metrics */
-            letter-spacing: -0.01em;
+        font-size: 26px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        color: #10306b;
+        letter-spacing: -0.01em;
         }
         
         .metric-change {
@@ -146,75 +148,39 @@
         }
         
         .positive-change {
-        color: #4caf50;
-        font-weight: 500;
-        position: relative;
-        padding-left: 1px;
-         }
-    
-        .negative-change {
-        color: red;
-        font-weight: 500;
-        position: relative;
-        padding-left: 1px;
+            color: #6bbe4c;
         }
-
-                
+        
+        .negative-change {
+            color: #f44336;
+        }
+        
         /* Service mix section */
         .service-mix {
             margin-top: 25px;
         }
         
-        /* Charts section */
-
-        /* Responsive Chart Container */
-
-
-    .chart-container {
-    position: relative;
-    width: 100%;
-    padding-top: 70%; /* This controls the aspect ratio (height/width) */
-    margin: 25px 0;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background-color: white;
-}
-
-.chart-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 70%;
-    height: 100%;
-    border: 0;
-}
-        .chart-iframe-scaler {
-    width: 1px;
-    min-width: 70%;
-    height: 100%;
-    border: 0;
-}
-/*
         .chart-container {
-            margin: 20px 0;
-            text-align: center;
+          position: relative;
+          width: 100%;
+          /* desired aspect ratio, e.g. 16:9 */
+          padding-top: 56.25%;
+          overflow: hidden;
         }
         
-        .chart-container img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #e1e8ed;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        .chart-container iframe {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%;
+          height: 100%;
+          border: 0;
         }
-        */
+        
         .chart-title {
-        margin: 10px 0 20px;
-        color: #424242;
-        font-size: 16px;
-        font-weight: 500;
-        text-align: center;
+            margin: 10px 0;
+            color: #424242;
+            font-size: 16px;
+            font-weight: 500;
         }
         
         /* Day analysis tables */
@@ -246,26 +212,22 @@
             background-color: rgba(244, 67, 54, 0.1);
         }
         
-        /* Customer segments grid */
-.segments-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.segment-card {
-    /* Remove old float styles */
-    float: none;
-    width: auto;
-    margin: 0;
-    /* Keep other styles */
-    box-sizing: border-box;
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
+        /* Customer segments section */
+        .segments-grid {
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .segment-card {
+        float: none;
+        width: auto;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
         
         .segment-title {
             font-size: 16px;
@@ -317,21 +279,61 @@
             text-decoration: none;
         }
         
-    
+/* Add print styles */
+@media print {
+  body {
+    background-color: white;
+  }
+  
+  .container {
+    max-width: 100%;
+    box-shadow: none;
+  }
+  
+  .chart-container {
+    break-inside: avoid; /* Prevent charts from splitting across pages */
+    page-break-inside: avoid;
+  }
+  
+  .section {
+    page-break-inside: avoid;
+  }
+  
+  .footer {
+    background-color: white;
+    color: black;
+    border-top: 1px solid #ccc;
+  }
+  
+  .footer a {
+    color: #10306b;
+  }  
+}
+
+
+        /* Responsive styles */
         @media screen and (max-width: 480px) {
             .metric-card {
                 width: 98%;
                 margin: 1% 1% 10px 1%;
             }
+            
             .chart-container {
-            padding-bottom: 75%; /* Square aspect ratio on small screens */
-            }
+                    padding-top: 75%; /* Taller aspect ratio on mobile */
+             }
 
-            @media screen and (min-width: 481px) and (max-width: 767px) {
-    .chart-container {
-        padding-top: 100%
-        padding-bottom: 85%; /* Taller aspect ratio on medium screens */
-    }
+            .section-title {
+                    font-size: 18px;
+             }
+  
+              .chart-title {
+                    font-size: 14px;
+              }
+  
+              .metrics-row .metric-card:nth-child(3){
+                     clear: both; /* Ensure third card in a row appears below on mobile */
+              }
+
             .segment-card {
                 width: 98%;
                 margin: 1% 1% 10px 1%;
@@ -360,9 +362,7 @@
         <div class="section">
             <h3 class="section-title">Executive Summary</h3>
             <div class="summary-box">
-                <p>This past week, Lavpop Autosserviço in Caxias do Sul showcased a modest performance enhancement across several metrics, paving the way for targeted operational improvements. The net revenue slightly increased 1.4% over the previous week, totaling 2528.71 BRL. The total number of service cycles also experienced growth, up by 3.5% to 149 cycles. This is coupled with a minor uptick in utilization rates that rose to 18%, a 0.7% increase, suggesting a better usage of services though there remains substantial room for capacity utilization improvement.
-
-Exploring customer behavior and operational details further, we found that the distribution of service usage comprised 59% wash cycles and 41% dry cycles. Key operational times were identified, with the busiest hours being 10:00 AM, 11:00 AM, 1:00 PM, 3:00 PM, and 6:00 PM; the peak performance was notably at 10:00 AM. Saturdays emerged as the most favored day for customers, while Wednesdays saw the least traffic. The correlation of weather conditions with service usage presents an interesting insight; a notable negative correlation with temperature (-0.43) suggests lower usage as temperatures increase, whereas slight positive correlations with rainfall (0.14) and humidity (0.14) indicate marginally higher usage during wetter conditions. This information could be pivotal in adjusting business strategies to maximize performance on different weather conditions, possibly explaining the low utilization during surprisingly suitable weather periods.</p>
+                <p></p>
             </div>
             
             <!-- Weekly KPI Cards -->
@@ -401,7 +401,7 @@ Exploring customer behavior and operational details further, we found that the d
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-18T22-59-33-440Z.html" width=100% frameborder="0" scrolling="no" loading="lazy"></iframe>
+               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-19T10-07-11-096Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
         </div>
@@ -439,13 +439,13 @@ Exploring customer behavior and operational details further, we found that the d
             
             <!-- Service Mix Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-18T22-59-42-371Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-19T10-07-17-891Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Cycles Distribution %: Wash vs. Dry</p>
             </div>
             
             <!-- Utilization Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/hourly_utilization_2025-05-18T22-59-39-558Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/hourly_utilization_2025-05-19T10-07-15-314Z.html" loading="lazy"frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Machine Utilization Throughout the Week Hours</p>
             </div>
         </div>
@@ -456,13 +456,13 @@ Exploring customer behavior and operational details further, we found that the d
             
             <!-- Hourly Revenue Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-18T22-59-40-504Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-19T10-07-16-135Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Week Revenue Distribution by Hour</p>
             </div>
             
             <!-- Peak Analysis Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-18T22-59-41-394Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-19T10-07-17-034Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Peak vs Off-Peak Performance</p>
             </div>
             
@@ -487,7 +487,7 @@ Exploring customer behavior and operational details further, we found that the d
             
             <!-- Best/Worst Day Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-18T22-59-37-152Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-19T10-07-13-650Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Performance by Best & Worst Day</p>
             </div>
             
@@ -519,7 +519,7 @@ Exploring customer behavior and operational details further, we found that the d
             
             <!-- Weather Correlation Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-18T22-59-47-869Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-19T10-07-23-571Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Weather Impact on Business</p>
             </div>
             
@@ -532,7 +532,7 @@ Exploring customer behavior and operational details further, we found that the d
                 
                 <div class="metric-card">
                     <h4 class="metric-title">Rainfall Correlation</h4>
-                    <p class="metric-value">0.14</p>
+                    <p class="metric-value">0.13</p>
                     <p class="metric-change">Positive correlation suggests rainy days slightly increase business</p>
                 </div>
 
@@ -572,7 +572,7 @@ Exploring customer behavior and operational details further, we found that the d
 
             <!-- Customers Lapsed and Active %-->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-18T22-59-44-115Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-19T10-07-19-585Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Customers Active Vs. Lapsed</p>
             </div>
         
@@ -582,7 +582,7 @@ Exploring customer behavior and operational details further, we found that the d
             
             <!-- WhatsApp Metrics Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/sms_metrics_2025-05-18T22-59-46-998Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/sms_metrics_2025-05-19T10-07-21-908Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">WhatsApp Messages Distribution & Cost</p>
             </div>
             
@@ -590,7 +590,7 @@ Exploring customer behavior and operational details further, we found that the d
                 <div class="metric-card">
                     <h4 class="metric-title">Messages Sent</h4>
                     <p class="metric-value">184</p>
-                    <p class="metric-change">Total Cost: $9.491500000000002 USD</p>
+                    <p class="metric-change">Total Cost: $9.49 USD</p>
                 </div>
                 
                 <div class="metric-card">
@@ -604,34 +604,33 @@ Exploring customer behavior and operational details further, we found that the d
                  <p class="metric-change">Time(s) Coupon "seca50" was used this week
             </div>
         </div>
-        
+    </div>
         <!-- Strategy Recommendations -->
         <div class="section">
             <h3 class="section-title">Strategic Recommendations</h3>
-            <div class="strategy-container">
-    <div class="strategy-item">
-        <h4 class="strategy-title">Launch Off-Peak Discounts to Boost Utilization</h4>
-        <p>Utilization during off-peak hours remains low despite available machine capacity. Launching targeted 10–15% wash or dry discount campaigns between 8 AM–10 AM and 2 PM–5 PM (least busy hours) can help attract traffic when machines are idle, increasing overall service volume and revenue without expanding operating costs.</p>
-    </div>
-    
-    <div class="strategy-item">
-        <h4 class="strategy-title">Reactivation Offer for Lapsed Customers via WhatsApp</h4>
-        <p>With over 79% of your customer base lapsed, sending a limited-time WhatsApp discount coupon (e.g., BRL 5 off the next cycle) can incentivize return visits. Target the "Potential" and "New" RFM segments first, who are more likely to convert and re-engage with the brand, especially within 30–60 days of inactivity.</p>
-    </div>
-    
-    <div class="strategy-item">
-        <h4 class="strategy-title">Bundle Branded Bag with Cycle Promotions During Peak Hours</h4>
-        <p>Capitalize on existing peak hours (10 AM, 11 AM, 1 PM, 3 PM, 6 PM) by bundling the Lavpop branded bag with two or more paid cycles at a slight discount. This not only increases basket size per visit but also builds brand visibility and repeat behavior as customers associate convenience with purchasing multiple cycles.</p>
-    </div>
-</div>
-</div>
+                    <div class="strategy-container">
+            <div class="strategy-item">
+                <h4 class="strategy-title">Optimize Pricing Strategy During Peak Hours</h4>
+                <p>Given the observed higher utilization rates during specific hours (10 AM, 11 AM, 1 PM, 3 PM, and 6 PM), introduce dynamic pricing where you increase prices slightly during these peak times. This strategy can capitalize on high demand, potentially increasing revenue without sacrificing customer volume, as these times already show strong patronage.</p>
+            </div>
+            
+            <div class="strategy-item">
+                <h4 class="strategy-title">Implement Targeted Promotions for Lapsed Customers</h4>
+                <p>With 79.3% of your customer base categorized as lapsed and a significant drop in the likelihood of a return after 30 days, initiate targeted promotions via WhatsApp to re-engage these customers. Offer personalized discounts or bonus cashback for returning within a specified timeframe, focusing especially on encouraging visits during your identified off-peak hours to balance machine utilization.</p>
+            </div>
+            
+            <div class="strategy-item">
+                <h4 class="strategy-title">Leverage Weather Data for Promotional Alerts</h4>
+                <p>Utilize the notable negative correlation between temperature and laundromat usage to send weather-triggered promotions. On unexpectedly cool days, push notifications through WhatsApp encouraging customers to do their laundry with a small discount or extra cashback. This can maximize machine usage during otherwise lower-attendance periods influenced by colder weather.</p>
+            </div>
+        </div>
                        
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved.</p>
             <p>Questions about this report? Contact Gabrielle Vilanova or Lucas López at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a></p>
-            <p>Generated on 2025-05-18T23:00:01.527Z</p>
+            <p>Generated on 2025-05-19T10:07:41.120Z</p>
         </div>
-    </div>        
+    </div>
 </body>
 </html>
