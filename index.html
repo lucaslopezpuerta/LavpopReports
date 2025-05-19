@@ -57,36 +57,27 @@
         
         /* Section styling */
         .section {
-         padding: 25px;
+         padding: 30px;
          border-bottom: 1px solid #e1e8ed;
          transition: all 0.3s ease;
          background-color: white;
          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-         margin-bottom: 2px;
+         margin-bottom: 10px;
          }
 
         .section-title {
         color: #10306b;
-        margin-top: 0;
-        margin-bottom: 20px;
+        margin-top: 3;
+        margin-bottom: 25px;
         font-size: 22px;
         font-weight: 600;
         letter-spacing: -0.02em;
         border-bottom: 2px solid #e1e8ed;
-        padding-bottom: 10px;
+        padding-bottom: 15px;
         position: relative;
         }
 
-       .section-title:after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 60px;
-        height: 2px;
-        background-color: #6bbe4c;
-        }
-        
+              
         /* Executive summary highlight box */
         .summary-box {
         background-color: #f0f7ff;
@@ -112,7 +103,7 @@
         .metric-card {
         float: none;
         width: auto;
-        margin: 0;
+        margin: 10px 0 0 0;
         box-sizing: border-box;
         padding: 20px;
         background-color: #ffffff;
@@ -123,8 +114,9 @@
 
         .metric-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        border-color: rgba(42, 224, 30, 0.8);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        border-    
+        border-color: rgba(42, 224, 30, 1.8);
         }
 
         .metric-title {
@@ -164,16 +156,25 @@
           position: relative;
           width: 100%;
           /* desired aspect ratio, e.g. 16:9 */
-          padding-top: 56.25%;
+          padding-top: 100%;
           overflow: hidden;
         }
         
         .chart-container iframe {
           position: absolute;
-          top: 0; left: 0;
+          width: 100%;         
+          padding-top: 56.25%;
+        }
+       
+        /* Then style the iframe to fit in the container div with full height and width */
+        .responsive-iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
           width: 100%;
           height: 100%;
-          border: 0;
         }
         
         .chart-title {
@@ -401,7 +402,7 @@
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-19T11-49-57-257Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+               <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-19T11-49-57-257Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
         </div>
@@ -439,13 +440,13 @@
             
             <!-- Service Mix Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-19T11-50-14-308Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-19T11-50-14-308Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Cycles Distribution %: Wash vs. Dry</p>
             </div>
             
             <!-- Utilization Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/hourly_utilization_2025-05-19T11-50-12-028Z.html" loading="lazy"frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/hourly_utilization_2025-05-19T11-50-12-028Z.html" loading="lazy"frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Machine Utilization Throughout the Week Hours</p>
             </div>
         </div>
@@ -456,13 +457,13 @@
             
             <!-- Hourly Revenue Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-19T11-50-12-774Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-19T11-50-12-774Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Week Revenue Distribution by Hour</p>
             </div>
             
             <!-- Peak Analysis Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-19T11-50-13-555Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-19T11-50-13-555Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Peak vs Off-Peak Performance</p>
             </div>
             
@@ -487,7 +488,7 @@
             
             <!-- Best/Worst Day Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-19T11-50-10-295Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-19T11-50-10-295Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Performance by Best & Worst Day</p>
             </div>
             
@@ -519,7 +520,7 @@
             
             <!-- Weather Correlation Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-19T11-50-19-669Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-19T11-50-19-669Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Weather Impact on Business</p>
             </div>
             
@@ -572,7 +573,7 @@
 
             <!-- Customers Lapsed and Active %-->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-19T11-50-15-780Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-19T11-50-15-780Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">Customers Active Vs. Lapsed</p>
             </div>
         
@@ -582,7 +583,7 @@
             
             <!-- WhatsApp Metrics Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/sms_metrics_2025-05-19T11-50-18-090Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
+                <iframe class="responsive-iframe" src="https://lucaslopezpuerta.github.io/LavpopReports/charts/sms_metrics_2025-05-19T11-50-18-090Z.html" loading="lazy" frameborder="0" scrolling="no"></iframe>
                 <p class="chart-title">WhatsApp Messages Distribution & Cost</p>
             </div>
             
