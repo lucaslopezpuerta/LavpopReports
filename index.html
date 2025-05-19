@@ -10,9 +10,11 @@
             margin: 0;
             padding: 0;
             border: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', Oxygen-Sans, Ubuntu, sans-serif;
             line-height: 1.6;
             color: #333333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             background-color: #f5f7fa;
         }
         
@@ -26,10 +28,20 @@
         
         /* Header styling */
         .header {
-            padding: 30px 20px;
-            background-color: #10306b;
-            text-align: center;
-            border-bottom: 5px solid #6bbe4c;
+        background: linear-gradient(135deg, #10306b 0%, #1a4798 100%);
+        padding: 30px 20px;
+        text-align: center;
+        border-bottom: 5px solid #6bbe4c;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+        color: white;
+        margin: 10px 0 5px;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         
         .header img {
@@ -37,14 +49,7 @@
             height: auto;
             margin-bottom: 15px;
         }
-        
-        .header h1 {
-            color: white;
-            margin: 10px 0 5px;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        
+                
         .header h2 {
             color: rgba(255, 255, 255, 0.9);
             margin: 5px 0;
@@ -54,28 +59,48 @@
         
         /* Section styling */
         .section {
-            padding: 25px;
-            border-bottom: 1px solid #e1e8ed;
+        padding: 25px;
+        border-bottom: 1px solid #e1e8ed;
+        transition: all 0.3s ease;
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2px;
         }
-        
+
         .section-title {
-            color: #10306b;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 22px;
-            font-weight: 600;
-            border-bottom: 2px solid #e1e8ed;
-            padding-bottom: 10px;
+        color: #10306b;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        border-bottom: 2px solid #e1e8ed;
+        padding-bottom: 10px;
+        position: relative;
+        }
+
+        .section-title:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 60px;
+        height: 2px;
+        background-color: #6bbe4c;
         }
         
         /* Executive summary highlight box */
         .summary-box {
-            background-color: #f0f7ff;
-            text-align: justify;
-            border-left: 4px solid #6bbe4c;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 4px 4px 0;
+        background-color: #f0f7ff;
+        text-align: justify;
+        border-left: 4px solid #6bbe4c;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        font-size: 15px;
+        line-height: 1.5;
+        color: #333333;
         }
         
         /* KPI metrics section */
@@ -86,28 +111,39 @@
         }
         
         .metric-card {
-            box-sizing: border-box;
-            float: left;
-            width: 48%;
-            margin: 1%;
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
+        box-sizing: border-box;
+        float: left;
+        width: 48%;
+        margin: 1%;
+        padding: 18px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(225, 232, 237, 0.6);
+        }
+
+        .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border-color: rgba(107, 190, 76, 0.3);
         }
         
         .metric-title {
-            font-size: 14px;
-            color: #757575;
-            margin: 0 0 5px 0;
+        font-size: 14px;
+        color: #555555;
+        margin: 0 0 8px 0;
+        font-weight: 500;
         }
         
         .metric-value {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 600;
             margin: 0 0 5px 0;
             color: #10306b;
+            font-feature-settings: "tnum"; /* Use tabular numbers for metrics */
+            letter-spacing: -0.01em;
         }
         
         .metric-change {
@@ -115,12 +151,32 @@
             margin: 0;
         }
         
-        .positive-change {
-            color: #6bbe4c;
-        }
-        
+        ..positive-change {
+        color: #4caf50;
+        font-weight: 500;
+        position: relative;
+        padding-left: 12px;
+         }
+    
         .negative-change {
-            color: #f44336;
+        color: #f44336;
+        font-weight: 500;
+        position: relative;
+        padding-left: 12px;
+        }
+
+        .positive-change:before {
+        content: "▲ ";
+        position: absolute;
+        left: 0;
+        font-size: 9px;
+        }
+    
+        .negative-change:before {
+        content: "▼ ";
+        position: absolute;
+        left: 0;
+        font-size: 9px;
         }
         
         /* Service mix section */
@@ -131,11 +187,14 @@
         /* Charts section */
 
         .chart-container {
-          position: relative;
-          width: 100%;
-          /* desired aspect ratio, e.g. 16:9 */
-          padding-top: 56.25%;
-          overflow: hidden;
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        overflow: hidden;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 25px 0;
+        background-color: #fff;
         }
         
         .chart-container iframe {
@@ -160,10 +219,11 @@
         }
         */
         .chart-title {
-            margin: 10px 0;
-            color: #424242;
-            font-size: 16px;
-            font-weight: 500;
+        margin: 10px 0 20px;
+        color: #424242;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
         }
         
         /* Day analysis tables */
