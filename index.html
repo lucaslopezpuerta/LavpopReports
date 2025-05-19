@@ -115,7 +115,6 @@
         .metric-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-        border-    
         border-color: rgba(42, 224, 30, 1.8);
         }
 
@@ -153,28 +152,22 @@
         }
         
         .chart-container {
-          position: relative;
-          width: 100%;
-          /* desired aspect ratio, e.g. 16:9 */
-          padding-top: 100%;
-          overflow: hidden;
+           position: relative;
+              overflow: hidden;
+              width: 100%;
+              padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
         }
-        
-        .chart-container iframe {
-          position: absolute;
-          width: 100%;         
-          padding-top: 56.25%;
-        }
+            
        
         /* Then style the iframe to fit in the container div with full height and width */
         .responsive-iframe {
-          position: absolute;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          right: 0;
-          width: 100%;
-          height: 100%;
+         position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
         }
         
         .chart-title {
