@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp_metrics</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Metric');
+    data.addColumn('number', 'Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Messages Sent', 184, '184'],
+      ['Messages Received', 17, '17'],
+      ['Response Rate (%)', 9, '9%']
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "WhatsApp Campaign Metrics",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 600,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e",
+    "#093eea"
+  ],
+  "hAxis": {
+    "title": "",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "# Of Messages",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "legend": {
+    "position": "none"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "color": "#333333",
+      "bold": true
+    }
+  }
+};
+            
+            // Detect mobile and adjust chart accordingly
+            function isMobile() {
+                return window.innerWidth <= 768;
+            }
+            
+            function adjustOptionsForMobile(opts) {
+                if (isMobile()) {
+                    // Mobile optimizations
+                    opts.width = Math.min(window.innerWidth - 20, 400);
+                    opts.height = Math.min(window.innerHeight - 100, 300);
+                    
+                    // Reduce font sizes for mobile
+                    if (opts.titleTextStyle) {
+                        opts.titleTextStyle.fontSize = 14;
+                    }
+                    if (opts.hAxis && opts.hAxis.textStyle) {
+                        opts.hAxis.textStyle.fontSize = 10;
+                    }
+                    if (opts.vAxis && opts.vAxis.textStyle) {
+                        opts.vAxis.textStyle.fontSize = 10;
+                    }
+                    if (opts.legend && opts.legend.textStyle) {
+                        opts.legend.textStyle.fontSize = 10;
+                    }
+                    
+                    // Adjust chart area for mobile
+                    opts.chartArea = {
+                        left: '10%',
+                        top: '12%', 
+                        width: '78%',
+                        height: '75%'
+                    };
+                    
+                    // For bar charts, rotate labels if needed
+                    if (opts.hAxis) {
+                        opts.hAxis.slantedText = true;
+                        opts.hAxis.slantedTextAngle = 45;
+                        opts.hAxis.maxTextLines = 1;
+                    }
+                    
+                    // Adjust annotations for mobile
+                    if (opts.annotations) {
+                        opts.annotations.textStyle.fontSize = 9;
+                    }
+                }
+                return opts;
+            }
+
+            function drawResponsiveChart() {
+                var responsiveOptions = adjustOptionsForMobile(JSON.parse(JSON.stringify(options)));
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                chart.draw(data, responsiveOptions);
+            }
+            
+            // Initial draw
+            drawResponsiveChart();
+            
+            // Redraw on orientation change or resize
+            window.addEventListener('resize', function() {
+                setTimeout(drawResponsiveChart, 100);
+            });
+            
+            window.addEventListener('orientationchange', function() {
+                setTimeout(drawResponsiveChart, 300);
+            });
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
