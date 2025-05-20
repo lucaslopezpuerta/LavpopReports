@@ -153,13 +153,27 @@
         chart-container {
             position: relative;
             width: 100%;
-			min-height: 450px;
+	    min-height: 450px;
             margin: 25px 0px;
             overflow: hidden;
             background-color: #ffffff;
             border-radius: 6px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
+
+	    .chart-container iframe {
+		    /* Remove absolute positioning */
+		    /* position: absolute; */
+		    /* top: 0; */
+		    /* left: 0; */
+		    
+		    /* Use block-level sizing instead */
+		    display: block;
+		    width: 100%;
+		    height: 450px; /* Match the minimum container height */
+		    border: 0;
+		    border-radius: 6px;
+	}
             
         /*Mobile Chart Controls */
       .chart-mobile-controls {
