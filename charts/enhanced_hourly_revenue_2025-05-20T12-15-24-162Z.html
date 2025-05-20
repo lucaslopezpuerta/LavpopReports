@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enhanced_hourly_revenue</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Current Week Daily Avg');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', '4-Week Daily Avg');
+    data.addRows([
+['8:00', 19.54, '$20', 'color: #2ae01e; opacity: 0.8', 'Hour: 8:00\nCurrent Week Daily Avg: $19.54\n4-Week Daily Avg: $27.16\n', 27.15749999999999],
+      ['9:00', 40.275000000000006, '$40', 'color: #2ae01e; opacity: 0.8', 'Hour: 9:00\nCurrent Week Daily Avg: $40.28\n4-Week Daily Avg: $37.18\n', 37.17692307692306],
+      ['10:00', 51.61166666666666, '$52', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 2', 'Hour: 10:00\nCurrent Week Daily Avg: $51.61\n4-Week Daily Avg: $45.59\nPEAK HOUR', 45.59235294117645],
+      ['11:00', 50.71666666666666, '$51', 'color: #2ae01e; opacity: 0.8', 'Hour: 11:00\nCurrent Week Daily Avg: $50.72\n4-Week Daily Avg: $45.74\nPEAK HOUR', 45.74444444444441],
+      ['12:00', 29.833333333333332, '$30', 'color: #2ae01e; opacity: 0.8', 'Hour: 12:00\nCurrent Week Daily Avg: $29.83\n4-Week Daily Avg: $43.14\n', 43.14249999999998],
+      ['13:00', 53.7, '$54', 'color: #2ae01e; opacity: 0.8', 'Hour: 13:00\nCurrent Week Daily Avg: $53.70\n4-Week Daily Avg: $44.75\nPEAK HOUR', 44.74999999999997],
+      ['14:00', 31.325000000000003, '$31', 'color: #2ae01e; opacity: 0.8', 'Hour: 14:00\nCurrent Week Daily Avg: $31.33\n4-Week Daily Avg: $55.38\n', 55.37812499999997],
+      ['15:00', 41.76666666666667, '$42', 'color: #2ae01e; opacity: 0.8', 'Hour: 15:00\nCurrent Week Daily Avg: $41.77\n4-Week Daily Avg: $60.60\nPEAK HOUR', 60.5983333333333],
+      ['16:00', 26.850000000000005, '$27', 'color: #2ae01e; opacity: 0.8', 'Hour: 16:00\nCurrent Week Daily Avg: $26.85\n4-Week Daily Avg: $41.06\n', 41.064705882352925],
+      ['17:00', 30.43, '$30', 'color: #2ae01e; opacity: 0.8', 'Hour: 17:00\nCurrent Week Daily Avg: $30.43\n4-Week Daily Avg: $41.60\n', 41.59666666666665],
+      ['18:00', 58.175000000000004, '$58', 'color: #2ae01e; opacity: 0.8', 'Hour: 18:00\nCurrent Week Daily Avg: $58.18\n4-Week Daily Avg: $48.82\nPEAK HOUR', 48.82380952380951],
+      ['19:00', 30.429999999999996, '$30', 'color: #2ae01e; opacity: 0.8', 'Hour: 19:00\nCurrent Week Daily Avg: $30.43\n4-Week Daily Avg: $42.64\n', 42.644117647058806],
+      ['20:00', 34.849999999999994, '$35', 'color: #2ae01e; opacity: 0.8', 'Hour: 20:00\nCurrent Week Daily Avg: $34.85\n4-Week Daily Avg: $38.98\n', 38.97727272727273],
+      ['21:00', 53.699999999999996, '$54', 'color: #2ae01e; opacity: 0.8', 'Hour: 21:00\nCurrent Week Daily Avg: $53.70\n4-Week Daily Avg: $35.80\n', 35.800000000000004],
+    ]);
+  
+
+        // Enhanced options with responsive considerations
+        var options = {
+  "title": "Hourly Revenue Distribution - Daily Averages",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 450,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0
+    },
+    "1": {
+      "type": "line",
+      "targetAxisIndex": 0,
+      "color": "#093eea",
+      "lineWidth": 3,
+      "pointSize": 6
+    }
+  },
+  "hAxis": {
+    "title": "Hour of Day",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Daily Average Revenue ($)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "viewWindow": {
+      "min": 0
+    }
+  },
+  "legend": {
+    "position": "top",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "10%",
+    "width": "80%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "tooltip": {
+    "isHtml": true
+  }
+};
+        
+        // Add responsive resizing capability
+        function resizeChart() {
+          var container = document.getElementById('chart_div');
+          var containerWidth = container.offsetWidth;
+          
+          // Maintain aspect ratio while scaling to container
+          if (containerWidth < 650) {
+            options.width = containerWidth;
+            options.height = Math.round(containerWidth * (450 / 750)); // Maintain aspect ratio
+            
+            // Adjust font sizes for smaller displays
+            if (options.titleTextStyle) options.titleTextStyle.fontSize = 16;
+            if (options.legend && options.legend.textStyle) options.legend.textStyle.fontSize = 10;
+          }
+          
+          chart.draw(data, options);
+        }
+
+        // Create and draw the chart
+        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+        
+        // Initial draw
+        resizeChart();
+        
+        // Redraw on window resize
+        window.addEventListener('resize', resizeChart);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        background-color: #ffffff;
+        overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+        width: 100%;
+        height: 100%;
+        max-width: 650px;
+        max-height: 450px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
