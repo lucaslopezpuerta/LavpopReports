@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>best_worst_day_comparison</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Day');
+    data.addColumn('number', 'Net Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Wash Cycles');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Dry Cycles');
+    data.addColumn({type: 'string', role: 'annotation'});
+    
+    data.addRows([
+      ['Saturday', 
+       769.6999999999996, 
+       '$770',
+       38,
+       '38%',
+       28,
+       '28',
+       17,
+       '17'
+      ],
+      ['Wednesday', 
+       130.67000000000002, 
+       '$131',
+       7,
+       '7%',
+       4,
+       '4',
+       4,
+       '4'
+      ]
+    ]);
+  
+
+        // Enhanced options with responsive considerations
+        var options = {
+  "title": "Best Day (Saturday) vs. Worst Day (Wednesday)",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 750,
+  "height": 450,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0,
+      "color": "#093eea"
+    },
+    "1": {
+      "type": "bars",
+      "targetAxisIndex": 1,
+      "color": "#2ae01e"
+    },
+    "2": {
+      "type": "bars",
+      "targetAxisIndex": 2,
+      "color": "#8CED80"
+    },
+    "3": {
+      "type": "bars",
+      "targetAxisIndex": 2,
+      "color": "#6B8EF2"
+    }
+  },
+  "vAxes": {
+    "0": {
+      "title": "Net Revenue ($)",
+      "titleTextStyle": {
+        "color": "#093eea",
+        "fontSize": 16,
+        "italic": false
+      },
+      "textStyle": {
+        "color": "#093eea",
+        "fontSize": 16
+      },
+      "minValue": 0,
+      "format": "$#"
+    },
+    "1": {
+      "title": "Utilization (%)",
+      "titleTextStyle": {
+        "color": "#2ae01e",
+        "fontSize": 16,
+        "italic": false,
+        "padding": 25
+      },
+      "textStyle": {
+        "color": "#2ae01e",
+        "fontSize": 16,
+        "padding": 25
+      },
+      "minValue": 0,
+      "maxValue": 100,
+      "format": "#'%'"
+    },
+    "2": {
+      "title": "Cycles Count",
+      "titleTextStyle": {
+        "color": "#555555",
+        "fontSize": 16,
+        "italic": false
+      },
+      "textStyle": {
+        "color": "#555555",
+        "fontSize": 16
+      },
+      "minValue": 0
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "85%",
+    "height": "78%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "bold": true
+    },
+    "stem": {
+      "color": "transparent",
+      "length": 0
+    }
+  },
+  "bar": {
+    "groupWidth": "70%"
+  }
+};
+        
+        // Add responsive resizing capability
+        function resizeChart() {
+          var container = document.getElementById('chart_div');
+          var containerWidth = container.offsetWidth;
+          
+          // Maintain aspect ratio while scaling to container
+          if (containerWidth < 650) {
+            options.width = containerWidth;
+            options.height = Math.round(containerWidth * (450 / 750)); // Maintain aspect ratio
+            
+            // Adjust font sizes for smaller displays
+            if (options.titleTextStyle) options.titleTextStyle.fontSize = 16;
+            if (options.legend && options.legend.textStyle) options.legend.textStyle.fontSize = 10;
+          }
+          
+          chart.draw(data, options);
+        }
+
+        // Create and draw the chart
+        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+        
+        // Initial draw
+        resizeChart();
+        
+        // Redraw on window resize
+        window.addEventListener('resize', resizeChart);
+      }
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 750px;  /* Exact chart width */
+            height: 450px; /* Exact chart height */
+            max-width: 750px;
+            max-height: 450px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
