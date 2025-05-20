@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comparative_performance</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    // Create two-axis data table for revenue and utilization
+    data.addColumn('string', 'Time Period');
+    data.addColumn('number', 'Revenue ($)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    
+    data.addRows([
+      ['Current Week', 2528.7100000000046, '$2,529', 18, '18%'],
+      ['Previous Week', 2493.810000000004, '$2,494', 17, '17%'],
+      ['4-Week Avg', 2327.9658620689524, '$2,328', 17, '17%']
+    ]);
+  
+
+        // Set chart options
+        var options = {
+  "title": "Net Revenue and Utilization Comparison",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 450,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0,
+      "color": "#2ae01e"
+    },
+    "1": {
+      "type": "bars",
+      "targetAxisIndex": 1,
+      "color": "#093eea"
+    }
+  },
+  "hAxis": {},
+  "vAxes": {
+    "0": {
+      "title": "Net Revenue ($)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 16
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 10
+      },
+      "minValue": 0
+    },
+    "1": {
+      "title": "Utilization (%)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 16
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 10
+      },
+      "minValue": 0,
+      "maxValue": 100
+    }
+  },
+  "legend": {
+    "position": "top",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "10%",
+    "width": "80%",
+    "height": "75%"
+  }
+};
+
+        // Create and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+      }
+      #chart_div {
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0px 0px rgba(0,0,0,0.1);
+        background-color: white;  w
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
