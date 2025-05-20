@@ -61,7 +61,7 @@
          border-bottom: 3px solid #e1e8ed;
          transition: all 0.3s ease;
          background-color: white;
-         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
          margin-bottom: 10px;
          }
 
@@ -150,18 +150,24 @@
             margin-top: 25px;
         }
         
-        chart-container {
-            position: relative;
-            width: 100%;
-	    min-height: 450px;
-            margin: 25px 0px;
-            overflow: hidden;
-            background-color: #ffffff;
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-	    .chart-container iframe {
+    .chart-container {
+    position: relative;
+    width: 100%;
+    /* Remove the fixed aspect ratio approach */
+    /* height: 0; */
+    /* padding-bottom: 75%; */
+    
+    /* Use a flexible height approach instead */
+    min-height: 450px; /* Minimum height to accommodate charts */
+    height: auto;
+    margin: 15px 0;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}         
+       
+        .chart-container iframe {
 		    /* Remove absolute positioning */
 		    /* position: absolute; */
 		    /* top: 0; */
@@ -174,7 +180,6 @@
 		    border: 0;
 		    border-radius: 6px;
 	}
-            
         /*Mobile Chart Controls */
       .chart-mobile-controls {
            display: none;
@@ -377,7 +382,7 @@
         <div class="section">
             <h3 class="section-title">Executive Summary</h3>
             <div class="summary-box">
-                <p>nnnnDuring the past week, Lavpop Autosserviço in Caxias do Sul demonstrated a slight improvement in overall performance, with marginal growth in both net revenue and the number of service cycles, suggesting steady but modest upward momentum. Utilization remained relatively stable, indicating consistent customer use compared to the previous period. Wash cycles continued to represent a greater share of operations over drying services, reflecting prevailing customer preferences. Usage peaked notably at 10:00, with Saturday emerging as the most active day, highlighting consistent weekend demand, while midweek activity, particularly on Wednesday, lagged behind. The most active times were concentrated in the morning and early afternoon, suggesting peak engagement during late morning hours. Weather factors appeared to have limited direct influence, with a moderate inverse relationship seen with temperature but minimal impact from rainfall and humidity, indicating customer behavior is more driven by routine than climate variations.</p>
+                <p>During the past week, Lavpop Autosserviço Caxias do Sul experienced a modest improvement in performance, with slight increases in net revenue, cycle volume, and machine utilization compared to the previous week. Wash cycles continued to outpace dry cycles, maintaining a consistent distribution. Customer activity peaked notably on Saturday, with 10:00 a.m. emerging as the busiest hour, and other high-demand periods scattered throughout late morning and afternoon. Wednesday marked the lowest day for engagement. Environmental conditions showed only minor influence on customer behavior, as temperature had a modest inverse impact while humidity and rainfall displayed negligible correlations. Overall, the operation maintained steady usage with predictable demand patterns, indicating stable customer engagement with opportunities for further optimization during currently underutilized periods.</p>
             </div>
             
             <!-- Weekly KPI Cards -->
@@ -416,16 +421,16 @@
         <div class="section">
             <h3 class="section-title">Weekly Performance</h3>
             <div class="chart-container">
-               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-20T10-11-15-612Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+               <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance_2025-05-20T12-15-19-349Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Revenue and Cycles by Day</p>
             </div>
-              
+        </div>        
 
            <div class="chart-container">
-              <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/week_vs_average_performance_2025-05-20T10-11-17-747Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+              <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/week_vs_average_performance_2025-05-20T12-15-20-915Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
               <p class="chart-title">Current Week vs 4-Week Average Performance</p>
          </div>
-</div>  
+
         <!-- Service Mix Analysis -->
         <div class="section">
             <h3 class="section-title">Cycles Analysis</h3>
@@ -459,13 +464,13 @@
             
             <!-- Service Mix Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-20T10-11-24-044Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/service_mix_2025-05-20T12-15-25-797Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Cycles Distribution %: Wash vs. Dry</p>
             </div>
             
             <!-- Utilization Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/Weekly_hourly_utilization_2025-05-20T10-11-21-070Z.html" loading="lazy"frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/Weekly_hourly_utilization_2025-05-20T12-15-23-378Z.html" loading="lazy"frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Machine Utilization Throughout the Week Hours</p>
             </div>
         </div>
@@ -476,13 +481,13 @@
             
             <!-- Hourly Revenue Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-20T10-11-22-032Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue_2025-05-20T12-15-24-162Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Week Revenue Distribution by Hour</p>
             </div>
             
             <!-- Peak Analysis Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-20T10-11-23-063Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak_2025-05-20T12-15-24-957Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Peak vs Off-Peak Performance</p>
             </div>
             
@@ -505,13 +510,13 @@
         <!-- Day of Week Analysis -->
 <h3 class="section-title">Day of the Week Analysis</h3>
         <div class="chart-container">
-              <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/day_of_week_revenue_distribution_2025-05-20T10-11-18-834Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+              <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/day_of_week_revenue_distribution_2025-05-20T12-15-21-661Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
               <p class="chart-title">Daily Revenue By Day of Week</p>
         </div>          
             
             <!-- Best/Worst Day Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-20T10-11-20-047Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison_2025-05-20T12-15-22-466Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Performance by Best & Worst Day</p>
             </div>
             
@@ -543,7 +548,7 @@
             
             <!-- Weather Correlation Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-20T10-11-29-229Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap_2025-05-20T12-15-29-931Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Weather Impact on Business</p>
             </div>
             
@@ -592,27 +597,27 @@
                     <p class="segment-customer">Fabiana Andreia Spido: $586.9 BRL</p>
                 </div>
             </div>
-      
+        </div>
 
             <!-- Customers Lapsed and Active %-->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-20T10-11-25-190Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed_2025-05-20T12-15-26-701Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Customers Active Vs. Lapsed</p>
 </div>
  <!-- Payment Methods Distribution-->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/payment_method_distribution_2025-05-20T10-11-26-206Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/payment_method_distribution_2025-05-20T12-15-27-526Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">Customers Active Vs. Lapsed</p>
 
             </div>
-         </div> 
+        
         <!-- WhatsApp Metrics -->
         <div class="section">
             <h3 class="section-title">WhatsApp Marketing Messages</h3>
             
             <!-- WhatsApp Metrics Chart -->
             <div class="chart-container">
-                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/WhatsApp_metrics_2025-05-20T10-11-28-293Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
+                <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/WhatsApp_metrics_2025-05-20T12-15-29-029Z.html" loading="lazy" frameborder="0" scrolling="no" style="border:none; width:100%;height:100%;"></iframe>
                 <p class="chart-title">WhatsApp Messages Distribution & Cost</p>
             </div>
             
@@ -640,18 +645,18 @@
             <h3 class="section-title">Strategic Recommendations</h3>
             <div class="strategy-container">
     <div class="strategy-item">
-        <h4 class="strategy-title">Implement Dynamic Off-Peak Discounts During Low Utilization Hours</h4>
-        <p>Utilization remains low at 18% with a clear drop during off-peak hours like 8 AM, 9 AM, and post-7 PM. Activate MaxPan's price adjustment feature to offer a 10-15% discount during these time slots to incentivize usage without affecting peak-hour revenue, increasing machine productivity throughout the day.</p>
+        <h4 class="strategy-title">Introduce Off-Peak Hour Discounts to Boost Utilization</h4>
+        <p>Utilization remains low (18%), especially during off-peak hours like 14h, 16h, and 21h. Offer time-based discounts (e.g., 10% off) via MaxPan during these slots to shift demand, increase cycle usage, and optimize machine capacity without cannibalizing peak-hour revenue.</p>
     </div>
     
     <div class="strategy-item">
-        <h4 class="strategy-title">Reactivate Lapsed Customers with Targeted WhatsApp Cashback Campaigns</h4>
-        <p>With 78.7% of customers currently inactive, launching a time-limited 15% cashback promo (via WhatsApp) toward lapsed customers can drive reactivation. Focus particularly on the “Potential” and “New” segments to boost short-term volume and reactivate up to 21% of customers within 90 days.</p>
+        <h4 class="strategy-title">Reactivate Lapsed Customers Using WhatsApp Campaigns</h4>
+        <p>With nearly 79% of your 1,515 customers lapsed, targeting them via personalized WhatsApp messages offering limited-time return incentives (e.g., 15% discount, extra cashback, or a free laundry bag on their next visit) can significantly boost re-engagement and cycle volume.</p>
     </div>
     
     <div class="strategy-item">
-        <h4 class="strategy-title">Bundle Service Cycles with the Wash Bag to Drive Transaction Value</h4>
-        <p>The wash bag is currently priced the same as one cycle, but not being positioned for volume growth. Offer a bundled deal (e.g., 2 cycles + bag for BRL 49.90) to upsell during peak hours and appeal to new or loyal segments—enhancing perceived value and increasing average ticket size.</p>
+        <h4 class="strategy-title">Bundle Wash and Dry for Higher Revenue Per Visit</h4>
+        <p>Washer utilization (28%) far exceeds dryer usage (12%), indicating many customers are skipping the drying phase. Promote a bundled offer (e.g., wash + dry at BRL 33.90), using POS discounts and WhatsApp messaging to encourage full-cycle usage, driving more revenue per customer.</p>
     </div>
 </div>
 </div>
@@ -660,7 +665,7 @@
         <div class="footer">
             <p>© 2024. All rights reserved.</p>
             <p>Questions about this report? Contact Gabrielle Vilanova or Lucas López at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a></p>
-            <p>Generated on 2025-05-20T10:11:43.472Z</p>
+            <p>Generated on 2025-05-20T12:15:47.581Z</p>
         </div>
     </div>
 </body>
