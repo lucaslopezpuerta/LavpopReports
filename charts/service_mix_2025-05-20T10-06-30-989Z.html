@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>service_mix</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Cycle Type');
+    data.addColumn('number', 'Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+      ['Wash Services', 88, '59%'],
+      ['Dry Services', 61, '41%']
+    ]);
+  
+
+        // Set chart options
+        var options = {
+  "title": "Cycles Distribution",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 550,
+  "height": 550,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e",
+    "#093eea"
+  ],
+  "pieHole": 0.3,
+  "legend": {
+    "position": "right",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "10%",
+    "width": "80%",
+    "height": "75%"
+  },
+  "pieSliceTextStyle": {
+    "color": "white",
+    "fontSize": 14,
+    "bold": true
+  }
+};
+
+        // Create and draw the chart
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+      }
+      #chart_div {
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0px 0px rgba(0,0,0,0.1);
+        background-color: white;  w
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
