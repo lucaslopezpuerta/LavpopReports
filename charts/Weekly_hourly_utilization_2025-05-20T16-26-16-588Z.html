@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly_hourly_utilization</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Utilization %');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+['8:00', 20, '20%', '#2ae01e'],
+      ['9:00', 28, '28%', '#2ae01e'],
+      ['10:00', 33, '33%', '#093eea'],
+      ['11:00', 32, '32%', '#2ae01e'],
+      ['12:00', 32, '32%', '#2ae01e'],
+      ['13:00', 33, '33%', '#093eea'],
+      ['14:00', 39, '39%', '#093eea'],
+      ['15:00', 46, '46%', '#093eea'],
+      ['16:00', 32, '32%', '#2ae01e'],
+      ['17:00', 29, '29%', '#2ae01e'],
+      ['18:00', 36, '36%', '#093eea'],
+      ['19:00', 31, '31%', '#2ae01e'],
+      ['20:00', 26, '26%', '#2ae01e'],
+      ['21:00', 27, '27%', '#2ae01e'],
+    ]);
+  
+
+        // Enhanced options with responsive considerations
+        var options = {
+  "title": "Hourly Machine Utilization",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 600,
+  "backgroundColor": "#ffffff",
+  "hAxis": {
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Utilization %",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "color": "#333333",
+      "bold": true
+    }
+  }
+};
+        
+        // Add responsive resizing capability
+        function resizeChart() {
+          var container = document.getElementById('chart_div');
+          var containerWidth = container.offsetWidth;
+          
+          // Maintain aspect ratio while scaling to container
+          if (containerWidth < 650) {
+            options.width = containerWidth;
+            options.height = Math.round(containerWidth * (600 / 650)); // Maintain aspect ratio
+            
+            // Adjust font sizes for smaller displays
+            if (options.titleTextStyle) options.titleTextStyle.fontSize = 16;
+            if (options.legend && options.legend.textStyle) options.legend.textStyle.fontSize = 10;
+          }
+          
+          chart.draw(data, options);
+        }
+
+        // Create and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        
+        // Initial draw
+        resizeChart();
+        
+        // Redraw on window resize
+        window.addEventListener('resize', resizeChart);
+      }
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 600px; /* Exact chart height */
+            max-width: 650px;
+            max-height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
