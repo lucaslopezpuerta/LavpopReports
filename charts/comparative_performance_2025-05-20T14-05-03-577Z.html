@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comparative_performance</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Create the data table
+        var data = new google.visualization.DataTable();
+        
+    // Create two-axis data table for revenue and utilization
+    data.addColumn('string', 'Time Period');
+    data.addColumn('number', 'Revenue ($)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    
+    data.addRows([
+      ['Current Week', 2528.7100000000046, '$2,529', 18, '18%'],
+      ['Previous Week', 2493.810000000004, '$2,494', 17, '17%'],
+      ['4-Week Avg', 2327.9658620689524, '$2,328', 17, '17%']
+    ]);
+  
+
+        // Enhanced options with responsive considerations
+        var options = {
+  "title": "Net Revenue and Utilization Comparison",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 750,
+  "height": 450,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0,
+      "color": "#2ae01e"
+    },
+    "1": {
+      "type": "bars",
+      "targetAxisIndex": 1,
+      "color": "#093eea"
+    }
+  },
+  "hAxis": {},
+  "vAxes": {
+    "0": {
+      "title": "Net Revenue ($)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 20
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 20
+      },
+      "minValue": 0
+    },
+    "1": {
+      "title": "Utilization (%)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 20
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 16,
+        "padding": 20
+      },
+      "minValue": 0,
+      "maxValue": 100
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12,
+      "padding": 10
+    }
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "85%",
+    "height": "78%"
+  }
+};
+        
+        // Add responsive resizing capability
+        function resizeChart() {
+          var container = document.getElementById('chart_div');
+          var containerWidth = container.offsetWidth;
+          
+          // Maintain aspect ratio while scaling to container
+          if (containerWidth < 650) {
+            options.width = containerWidth;
+            options.height = Math.round(containerWidth * (450 / 750)); // Maintain aspect ratio
+            
+            // Adjust font sizes for smaller displays
+            if (options.titleTextStyle) options.titleTextStyle.fontSize = 16;
+            if (options.legend && options.legend.textStyle) options.legend.textStyle.fontSize = 10;
+          }
+          
+          chart.draw(data, options);
+        }
+
+        // Create and draw the chart
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        
+        // Initial draw
+        resizeChart();
+        
+        // Redraw on window resize
+        window.addEventListener('resize', resizeChart);
+      }
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 750px;  /* Exact chart width */
+            height: 450px; /* Exact chart height */
+            max-width: 750px;
+            max-height: 450px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
