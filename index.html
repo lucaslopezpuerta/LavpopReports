@@ -153,33 +153,22 @@
     .chart-container {
     position: relative;
     width: 100%;
-    /* Remove the fixed aspect ratio approach */
-    /* height: 0; */
-    /* padding-bottom: 75%; */
-    
-    /* Use a flexible height approach instead */
-    min-height: 450px; /* Minimum height to accommodate charts */
-    height: auto;
-    margin: 15px 0;
-    overflow: hidden;
+    /* Remove any padding-bottom percentage rule that's forcing aspect ratios */
+    height: 450px; /* Match your chart height exactly */
+    margin: 25px 0;
+    overflow: visible; /* Allow content to display fully */
     background-color: #ffffff;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}         
-       
-        .chart-container iframe {
-		    /* Remove absolute positioning */
-		    /* position: absolute; */
-		    /* top: 0; */
-		    /* left: 0; */
-		    
-		    /* Use block-level sizing instead */
-		    display: block;
-		    width: 100%;
-		    height: 450px; /* Match the minimum container height */
-		    border: 0;
-		    border-radius: 6px;
-	}
+}
+
+.chart-container iframe {
+    display: block;
+    width: 100%;
+    height: 100%; /* Fill the container completely */
+    border: 0;
+    border-radius: 6px;
+}
         /*Mobile Chart Controls */
       .chart-mobile-controls {
            display: none;
