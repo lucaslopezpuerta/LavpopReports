@@ -15,8 +15,8 @@ function drawChart() {
             
     data.addColumn('string', 'Segment');
     data.addColumn('number', 'Customer Count');
-    data.addColumn('number', 'Avg Visit Frequency');
-    data.addColumn('number', 'Avg Cycles/Visit');
+    data.addColumn('number', 'Avg. Visit/Month');
+    data.addColumn('number', 'Avg. Cycles/Visit');
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn({ type: 'string', role: 'annotation' });
@@ -26,12 +26,12 @@ function drawChart() {
 
             // Base options from server
             var options = {
-  "title": "Key Behavioral Metrics by Segment",
+  "title": "Behavioral Metrics by Segment",
   "width": 650,
   "height": 480,
   "backgroundColor": "#ffffff",
   "colors": [
-    "#2ae01e",
+    "#FFD700",
     "#C0C0C0",
     "#CD7F32"
   ],
@@ -39,12 +39,6 @@ function drawChart() {
     "groupWidth": "65%"
   },
   "isStacked": false,
-  "annotations": {
-    "textStyle": {
-      "fontSize": 12,
-      "bold": true
-    }
-  },
   "vAxis": {
     "minValue": 0,
     "textStyle": {
@@ -56,12 +50,35 @@ function drawChart() {
   },
   "hAxis": {
     "textStyle": {
-      "fontSize": 12
+      "fontSize": 14
     }
   },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "bold": true,
+      "color": "#333333"
+    },
+    "alwaysOutside": false,
+    "stem": {
+      "color": "#333333",
+      "length": 0
+    },
+    "highContrast": true
+  },
   "legend": {
-    "position": "top",
-    "alignment": "center"
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
   }
 };
             
