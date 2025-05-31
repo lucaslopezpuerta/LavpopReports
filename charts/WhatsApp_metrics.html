@@ -18,8 +18,7 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'annotation'});
     data.addRows([
       ['Messages Sent', 248, '248'],
-      ['Messages Received', 26, '26'],
-      ['Response Rate (%)', 10, '10%']
+      ['Messages Received', 26, '26']
     ]);
   
 
@@ -50,7 +49,7 @@ function drawChart() {
     }
   },
   "vAxis": {
-    "title": "# Of Messages",
+    "title": "# of WA Messages",
     "titleTextStyle": {
       "color": "#333333",
       "fontSize": 16
@@ -63,9 +62,15 @@ function drawChart() {
   "legend": {
     "position": "none"
   },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
   "annotations": {
     "textStyle": {
-      "fontSize": 14,
+      "fontSize": 15,
       "color": "#333333",
       "bold": true
     }
