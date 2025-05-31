@@ -14,33 +14,33 @@ function drawChart() {
             var data = new google.visualization.DataTable();
             
     data.addColumn('string', 'Hour');
-    data.addColumn('number', 'Current Week Daily Avg');
+    data.addColumn('number', 'Current Week Total Revenue');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({type: 'string', role: 'style'});
     data.addColumn({type: 'string', role: 'tooltip'});
-    data.addColumn('number', '4-Week Daily Avg');
+    data.addColumn('number', '4-Week Daily Avg Revenue');
     data.addRows([
-['8:00', 26.402499999999993, '$26', 'color: #2ae01e; opacity: 0.8', 'Hour: 8:00\nCurrent Week Daily Avg: $26.40\n4-Week Daily Avg: $26.56\n', 26.556733333333337],
-      ['9:00', 28.975625, '$29', 'color: #2ae01e; opacity: 0.8', 'Hour: 9:00\nCurrent Week Daily Avg: $28.98\n4-Week Daily Avg: $27.60\n', 27.59583333333334],
-      ['10:00', 35.65083333333333, '$36', 'color: #2ae01e; opacity: 0.8', 'Hour: 10:00\nCurrent Week Daily Avg: $35.65\n4-Week Daily Avg: $40.23\n', 40.22789473684211],
-      ['11:00', 56.295500000000004, '$56', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 2', 'Hour: 11:00\nCurrent Week Daily Avg: $56.30\n4-Week Daily Avg: $47.72\nPEAK HOUR', 47.72455882352942],
-      ['12:00', 32.603571428571435, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 12:00\nCurrent Week Daily Avg: $32.60\n4-Week Daily Avg: $35.16\nPEAK HOUR', 35.160210526315794],
-      ['13:00', 33.114999999999995, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 13:00\nCurrent Week Daily Avg: $33.11\n4-Week Daily Avg: $42.31\n', 42.313611111111115],
-      ['14:00', 33.114999999999995, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 14:00\nCurrent Week Daily Avg: $33.11\n4-Week Daily Avg: $43.10\n', 43.10131578947369],
-      ['15:00', 24.83625, '$25', 'color: #2ae01e; opacity: 0.8', 'Hour: 15:00\nCurrent Week Daily Avg: $24.84\n4-Week Daily Avg: $50.36\n', 50.36193333333334],
-      ['16:00', 35.7105, '$36', 'color: #2ae01e; opacity: 0.8', 'Hour: 16:00\nCurrent Week Daily Avg: $35.71\n4-Week Daily Avg: $38.16\n', 38.15526315789474],
-      ['17:00', 55.19166666666666, '$55', 'color: #2ae01e; opacity: 0.8', 'Hour: 17:00\nCurrent Week Daily Avg: $55.19\n4-Week Daily Avg: $42.37\n', 42.371671052631584],
-      ['18:00', 43.0495, '$43', 'color: #2ae01e; opacity: 0.8', 'Hour: 18:00\nCurrent Week Daily Avg: $43.05\n4-Week Daily Avg: $43.59\nPEAK HOUR', 43.58511904761905],
-      ['19:00', 57.95125, '$58', 'color: #2ae01e; opacity: 0.8', 'Hour: 19:00\nCurrent Week Daily Avg: $57.95\n4-Week Daily Avg: $43.10\nPEAK HOUR', 43.10131578947369],
-      ['20:00', 33.115, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 20:00\nCurrent Week Daily Avg: $33.12\n4-Week Daily Avg: $33.05\n', 33.04947916666667],
-      ['21:00', 16.557499999999997, '$17', 'color: #2ae01e; opacity: 0.8', 'Hour: 21:00\nCurrent Week Daily Avg: $16.56\n4-Week Daily Avg: $29.44\n', 29.435555555555556],
-      ['22:00', 99.345, '$99', 'color: #2ae01e; opacity: 0.8', 'Hour: 22:00\nCurrent Week Daily Avg: $99.34\n4-Week Daily Avg: $99.34\n', 99.345],
+['8H', 33.114999999999995, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 8H\nCurrent Week Daily Total: $33.11\n4-Week Daily Avg: $70.61', 70.612125],
+      ['9H', 115.9025, '$116', 'color: #2ae01e; opacity: 0.8', 'Hour: 9H\nCurrent Week Daily Total: $115.90\n4-Week Daily Avg: $111.76', 111.76312500000002],
+      ['10H', 364.26500000000004, '$364', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 10H\nCurrent Week Daily Total: $364.27\n4-Week Daily Avg: $232.48', 232.47625000000005],
+      ['11H', 281.4775, '$281', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 11H\nCurrent Week Daily Total: $281.48\n4-Week Daily Avg: $215.25', 215.24750000000003],
+      ['12H', 248.3625, '$248', 'color: #2ae01e; opacity: 0.8', 'Hour: 12H\nCurrent Week Daily Total: $248.36\n4-Week Daily Avg: $177.10', 177.09812500000004],
+      ['13H', 33.114999999999995, '$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 13H\nCurrent Week Daily Total: $33.11\n4-Week Daily Avg: $161.44', 161.43562500000002],
+      ['14H', 112.32249999999999, '$112', 'color: #2ae01e; opacity: 0.8', 'Hour: 14H\nCurrent Week Daily Total: $112.32\n4-Week Daily Avg: $191.42', 191.41812500000003],
+      ['15H', 264.92, '$265', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 15H\nCurrent Week Daily Total: $264.92\n4-Week Daily Avg: $215.25', 215.24750000000003],
+      ['16H', 441.25250000000005, '$441', 'color: #FFD700; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 16H\nCurrent Week Daily Total: $441.25\n4-Week Daily Avg: $258.44', 258.435625],
+      ['17H', 115.9025, '$116', 'color: #2ae01e; opacity: 0.8', 'Hour: 17H\nCurrent Week Daily Total: $115.90\n4-Week Daily Avg: $164.17', 164.17293750000002],
+      ['18H', 66.22999999999999, '$66', 'color: #2ae01e; opacity: 0.8', 'Hour: 18H\nCurrent Week Daily Total: $66.23\n4-Week Daily Avg: $170.87', 170.87062500000002],
+      ['19H', 49.857499999999995, '$50', 'color: #2ae01e; opacity: 0.8', 'Hour: 19H\nCurrent Week Daily Total: $49.86\n4-Week Daily Avg: $159.24', 159.24437500000002],
+      ['20H', 132.46, '$132', 'color: #2ae01e; opacity: 0.8', 'Hour: 20H\nCurrent Week Daily Total: $132.46\n4-Week Daily Avg: $98.91', 98.90562500000001],
+      ['21H', 132.46, '$132', 'color: #2ae01e; opacity: 0.8', 'Hour: 21H\nCurrent Week Daily Total: $132.46\n4-Week Daily Avg: $95.21', 95.20562500000001],
+      ['22H', 82.7875, '$83', 'color: #2ae01e; opacity: 0.8', 'Hour: 22H\nCurrent Week Daily Total: $82.79\n4-Week Daily Avg: $45.53', 45.533125],
     ]);
   
 
             // Base options from server
             var options = {
-  "title": "Hourly Revenue Distribution - Daily Averages",
+  "title": "Hourly Revenue Distribution",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -75,7 +75,7 @@ function drawChart() {
     }
   },
   "vAxis": {
-    "title": "Daily Average Revenue ($)",
+    "title": "Revenue (R$)",
     "titleTextStyle": {
       "color": "#333333",
       "fontSize": 16
