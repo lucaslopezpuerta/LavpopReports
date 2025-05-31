@@ -13,27 +13,43 @@
 function drawChart() {
             var data = new google.visualization.DataTable();
             
+    // 1) Declare columns
     data.addColumn('string', 'Segment');
     data.addColumn('number', 'Customer Count');
-    data.addColumn('number', 'Avg. Visit/Month');
-    data.addColumn('number', 'Avg. Cycles/Visit');
+    data.addColumn('number', 'Avg Visit Frequency');
+    data.addColumn('number', 'Avg Services/Visit');
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn({ type: 'string', role: 'annotation' });
 
-    data.addRows([["Champion",0,4.54,1.24,"0","4.54","1.24"],["Loyal",0,3.02,1.16,"0","3.02","1.16"],["Potential",0,2.99,1.16,"0","2.99","1.16"]]);
+    // 2) Build a small JS array of row objects (one per segment)
+    const rows = [
+      ['Champion', 36, 4.58, 1.2, '36', '4.58', '1.20'],
+      ['Loyal', 50, 3.18, 1.2, '50', '3.18', '1.20'],
+      ['Potential', 79, 2.78, 1.15, '79', '2.78', '1.15']
+    ];
+
+    // 3) Add each row to the DataTable in turn
+    for (let i = 0; i < rows.length; i++) {
+      data.addRow(rows[i]);
+    }
   
 
             // Base options from server
             var options = {
   "title": "Behavioral Metrics by Segment",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
   "width": 650,
   "height": 480,
   "backgroundColor": "#ffffff",
   "colors": [
-    "#FFD700",
-    "#C0C0C0",
-    "#CD7F32"
+    "#04E762",
+    "#00A1E4",
+    "#D81E5B"
   ],
   "bar": {
     "groupWidth": "65%"
@@ -41,6 +57,9 @@ function drawChart() {
   "isStacked": false,
   "vAxis": {
     "minValue": 0,
+    "gridlines": {
+      "count": 5
+    },
     "textStyle": {
       "fontSize": 12
     },
@@ -65,10 +84,10 @@ function drawChart() {
       "bold": true,
       "color": "#333333"
     },
-    "alwaysOutside": false,
+    "alwaysOutside": true,
     "stem": {
       "color": "#333333",
-      "length": 0
+      "length": 5
     },
     "highContrast": true
   },
