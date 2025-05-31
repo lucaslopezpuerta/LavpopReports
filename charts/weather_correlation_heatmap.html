@@ -28,26 +28,26 @@ function drawChart() {
     data.addRows([
       // Temperature row
       ['Temperature', 
-       -0.41287344940203463, '-0.41 (Weak)', 
-       'Temperature to Revenue: -0.41 (Weak)\nAs temperature changes, revenue tends to decrease',
+       -0.4136848739111992, '-0.41 (Weak)', 
+       'Temperature to Revenue: -0.41 (Weak)\nAs heat changes, revenue tends to decrease',
        
-       -0.2855853648548591, '-0.29 (Very weak)', 
-       'Temperature to Wash Services: -0.29 (Very weak)\nAs temperature changes, wash service count tends to decrease',
+       -0.2949029431806585, '-0.29 (Very weak)', 
+       'Temperature to Wash Services: -0.29 (Very weak)\nAs heat changes, wash cycle count tends to decrease',
        
-       -0.47437656032842274, '-0.47 (Weak)', 
-       'Temperature to Dry Services: -0.47 (Weak)\nAs temperature changes, dry service count tends to decrease'
+       -0.4649360868409448, '-0.46 (Weak)', 
+       'Temperature to Dry Services: -0.46 (Weak)\nAs heat changes, dry cycle count tends to decrease'
       ],
       
       // Rainfall row
       ['Rainfall', 
-       0.13884210376293174, '0.14 (Very weak)', 
-       'Rainfall to Revenue: 0.14 (Very weak)\nAs rainfall increases, revenue shows no clear pattern',
+       0.28129963837851524, '0.28 (Very weak)', 
+       'Rainfall to Revenue: 0.28 (Very weak)\nAs Yesterday's rainfall increases, revenue tends to increase',
        
-       0.08322509036798212, '0.08 (Very weak)', 
-       'Rainfall to Wash Services: 0.08 (Very weak)\nAs rainfall increases, wash service count shows no clear pattern',
+       0.2276703169314502, '0.23 (Very weak)', 
+       'Rainfall to Wash Services: 0.23 (Very weak)\nAs Yesterday's rainfall increases, wash cycle count tends to increase',
        
-       0.17256923100567542, '0.17 (Very weak)', 
-       'Rainfall to Dry Services: 0.17 (Very weak)\nAs rainfall increases, dry service count shows no clear pattern'
+       0.3112957356959652, '0.31 (Weak)', 
+       'Rainfall to Dry Services: 0.31 (Weak)\nAs Yesterday's rainfall increases, dry cycle count tends to increase'
       ],
       
       // Humidity row
@@ -56,10 +56,10 @@ function drawChart() {
        'Humidity to Revenue: 0.13 (Very weak)\nAs humidity increases, revenue shows no clear pattern',
        
        0.009988972148519975, '0.01 (Very weak)', 
-       'Humidity to Wash Services: 0.01 (Very weak)\nAs humidity increases, wash service count shows no clear pattern',
+       'Humidity to Wash Services: 0.01 (Very weak)\nAs humidity increases, wash cycle count shows no clear pattern',
        
        0.23179885347562815, '0.23 (Very weak)', 
-       'Humidity to Dry Services: 0.23 (Very weak)\nAs humidity increases, dry service count tends to increase'
+       'Humidity to Dry Services: 0.23 (Very weak)\nAs humidity increases, dry cycle count tends to increase'
       ]
     ]);
   
@@ -80,6 +80,10 @@ function drawChart() {
   },
   "hAxis": {
     "title": "Correlation Coefficient",
+    "textStyle": {
+      "fontSize": 14,
+      "bold": true
+    },
     "minValue": -1,
     "maxValue": 1,
     "format": "0.00"
@@ -89,15 +93,13 @@ function drawChart() {
     "textPosition": "none",
     "textStyle": {
       "fontSize": 12,
-      "bold": true,
-      "slantedText": true,
-      "slantedTextAngle": 60
+      "bold": true
     }
   },
   "legend": {
-    "position": "bottom",
+    "position": "top",
     "textStyle": {
-      "fontSize": 12
+      "fontSize": 14
     }
   },
   "colorAxis": {
