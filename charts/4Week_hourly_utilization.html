@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Week_hourly_utilization</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Utilization %');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+['8H', 5, '5%', '#2ae01e'],
+      ['9H', 7, '7%', '#2ae01e'],
+      ['10H', 15, '15%', '#093eea'],
+      ['11H', 14, '14%', '#093eea'],
+      ['12H', 12, '12%', '#2ae01e'],
+      ['13H', 11, '11%', '#2ae01e'],
+      ['14H', 14, '14%', '#2ae01e'],
+      ['15H', 15, '15%', '#093eea'],
+      ['16H', 18, '18%', '#093eea'],
+      ['17H', 11, '11%', '#2ae01e'],
+      ['18H', 11, '11%', '#2ae01e'],
+      ['19H', 10, '10%', '#2ae01e'],
+      ['20H', 8, '8%', '#2ae01e'],
+      ['21H', 7, '7%', '#2ae01e'],
+      ['22H', 3, '3%', '#2ae01e'],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "4-Week Avg. Hourly Machine Utilization",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "hAxis": {
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Utilization (%)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "color": "#333333",
+      "bold": true
+    }
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
