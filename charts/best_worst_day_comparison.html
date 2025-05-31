@@ -14,9 +14,9 @@ function drawChart() {
             var data = new google.visualization.DataTable();
             
     data.addColumn('string', 'Day');
-    data.addColumn('number', 'Net Revenue');
+    data.addColumn('number', 'Net Revenue (R$)');
     data.addColumn({type: 'string', role: 'annotation'});
-    data.addColumn('number', 'Utilization');
+    data.addColumn('number', 'Utilization (%)');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn('number', 'Wash Cycles');
     data.addColumn({type: 'string', role: 'annotation'});
@@ -25,24 +25,24 @@ function drawChart() {
     
     data.addRows([
       ['Friday', 
-       447.05250000000007, 
-       '$447',
-       14,
-       '14%',
-       12,
-       '12',
-       15,
-       '15'
+       623.3850000000001, 
+       '$623',
+       23,
+       '23%',
+       24,
+       '24',
+       20,
+       '20'
       ],
       ['Wednesday', 
        198.69, 
        '$199',
        6,
        '6%',
-       6,
-       '6',
-       6,
-       '6'
+       7,
+       '7',
+       5,
+       '5'
       ]
     ]);
   
@@ -73,21 +73,22 @@ function drawChart() {
     "2": {
       "type": "bars",
       "targetAxisIndex": 2,
-      "color": "#8CED80"
+      "color": "#B5E2FA"
     },
     "3": {
       "type": "bars",
       "targetAxisIndex": 2,
-      "color": "#6B8EF2"
+      "color": "#54AB57"
     }
   },
   "vAxes": {
     "0": {
-      "title": "Net Revenue ($)",
+      "title": "Net Revenue (R$)",
       "titleTextStyle": {
         "color": "#093eea",
         "fontSize": 16,
-        "italic": false
+        "italic": false,
+        "padding": 25
       },
       "textStyle": {
         "color": "#093eea",
@@ -102,7 +103,7 @@ function drawChart() {
         "color": "#2ae01e",
         "fontSize": 16,
         "italic": false,
-        "padding": 25
+        "padding": 55
       },
       "textStyle": {
         "color": "#2ae01e",
@@ -111,6 +112,7 @@ function drawChart() {
       },
       "minValue": 0,
       "maxValue": 100,
+      "textPosition": "in",
       "format": "#'%'"
     },
     "2": {
