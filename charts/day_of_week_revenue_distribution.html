@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>day_of_week_revenue_distribution</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Day');
+    data.addColumn('number', 'Current Week');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', '4-Week Average');
+    data.addRows([
+['Sunday', 344.1275, 'R$344', 'color: #2ae01e; opacity: 0.8', 'Day: Sunday\nCurrent Week: R$344.13\n4-Week Avg.: R$416.66\n(Avg. Based on 4 weeks)', 416.6638124999994],
+      ['Monday', 380.82250000000005, 'R$381', 'color: #2ae01e; opacity: 0.8', 'Day: Monday\nCurrent Week: R$380.82\n4-Week Avg.: R$264.25\n(Avg. Based on 4 weeks)', 264.24875000000003],
+      ['Tuesday', 397.38000000000005, 'R$397', 'color: #2ae01e; opacity: 0.8', 'Day: Tuesday\nCurrent Week: R$397.38\n4-Week Avg.: R$354.20\n(Avg. Based on 4 weeks)', 354.19624999999957],
+      ['Wednesday', 198.69, 'R$199', 'color: #888888; opacity: 0.7', 'Day: Wednesday\nCurrent Week: R$198.69\n4-Week Avg.: R$159.95\n(Avg. Based on 4 weeks)', 159.94500000000002],
+      ['Thursday', 546.5825000000001, 'R$547', 'color: #2ae01e; opacity: 0.8', 'Day: Thursday\nCurrent Week: R$546.58\n4-Week Avg.: R$328.96\n(Avg. Based on 4 weeks)', 328.9587499999998],
+      ['Friday', 623.3850000000001, 'R$623', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 1', 'Day: Friday\nCurrent Week: R$623.39\n4-Week Avg.: R$413.49\n(Avg. Based on 4 weeks)', 413.49437499999925],
+      ['Saturday', 569.56875, 'R$570', 'color: #2ae01e; opacity: 0.8', 'Day: Saturday\nCurrent Week: R$569.57\n4-Week Avg.: R$584.97\n(Avg. Based on 4 weeks)', 584.9696874999984],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Revenue Distribution by Day of the Week",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0
+    },
+    "1": {
+      "type": "line",
+      "targetAxisIndex": 0,
+      "color": "FF0000",
+      "lineWidth": 3,
+      "pointSize": 6
+    }
+  },
+  "hAxis": {
+    "title": "",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Net Revenue (R$)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "viewWindow": {
+      "min": 0
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 15,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "tooltip": {
+    "isHtml": true
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
