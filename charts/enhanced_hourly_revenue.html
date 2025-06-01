@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>enhanced_hourly_revenue</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Current Week Hourly Total Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', '4-Week Avg Hourly Revenue');
+    data.addRows([
+['8H', 49.67249999999999, 'R$50', 'color: #2ae01e; opacity: 0.8', 'Hour: 8H\nCurrent Week Hourly Total: R$49.67\n4-Week Hourly Avg.: R$74.75', 74.75150000000001],
+      ['9H', 132.46, 'R$132', 'color: #2ae01e; opacity: 0.8', 'Hour: 9H\nCurrent Week Hourly Total: R$132.46\n4-Week Hourly Avg.: R$115.90', 115.90250000000002],
+      ['10H', 430.49500000000006, 'R$430', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 10H\nCurrent Week Hourly Total: R$430.50\n4-Week Hourly Avg.: R$249.03', 249.03375000000005],
+      ['11H', 380.82250000000005, 'R$381', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 11H\nCurrent Week Hourly Total: R$380.82\n4-Week Hourly Avg.: R$240.08', 240.08375000000004],
+      ['12H', 281.4775, 'R$281', 'color: #2ae01e; opacity: 0.8', 'Hour: 12H\nCurrent Week Hourly Total: R$281.48\n4-Week Hourly Avg.: R$185.38', 185.37687500000004],
+      ['13H', 33.114999999999995, 'R$33', 'color: #2ae01e; opacity: 0.8', 'Hour: 13H\nCurrent Week Hourly Total: R$33.11\n4-Week Hourly Avg.: R$161.44', 161.43562500000002],
+      ['14H', 172.30874999999997, 'R$172', 'color: #2ae01e; opacity: 0.8', 'Hour: 14H\nCurrent Week Hourly Total: R$172.31\n4-Week Hourly Avg.: R$206.41', 206.41468750000004],
+      ['15H', 380.82250000000005, 'R$381', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 15H\nCurrent Week Hourly Total: R$380.82\n4-Week Hourly Avg.: R$244.22', 244.22312500000004],
+      ['16H', 540.5975000000001, 'R$541', 'color: #FFD700; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 16H\nCurrent Week Hourly Total: R$540.60\n4-Week Hourly Avg.: R$283.27', 283.27187499999985],
+      ['17H', 145.3175, 'R$145', 'color: #2ae01e; opacity: 0.8', 'Hour: 17H\nCurrent Week Hourly Total: R$145.32\n4-Week Hourly Avg.: R$171.53', 171.5266875],
+      ['18H', 99.345, 'R$99', 'color: #2ae01e; opacity: 0.8', 'Hour: 18H\nCurrent Week Hourly Total: R$99.34\n4-Week Hourly Avg.: R$179.15', 179.14937500000002],
+      ['19H', 49.857499999999995, 'R$50', 'color: #2ae01e; opacity: 0.8', 'Hour: 19H\nCurrent Week Hourly Total: R$49.86\n4-Week Hourly Avg.: R$159.24', 159.24437500000002],
+      ['20H', 132.46, 'R$132', 'color: #2ae01e; opacity: 0.8', 'Hour: 20H\nCurrent Week Hourly Total: R$132.46\n4-Week Hourly Avg.: R$98.91', 98.90562500000001],
+      ['21H', 132.46, 'R$132', 'color: #2ae01e; opacity: 0.8', 'Hour: 21H\nCurrent Week Hourly Total: R$132.46\n4-Week Hourly Avg.: R$95.21', 95.20562500000001],
+      ['22H', 82.7875, 'R$83', 'color: #2ae01e; opacity: 0.8', 'Hour: 22H\nCurrent Week Hourly Total: R$82.79\n4-Week Hourly Avg.: R$45.53', 45.533125],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Hourly Revenue Distribution",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "bars",
+  "series": {
+    "0": {
+      "type": "bars",
+      "targetAxisIndex": 0
+    },
+    "1": {
+      "type": "line",
+      "targetAxisIndex": 0,
+      "color": "#FF0000",
+      "lineWidth": 3,
+      "pointSize": 7
+    }
+  },
+  "hAxis": {
+    "title": "",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    }
+  },
+  "vAxis": {
+    "title": "Revenue (R$)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 16
+    },
+    "viewWindow": {
+      "min": 0
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 15,
+      "color": "#333333",
+      "bold": true
+    }
+  },
+  "tooltip": {
+    "isHtml": true
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
