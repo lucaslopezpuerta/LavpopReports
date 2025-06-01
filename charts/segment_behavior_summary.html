@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>segment_behavior_summary</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    // 1) Declare columns
+    data.addColumn('string', 'Segment');
+    data.addColumn('number', 'Customer Count');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Avg Visit Frequency');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Avg Services/Visit');
+    data.addColumn({ type: 'string', role: 'annotation' });
+
+    // 2) Build a small JS array of row objects (one per segment)
+    const rows = [
+      ['Champion', 36, '36', 4.44, '4.44', 1.2, '1.20'],
+      ['Loyal', 52, '52', 3.21, '3.21', 1.2, '1.20'],
+      ['Potential', 81, '81', 2.86, '2.86', 1.15, '1.15']
+    ];
+
+    // 3) Add each row to the DataTable in turn
+    for (let i = 0; i < rows.length; i++) {
+      data.addRow(rows[i]);
+    }
+  
+
+            // Base options from server
+            var options = {
+  "title": "Customer Segment Behavior",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e",
+    "#093eea",
+    "#D81E5B"
+  ],
+  "bar": {
+    "groupWidth": "65%"
+  },
+  "isStacked": false,
+  "vAxis": {
+    "minValue": 0,
+    "gridlines": {
+      "count": 5
+    },
+    "textStyle": {
+      "fontSize": 12
+    },
+    "titleTextStyle": {
+      "fontSize": 14
+    }
+  },
+  "hAxis": {
+    "textStyle": {
+      "fontSize": 14
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 14,
+      "bold": true,
+      "color": "#333333"
+    },
+    "alwaysOutside": true,
+    "stem": {
+      "color": "#333333",
+      "length": 5
+    },
+    "highContrast": true
+  },
+  "legend": {
+    "position": "bottom",
+    "alignment": "center",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
