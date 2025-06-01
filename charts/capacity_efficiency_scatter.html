@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>capacity_efficiency_scatter</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn('number', 'Revenue Efficiency (R$/Util%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+[5, 59.80120000000001, '8H', 'Hour: 8H\nUtilization: 5%\nRevenue: R$299.01\nEfficiency: R$59.80/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [7, 66.23, '9H', 'Hour: 9H\nUtilization: 7%\nRevenue: R$463.61\nEfficiency: R$66.23/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [16, 62.258437500000014, '10H', 'Hour: 10H\nUtilization: 16%\nRevenue: R$996.14\nEfficiency: R$62.26/util%\nType: Peak', 'color: #093eea; opacity: 0.8'],
+      [16, 60.02093750000001, '11H', 'Hour: 11H\nUtilization: 16%\nRevenue: R$960.34\nEfficiency: R$60.02/util%\nType: Peak', 'color: #093eea; opacity: 0.8'],
+      [13, 57.039038461538475, '12H', 'Hour: 12H\nUtilization: 13%\nRevenue: R$741.51\nEfficiency: R$57.04/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [12, 53.81187500000001, '13H', 'Hour: 13H\nUtilization: 12%\nRevenue: R$645.74\nEfficiency: R$53.81/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [15, 55.043916666666675, '14H', 'Hour: 14H\nUtilization: 15%\nRevenue: R$825.66\nEfficiency: R$55.04/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [17, 57.464264705882364, '15H', 'Hour: 15H\nUtilization: 17%\nRevenue: R$976.89\nEfficiency: R$57.46/util%\nType: Peak', 'color: #093eea; opacity: 0.8'],
+      [20, 56.65437499999997, '16H', 'Hour: 16H\nUtilization: 20%\nRevenue: R$1133.09\nEfficiency: R$56.65/util%\nType: Peak', 'color: #093eea; opacity: 0.8'],
+      [12, 57.175562500000005, '17H', 'Hour: 17H\nUtilization: 12%\nRevenue: R$686.11\nEfficiency: R$57.18/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [12, 59.71645833333334, '18H', 'Hour: 18H\nUtilization: 12%\nRevenue: R$716.60\nEfficiency: R$59.72/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [10, 63.697750000000006, '19H', 'Hour: 19H\nUtilization: 10%\nRevenue: R$636.98\nEfficiency: R$63.70/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [8, 49.45281250000001, '20H', 'Hour: 20H\nUtilization: 8%\nRevenue: R$395.62\nEfficiency: R$49.45/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [7, 54.40321428571429, '21H', 'Hour: 21H\nUtilization: 7%\nRevenue: R$380.82\nEfficiency: R$54.40/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+      [3, 60.71083333333333, '22H', 'Hour: 22H\nUtilization: 3%\nRevenue: R$182.13\nEfficiency: R$60.71/util%\nType: Off-Peak', 'color: #2ae01e; opacity: 0.8'],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Capacity Utilization vs Revenue Efficiency (4-Week Avg)",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "hAxis": {
+    "title": "Utilization (%)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    },
+    "minValue": 0
+  },
+  "vAxis": {
+    "title": "Revenue Efficiency (R$ per Utilization %)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    },
+    "minValue": 0
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "12%",
+    "width": "75%",
+    "height": "75%"
+  },
+  "pointSize": 8,
+  "annotations": {
+    "textStyle": {
+      "fontSize": 10,
+      "color": "#333333"
+    }
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
