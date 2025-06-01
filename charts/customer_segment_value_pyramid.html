@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>customer_segment_value_pyramid</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Segment');
+    data.addColumn('number', 'Customer Count');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', 'Avg Value per Customer (R$)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+['Champion', 36, '36', 'Segment: Champion\nCustomers: 36 (3%)\nAvg Value: R$530.45\nTotal Spending: R$19096.04', 530.45, 'R$530', 'color: #FFD700'],
+      ['Loyal', 52, '52', 'Segment: Loyal\nCustomers: 52 (4%)\nAvg Value: R$135.45\nTotal Spending: R$7043.53', 135.45, 'R$135', 'color: #093eea'],
+      ['Potential', 81, '81', 'Segment: Potential\nCustomers: 81 (6%)\nAvg Value: R$71.95\nTotal Spending: R$5827.75', 71.95, 'R$72', 'color: #2ae01e'],
+      ['New', 37, '37', 'Segment: New\nCustomers: 37 (3%)\nAvg Value: R$34.11\nTotal Spending: R$1261.95', 34.11, 'R$34', 'color: #2ae01e'],
+      ['AtRisk', 38, '38', 'Segment: AtRisk\nCustomers: 38 (3%)\nAvg Value: R$14.05\nTotal Spending: R$534.00', 14.05, 'R$14', 'color: #e53e3e'],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Customer Segments: Count vs Value",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "columns",
+  "series": {
+    "0": {
+      "type": "columns",
+      "targetAxisIndex": 0
+    },
+    "1": {
+      "type": "columns",
+      "targetAxisIndex": 1
+    }
+  },
+  "vAxes": {
+    "0": {
+      "title": "Number of Customers",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 12
+      },
+      "minValue": 0
+    },
+    "1": {
+      "title": "Average Value per Customer (R$)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 12
+      },
+      "minValue": 0
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
