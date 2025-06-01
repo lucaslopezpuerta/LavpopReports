@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>revenue_concentration</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Customer Segment');
+    data.addColumn('number', 'Revenue Share (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows([
+['Lost', 55.06723558245117, '55.1%', 'Segment: Lost\nRevenue Share: 55.1%\nCustomers: 1154\nAvg Value: R35.86\nTotal Revenue: R41378.49', 'color: #e53e3e'],
+      ['Champion', 25.41335204285869, '25.4%', 'Segment: Champion\nRevenue Share: 25.4%\nCustomers: 36\nAvg Value: R530.45\nTotal Revenue: R19096.04', 'color: #FCA311'],
+      ['Loyal', 9.373655873910836, '9.4%', 'Segment: Loyal\nRevenue Share: 9.4%\nCustomers: 52\nAvg Value: R135.45\nTotal Revenue: R7043.53', 'color: #2ae01e'],
+      ['Potential', 7.755674075241235, '7.8%', 'Segment: Potential\nRevenue Share: 7.8%\nCustomers: 81\nAvg Value: R71.95\nTotal Revenue: R5827.75', 'color: #2ae01e'],
+      ['New', 1.6794256615761955, '1.7%', 'Segment: New\nRevenue Share: 1.7%\nCustomers: 37\nAvg Value: R34.11\nTotal Revenue: R1261.95', 'color: #2ae01e'],
+      ['AtRisk', 0.7106567639618756, '0.7%', 'Segment: AtRisk\nRevenue Share: 0.7%\nCustomers: 38\nAvg Value: R14.05\nTotal Revenue: R534.00', 'color: #2ae01e'],
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Revenue Concentration by Customer Segment",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "hAxis": {
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "vAxis": {
+    "title": "Revenue Share (%)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    },
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 12,
+      "bold": true,
+      "color": "#333333"
+    }
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
