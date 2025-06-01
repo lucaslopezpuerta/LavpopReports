@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather_correlation_heatmap</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    // Create table with weather factors as rows and business metrics as columns
+    data.addColumn('string', 'Weather Factor');
+    data.addColumn('number', 'Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', 'Wash Services');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    data.addColumn('number', 'Dry Services');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'tooltip'});
+    
+    data.addRows([
+      // Heat Index row
+      ['Heat Index', 
+       -0.41549639387011633, '-0.42 (Moderate)', 
+       'Heat Index to Revenue: -0.42 (Moderate)\nAs heat changes, revenue tends to decrease',
+       
+       -0.2994278838793491, '-0.30 (Weak)', 
+       'Heat Index to Wash Services: -0.30 (Weak)\nAs heat changes, wash cycle count tends to decrease',
+       
+       -0.4665483197105107, '-0.47 (Moderate)', 
+       'Heat Index to Dry Services: -0.47 (Moderate)\nAs heat changes, dry cycle count tends to decrease'
+      ],
+      
+      // Yesterday Rain row
+      ['Yesterday Rain', 
+       0.2820368402172593, '0.28 (Weak)', 
+       'Yesterday Rain to Revenue: 0.28 (Weak)\nAs Yesterday Rain increases, revenue tends to increase',
+       
+       0.2288498616339592, '0.23 (Weak)', 
+       'Yesterday Rain to Wash Services: 0.23 (Weak)\nAs Yesterday Rain increases, wash cycle count tends to increase',
+       
+       0.31200009480930907, '0.31 (Weak)', 
+       'Yesterday Rain to Dry Services: 0.31 (Weak)\nAs Yesterday Rain increases, dry cycle count tends to increase'
+      ],
+      
+      // Humidity row
+      ['Humidity', 
+       0.1301941167594356, '0.13 (Very weak)', 
+       'Humidity to Revenue: 0.13 (Very weak)\nAs humidity increases, revenue shows no clear pattern',
+       
+       0.012191554490995293, '0.01 (Very weak)', 
+       'Humidity to Wash Services: 0.01 (Very weak)\nAs humidity increases, wash cycle count shows no clear pattern',
+       
+       0.23275953766658936, '0.23 (Weak)', 
+       'Humidity to Dry Services: 0.23 (Weak)\nAs humidity increases, dry cycle count tends to increase'
+      ]
+    ]);
+  
+
+            // Base options from server
+            var options = {
+  "title": "Weather Impact on Business Performance",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "chart": {
+    "title": "Weather Impact on Business Performance"
+  },
+  "hAxis": {
+    "title": "Correlation Coefficient",
+    "textStyle": {
+      "fontSize": 14,
+      "bold": true
+    },
+    "minValue": -1,
+    "maxValue": 1,
+    "format": "0.00"
+  },
+  "vAxis": {
+    "title": "Weather Factor",
+    "textPosition": "none",
+    "textStyle": {
+      "fontSize": 12,
+      "bold": true
+    }
+  },
+  "legend": {
+    "position": "top",
+    "textStyle": {
+      "fontSize": 14
+    }
+  },
+  "chartArea": {
+    "left": "10%",
+    "top": "12%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 11,
+      "bold": true,
+      "color": "#333333"
+    },
+    "alwaysOutside": true,
+    "stem": {
+      "color": "#333333",
+      "length": 8
+    },
+    "highContrast": true
+  },
+  "colors": [
+    "red",
+    "#093eea",
+    "#2ae01e"
+  ],
+  "bar": {
+    "groupWidth": "60%"
+  },
+  "tooltip": {
+    "isHtml": true,
+    "showColorCode": true
+  }
+};
+            
+            // Create and draw the chart
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;  /* Use full viewport width */
+            height: 100vh; /* Use full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden; /* Prevent scrollbars in iframe */
+      }
+      #chart_div {
+            width: 650px;  /* Exact chart width */
+            height: 480px; /* Exact chart height */
+            max-width: 650px;
+            max-height:  500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
