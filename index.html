@@ -4,8 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavpop Analytics Dashboard - 2025-05-25 to
-        2025-05-31</title>
+    <title>Lavpop Analytics Dashboard - {{60.analyticsResults.analysisWindow.weekly.start}} to
+        {{60.analyticsResults.analysisWindow.weekly.end}}</title>
+
+    <!-- Load Google Charts globally -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <!-- Enhanced CSS with modern design principles -->
     <style>
@@ -259,7 +262,7 @@
             color: var(--text-secondary);
         }
 
-        /* Chart Container */
+        /* Chart Container - Updated for embedded charts */
         .chart-container {
             background: var(--background-white);
             border-radius: var(--radius-lg);
@@ -268,7 +271,7 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-light);
             position: relative;
-            padding-bottom:3%;
+            padding-bottom: 3%;
         }
 
         .chart-header {
@@ -284,11 +287,34 @@
             margin: 0;
         }
 
-        .chart-iframe {
+        .chart-content {
             width: 100%;
-            height: 500px;
-            border: none;
-            display: block;
+            min-height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            overflow: hidden;
+        }
+
+        .chart-content > div {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        .chart-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-error {
+            color: #dc2626;
+            text-align: center;
+            padding: 2rem;
         }
 
         /* Chart Grid Layouts */
@@ -509,6 +535,21 @@
             text-decoration: underline;
         }
 
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header h1 {
@@ -532,7 +573,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .chart-iframe {
+            .chart-content {
                 height: 400px;
             }
         }
@@ -613,8 +654,8 @@
                         <path
                             d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                     </svg>
-                    2025-05-25 to
-                    2025-05-31
+                    {{60.analyticsResults.analysisWindow.weekly.start}} to
+                    {{60.analyticsResults.analysisWindow.weekly.end}}
                 </div>
             </div>
         </header>
@@ -634,46 +675,47 @@
                 </div>
                 <div class="section-content">
                     <div class="summary-text">
-                        Lavpop Autosserviço Caxias do Sul experienced a notable improvement in overall performance during the week, with increased net revenue, cycle volume, and machine utilization compared to the previous period. Customer activity was well-balanced between wash and dry cycles, with a slight preference for drying. Engagement peaked during mid-afternoon, especially at 4 PM, and the most active day was Friday, contrasting with lower traffic observed on Wednesday. Throughout the day, mornings and late afternoons saw moderate use, with off-peak hours scattered from early morning through late evening. Environmental factors showed a modest inverse relationship between temperature and usage, while rainfall and humidity had minimal impact, indicating that consumer habits were more influenced by time of day and weekday patterns than by weather conditions.
+                        {{70.output[].content[].text}}
                     </div>
 
                     <!-- Enhanced KPI Grid -->
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-title">Total Net Revenue</div>
-                            <div class="kpi-value">R$3060.55</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                ↗
-                                28.1% vs Last Week
+                            <div class="kpi-value">R${{trunc(60.analyticsResults.weeklyMetrics.revenue.net; 2)}}</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.netRevenue >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.netRevenue >= 0; "↗"; "↘")}}
+                                {{60.analyticsResults.weeklyMetrics.weekOverWeek.netRevenue}}% vs Last Week
                             </div>
                         </div>
 
                         <div class="kpi-card">
                             <div class="kpi-title">Total Cycles</div>
-                            <div class="kpi-value">200</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                ↗
-                                32.5% vs Last Week
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.totalServices}}</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.totalServices >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.totalServices >= 0; "↗"; "↘")}}
+                                {{60.analyticsResults.weeklyMetrics.weekOverWeek.totalServices}}% vs Last Week
                             </div>
                         </div>
 
                         <div class="kpi-card">
                             <div class="kpi-title">Overall Utilization</div>
-                            <div class="kpi-value">15%</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                ↗
-                                3.7% vs Last Week
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.utilization}}%</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.utilization >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.utilization >= 0; "↗"; "↘")}}
+                                {{60.analyticsResults.weeklyMetrics.weekOverWeek.utilization}}% vs Last Week
                             </div>
                         </div>
 
                         <div class="kpi-card">
                             <div class="kpi-title">Avg Revenue/Transaction</div>
-                            <div class="kpi-value">R$17.69</div>
+                            <div class="kpi-value">R${{trunc(60.analyticsResults.weeklyMetrics.revenue.net /
+                                60.analyticsResults.weeklyMetrics.transactions; 2)}}</div>
                             <div class="kpi-change neutral-change">
-                                1.2 services/transaction
+                                {{60.analyticsResults.weeklyMetrics.servicesPerTransaction}} services/transaction
                             </div>
                         </div>
                     </div>
@@ -702,8 +744,12 @@
                                 utilization and revenue.
                             </p>
                         </div>
-                        <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/monthly_revenue_trend.html" class="chart-iframe"
-                            loading="lazy" title="Monthly Revenue and Utilization Trend Chart"></iframe>
+                        <div class="chart-content">
+                            <div id="monthlyRevenueTrend" class="chart-loading">
+                                <div class="spinner"></div>
+                                <span>Loading Monthly Revenue Trend...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Performance Comparison Charts -->
@@ -717,8 +763,12 @@
                                     performance.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/comparative_performance.html" class="chart-iframe"
-                                loading="lazy" title="Weekly Performance Comparison Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="comparativePerformance" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Weekly Comparison...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -729,8 +779,12 @@
                                     bars = growth, red bars = decline. Zero line indicates average performance.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/week_vs_4Waverage_growth.html" class="chart-iframe"
-                                loading="lazy" title="Current Week vs 4-Week Average Growth Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="weekVsAveragePerformance" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Growth Analysis...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -743,26 +797,32 @@
                                 4-week average. Identify strongest/weakest days for staffing and marketing decisions.
                             </p>
                         </div>
-                        <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/day_of_week_revenue_distribution.html" class="chart-iframe"
-                            loading="lazy" title="Revenue Distribution by Day of Week Chart"></iframe>
+                        <div class="chart-content">
+                            <div id="dayofWeekRevenueDistribution" class="chart-loading">
+                                <div class="spinner"></div>
+                                <span>Loading Daily Revenue Distribution...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Best/Worst Day Stats -->
                     <div class="stats-grid">
                         <div class="stat-item best-performance">
-                            <div class="stat-value">Friday</div>
+                            <div class="stat-value">{{60.analyticsResults.dayOfWeekAnalysis.bestDay.name}}</div>
                             <div class="stat-label">Best Day</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">R$623.38</div>
+                            <div class="stat-value">R${{trunc(60.analyticsResults.dayOfWeekAnalysis.bestDay.netRevenue;
+                                2)}}</div>
                             <div class="stat-label">Best Day Revenue</div>
                         </div>
                         <div class="stat-item worst-performance">
-                            <div class="stat-value">Wednesday</div>
+                            <div class="stat-value">{{60.analyticsResults.dayOfWeekAnalysis.worstDay.name}}</div>
                             <div class="stat-label">Worst Day</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">R$198.69</div>
+                            <div class="stat-value">R${{trunc(60.analyticsResults.dayOfWeekAnalysis.worstDay.netRevenue;
+                                2)}}</div>
                             <div class="stat-label">Worst Day Revenue</div>
                         </div>
                     </div>
@@ -786,32 +846,32 @@
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-title">Washer Cycles</div>
-                            <div class="kpi-value">97</div>
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.serviceCounts.wash}}</div>
                             <div class="kpi-change neutral-change">
-                                49% of total</div>
+                                {{60.analyticsResults.weeklyMetrics.serviceMix.washPercent}}% of total</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Dryer Cycles</div>
-                            <div class="kpi-value">103</div>
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.serviceCounts.dry}}</div>
                             <div class="kpi-change neutral-change">
-                                52% of total</div>
+                                {{60.analyticsResults.weeklyMetrics.serviceMix.dryPercent}}% of total</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Washer Utilization</div>
-                            <div class="kpi-value">15%</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                ↗
-                                3.8% vs Last Week
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.washUtilization}}%</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.washUtilization >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.washUtilization >= 0; "↗"; "↘")}}
+                                {{60.analyticsResults.weeklyMetrics.weekOverWeek.washUtilization}}% vs Last Week
                             </div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Dryer Utilization</div>
-                            <div class="kpi-value">15%</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                ↗
-                                3.6% vs Last Week
+                            <div class="kpi-value">{{60.analyticsResults.weeklyMetrics.dryUtilization}}%</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.dryUtilization >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weeklyMetrics.weekOverWeek.dryUtilization >= 0; "↗"; "↘")}}
+                                {{60.analyticsResults.weeklyMetrics.weekOverWeek.dryUtilization}}% vs Last Week
                             </div>
                         </div>
                     </div>
@@ -826,8 +886,12 @@
                                     days. Use insights to replicate success factors and improve weak day performance.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/best_worst_day_comparison.html" class="chart-iframe"
-                                loading="lazy" title="Best vs Worst Day Comparison Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="bestWorstDayComparison" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Best vs Worst Day...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -839,8 +903,12 @@
                                     these patterns.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/peak_vs_offpeak.html" class="chart-iframe"
-                                loading="lazy" title="Peak vs Off-Peak Performance Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="peakVsOffPeak" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Peak Analysis...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -854,8 +922,12 @@
                                 Schedule staff and maintenance during low-revenue hours.
                             </p>
                         </div>
-                        <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/enhanced_hourly_revenue.html" class="chart-iframe" loading="lazy"
-                            title="Hourly Revenue Distribution Chart"></iframe>
+                        <div class="chart-content">
+                            <div id="hourlyRevenue" class="chart-loading">
+                                <div class="spinner"></div>
+                                <span>Loading Hourly Revenue...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="chart-grid-2">
@@ -868,8 +940,12 @@
                                     low-utilization periods.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/4Week_hourly_utilization.html" class="chart-iframe"
-                                loading="lazy" title="4-Week Average Hourly Utilization Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="hourlyUtilization" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Utilization...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -881,28 +957,32 @@
                                     optimal performance. Blue dots = peak hours, green = off-peak.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/capacity_efficiency_scatter.html" class="chart-iframe"
-                                loading="lazy" title="Capacity vs Revenue Efficiency Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="capacityEfficiencyScatter" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Efficiency Analysis...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Peak Hours Stats -->
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-value">16:00</div>
+                            <div class="stat-value">{{60.analyticsResults.peakAnalysis.peak.bestHour}}:00</div>
                             <div class="stat-label">Best Hour</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">R$433.18
+                            <div class="stat-value">R${{trunc(60.analyticsResults.peakAnalysis.peak.avgNetRevenue; 2)}}
                             </div>
                             <div class="stat-label">Avg Peak Revenue/Hour</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">263%</div>
+                            <div class="stat-value">{{60.analyticsResults.peakAnalysis.netRevenueDifferential}}%</div>
                             <div class="stat-label">Peak vs Off-Peak Difference</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">31%</div>
+                            <div class="stat-value">{{60.analyticsResults.peakAnalysis.peak.avgUtilization}}%</div>
                             <div class="stat-label">Peak Hours Utilization</div>
                         </div>
                     </div>
@@ -927,25 +1007,25 @@
                         <div class="kpi-card">
                             <div class="kpi-title">Average Services per Visit</div>
                             <div class="kpi-value">
-                                1.08</div>
+                                {{60.analyticsResults.customerLifecycleMetrics.averageServicesPerVisit}}</div>
                             <div class="kpi-change neutral-change">Customer usage pattern</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Average Visit Frequency</div>
-                            <div class="kpi-value">3.3 visits/month
+                            <div class="kpi-value">{{60.analyticsResults.customerLifecycleMetrics.medianVisitFrequency}}
                             </div>
                             <div class="kpi-change neutral-change">Visits per month</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">30-Day Return Rate</div>
                             <div class="kpi-value">
-                                10.9%</div>
+                                {{60.analyticsResults.customerLifecycleMetrics.returnLikelihood.within30Days}}</div>
                             <div class="kpi-change neutral-change">Customer retention</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Active Customers</div>
                             <div class="kpi-value">
-                                23%
+                                {{trunc(60.analyticsResults.customerLifecycleMetrics.returnRates.activeProportion; 1)}}%
                             </div>
                             <div class="kpi-change neutral-change">Currently active</div>
                         </div>
@@ -957,16 +1037,24 @@
                             <div class="chart-header">
                                 <h3 class="chart-title">Customer Segment Value Analysis</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/customer_segment_value_pyramid.html" class="chart-iframe"
-                                loading="lazy" title="Customer Segment Value Pyramid Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="customerSegmentValuePyramid" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Customer Segments...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
                             <div class="chart-header">
                                 <h3 class="chart-title">Customer Retention Funnel</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/customer_retention_funnel.html" class="chart-iframe"
-                                loading="lazy" title="Customer Retention Funnel Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="customerRetentionFunnel" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Retention Funnel...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -975,16 +1063,24 @@
                             <div class="chart-header">
                                 <h3 class="chart-title">Segment Behavior Analysis</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/segment_behavior_summary.html" class="chart-iframe"
-                                loading="lazy" title="Segment Behavior Analysis Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="behaviorBySegment" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Behavior Analysis...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
                             <div class="chart-header">
                                 <h3 class="chart-title">Active vs Lapsed Customers</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/active_vs_lapsed.html" class="chart-iframe"
-                                loading="lazy" title="Active vs Lapsed Customers Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="activeVsLapsed" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Customer Status...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -994,24 +1090,27 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Champions</h4>
                                 <span
-                                    class="segment-badge">36
+                                    class="segment-badge">{{60.analyticsResults.segmentAggregates.Champion.customerCount}}
                                     customers</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Israel Hofman</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Champion[1].name}}</span>
                                 <span
-                                    class="customer-value">R$2597.35</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Champion[1].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Francisco Ricardo De Oliveira</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Champion[2].name}}</span>
                                 <span
-                                    class="customer-value">R$1914.15</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Champion[2].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$530.45</div>
+                                    R${{trunc(60.analyticsResults.segmentAggregates.Champion.averages.netPerCustomer;
+                                    2)}}</div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
                         </div>
@@ -1020,24 +1119,26 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Loyal Customers</h4>
                                 <span
-                                    class="segment-badge">52
+                                    class="segment-badge">{{60.analyticsResults.segmentAggregates.Loyal.customerCount}}
                                     customers</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Ana Neri Vhristo</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Loyal[1].name}}</span>
                                 <span
-                                    class="customer-value">R$940.25</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Loyal[1].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Brno Cardoso Leal</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Loyal[2].name}}</span>
                                 <span
-                                    class="customer-value">R$716</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Loyal[2].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$135.45
+                                    R${{trunc(60.analyticsResults.segmentAggregates.Loyal.averages.netPerCustomer; 2)}}
                                 </div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
@@ -1047,24 +1148,27 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Potential Customers</h4>
                                 <span
-                                    class="segment-badge">81
+                                    class="segment-badge">{{60.analyticsResults.segmentAggregates.Potential.customerCount}}
                                     customers</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Gislaine Lamb</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Potential[1].name}}</span>
                                 <span
-                                    class="customer-value">R$733.89</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Potential[1].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Claudia Lara Schio Vacari</span>
+                                    class="customer-name">{{60.analyticsResults.customerSegments.Potential[2].name}}</span>
                                 <span
-                                    class="customer-value">R$715.99</span>
+                                    class="customer-value">R${{trunc(60.analyticsResults.customerSegments.Potential[2].spending.net;
+                                    2)}}</span>
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$71.95</div>
+                                    R${{trunc(60.analyticsResults.segmentAggregates.Potential.averages.netPerCustomer;
+                                    2)}}</div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
                         </div>
@@ -1090,28 +1194,29 @@
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-title">WhatsApp Messages Sent</div>
-                            <div class="kpi-value">248</div>
-                            <div class="kpi-change neutral-change">R$12.8
+                            <div class="kpi-value">{{60.analyticsResults.smsMetrics.sent}}</div>
+                            <div class="kpi-change neutral-change">R${{trunc(60.analyticsResults.smsMetrics.cost; 2)}}
                                 total cost</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Customer Responses</div>
-                            <div class="kpi-value">26</div>
-                            <div class="kpi-change neutral-change">10.4% response rate</div>
+                            <div class="kpi-value">{{60.analyticsResults.smsMetrics.received}}</div>
+                            <div class="kpi-change neutral-change">{{trunc(60.analyticsResults.smsMetrics.received /
+                                60.analyticsResults.smsMetrics.sent * 100; 1)}}% response rate</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Active Campaigns</div>
-                            <div class="kpi-value">2
+                            <div class="kpi-value">{{60.analyticsResults.campaignPerformance.summary.activeCampaigns}}
                             </div>
                             <div class="kpi-change neutral-change">
-                                1 with reliable data
+                                {{60.analyticsResults.campaignPerformance.summary.reliableCampaigns}} with reliable data
                             </div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Top Coupon Revenue</div>
-                            <div class="kpi-value">R$25.95</div>
-                            <div class="kpi-change neutral-change">From "seca20"
-                                (2 uses)</div>
+                            <div class="kpi-value">R${{trunc(60.analyticsResults.couponStats[1].netRevenue; 2)}}</div>
+                            <div class="kpi-change neutral-change">From "{{60.analyticsResults.couponStats[1].code}}"
+                                ({{60.analyticsResults.couponStats[1].count}} uses)</div>
                         </div>
                     </div>
 
@@ -1131,35 +1236,35 @@
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                                     <h5
                                         style="color: var(--primary-blue); font-size: 1.125rem; font-weight: 600; margin: 0;">
-                                        Campaign: topdry20</h5>
+                                        Campaign: {{60.analyticsResults.campaignPerformance.results[1].couponCode}}</h5>
                                     <span
-                                        style="background: #fbbf24; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">C</span>
+                                        style="background: #fbbf24; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">{{60.analyticsResults.campaignPerformance.results[1].grade}}</span>
                                 </div>
                                 <div class="stats-grid" style="margin-bottom: 1rem;">
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            5
+                                            {{60.analyticsResults.campaignPerformance.results[1].totalRedemptions}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Total
                                             Redemptions</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            R$65
+                                            R${{60.analyticsResults.campaignPerformance.results[1].totalRevenueBRL}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Revenue
                                             Generated</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            R$3.63
+                                            R${{60.analyticsResults.campaignPerformance.results[1].revenuePerDiscountBRL}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">ROI per R$
                                             Discount</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            Champion</div>
+                                            {{60.analyticsResults.campaignPerformance.results[1].targetSegment}}</div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Target Segment
                                         </div>
                                     </div>
@@ -1167,8 +1272,8 @@
                                 <div
                                     style="background: var(--background-white); padding: 1rem; border-radius: var(--radius-sm); border-left: 4px solid var(--accent-green);">
                                     <strong style="color: var(--primary-blue);">Recommendation:</strong>
-                                    Send to 10+ Champion customers, extend 8 more days.
-                                    Keep 20% for now, focus on reaching 20+ customers
+                                    {{60.analyticsResults.campaignPerformance.results[1].recommendation.immediate}}.
+                                    {{60.analyticsResults.campaignPerformance.results[1].recommendation.optimization}}
                                 </div>
                             </div>
 
@@ -1179,35 +1284,35 @@
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                                     <h5
                                         style="color: var(--primary-blue); font-size: 1.125rem; font-weight: 600; margin: 0;">
-                                        Campaign: seca20</h5>
+                                        Campaign: {{60.analyticsResults.campaignPerformance.results[2].couponCode}}</h5>
                                     <span
-                                        style="background: #94a3b8; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">INSUFFICIENT_DATA</span>
+                                        style="background: #94a3b8; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">{{60.analyticsResults.campaignPerformance.results[2].grade}}</span>
                                 </div>
                                 <div class="stats-grid" style="margin-bottom: 1rem;">
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            2
+                                            {{60.analyticsResults.campaignPerformance.results[2].totalRedemptions}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Total
                                             Redemptions</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            R$26
+                                            R${{60.analyticsResults.campaignPerformance.results[2].totalRevenueBRL}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Revenue
                                             Generated</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            R$3.63
+                                            R${{60.analyticsResults.campaignPerformance.results[2].revenuePerDiscountBRL}}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">ROI per R$
                                             Discount</div>
                                     </div>
                                     <div style="text-align: center;">
                                         <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">
-                                            Loyal</div>
+                                            {{60.analyticsResults.campaignPerformance.results[2].targetSegment}}</div>
                                         <div style="font-size: 0.875rem; color: var(--text-secondary);">Target Segment
                                         </div>
                                     </div>
@@ -1215,8 +1320,8 @@
                                 <div
                                     style="background: var(--background-white); padding: 1rem; border-radius: var(--radius-sm); border-left: 4px solid #f59e0b;">
                                     <strong
-                                        style="color: var(--primary-blue);">Recommendation:</strong>Extend to 14+ days and send to 25+ Loyal customers.
-                                    
+                                        style="color: var(--primary-blue);">Recommendation:</strong>{{60.analyticsResults.campaignPerformance.results[2].recommendation.immediate}}.
+                                    {{60.analyticsResults.campaignPerformance.results[2].recommendation.optimization}}
                                 </div>
                             </div>
                         </div>
@@ -1233,8 +1338,12 @@
                                     performance scores.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/marketing_roi_dashboard.html" class="chart-iframe"
-                                loading="lazy" title="Marketing ROI Dashboard"></iframe>
+                            <div class="chart-content">
+                                <div id="marketingROIDashboard" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Marketing ROI...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1245,8 +1354,12 @@
                                     indicate more popular payment methods. Use to optimize payment processing and fees.
                                 </p>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/payment_method_distribution.html"
-                                class="chart-iframe" loading="lazy" title="Payment Method Distribution Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="paymentMethodDistribution" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Payment Methods...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1269,26 +1382,29 @@
                             <tbody>
                                 <tr>
                                     <td><strong>PIX</strong></td>
-                                    <td>47</td>
-                                    <td>28%</td>
-                                    <td>R$18.42</td>
-                                    <td>1
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[1].transactionCount}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.marketShare[1].netRevenueShare}}</td>
+                                    <td>R${{trunc(60.analyticsResults.paymentAnalytics.methodDetails[1].avgTransaction.net;
+                                        2)}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[1].servicesPerTransaction}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Cartão de Débito</strong></td>
-                                    <td>58</td>
-                                    <td>35%</td>
-                                    <td>R$18.49</td>
-                                    <td>1.1
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[2].transactionCount}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.marketShare[2].netRevenueShare}}</td>
+                                    <td>R${{trunc(60.analyticsResults.paymentAnalytics.methodDetails[2].avgTransaction.net;
+                                        2)}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[2].servicesPerTransaction}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Cartão de Crédito</strong></td>
-                                    <td>52</td>
-                                    <td>37%</td>
-                                    <td>R$21.58</td>
-                                    <td>1.3
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[3].transactionCount}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.marketShare[3].netRevenueShare}}</td>
+                                    <td>R${{trunc(60.analyticsResults.paymentAnalytics.methodDetails[3].avgTransaction.net;
+                                        2)}}</td>
+                                    <td>{{60.analyticsResults.paymentAnalytics.methodDetails[3].servicesPerTransaction}}
                                     </td>
                                 </tr>
                             </tbody>
@@ -1300,7 +1416,7 @@
                         <div class="recommendation-item">
                             <div class="recommendation-title">Saldo Usage</div>
                             <div class="recommendation-text">
-                                <strong>18</strong>
+                                <strong>{{60.analyticsResults.paymentAnalytics.methodDetails[4].totalServices}}</strong>
                                 cycles were payed using <strong>Saldo da carteira</strong>.
                             </div>
                         </div>
@@ -1327,35 +1443,36 @@
                         <div class="kpi-card">
                             <div class="kpi-title">Heat Index Correlation</div>
                             <div class="kpi-value">
-                                -0.41</div>
-                            <div class="kpi-change negative-change">
-                                Hot days reduce revenue by approximately 31%
+                                {{trunc(60.analyticsResults.weatherAnalytics.correlations.net.heatIndex; 2)}}</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weatherAnalytics.correlations.net.heatIndex >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{60.analyticsResults.weatherAnalytics.businessInsights.heat.simpleExplanation}}
                             </div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Yesterday Rain Impact</div>
                             <div class="kpi-value">
-                                0.28</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                Days after rain generate approximately 21% more revenue
+                                {{trunc(60.analyticsResults.weatherAnalytics.correlations.net.yesterdayRain; 2)}}</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weatherAnalytics.correlations.net.yesterdayRain >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{60.analyticsResults.weatherAnalytics.businessInsights.yesterdayRain.simpleExplanation}}
                             </div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Humidity Correlation</div>
                             <div class="kpi-value">
-                                0.13</div>
-                            <div class="kpi-change 
-                                positive-change">
-                                Higher
-                                humidity increases demand
+                                {{trunc(60.analyticsResults.weatherAnalytics.correlations.net.humidity; 2)}}</div>
+                            <div class="kpi-change {{if(60.analyticsResults.weatherAnalytics.correlations.net.humidity >= 0; "
+                                positive-change"; "negative-change" )}}">
+                                {{if(60.analyticsResults.weatherAnalytics.correlations.net.humidity >= 0; "Higher
+                                humidity increases demand"; "Lower humidity increases demand")}}
                             </div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Analysis Period</div>
-                            <div class="kpi-value">422</div>
+                            <div class="kpi-value">{{60.analyticsResults.weatherAnalytics.dataPoints}}</div>
                             <div class="kpi-change neutral-change">Data points over
-                                6 months</div>
+                                {{60.analyticsResults.weatherAnalytics.analysisWindow}}</div>
                         </div>
                     </div>
 
@@ -1369,8 +1486,12 @@
                                 weather increases business, negative values mean it decreases business.
                             </p>
                         </div>
-                        <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_correlation_heatmap.html" class="chart-iframe" loading="lazy"
-                            title="Weather Impact Correlation Heatmap"></iframe>
+                        <div class="chart-content">
+                            <div id="correlationHeatmap" class="chart-loading">
+                                <div class="spinner"></div>
+                                <span>Loading Weather Correlations...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="chart-container">
@@ -1382,20 +1503,24 @@
                                 for operational planning and staffing decisions.
                             </p>
                         </div>
-                        <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/weather_revenue_timeline.html" class="chart-iframe"
-                            loading="lazy" title="5-Day Weather Revenue Forecast Chart"></iframe>
+                        <div class="chart-content">
+                            <div id="weatherRevenueTimeline" class="chart-loading">
+                                <div class="spinner"></div>
+                                <span>Loading Weather Forecast...</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Weather Business Insights -->
                     <div class="recommendation-grid">
                         <div class="insight-item">
                             <strong>Heat Impact Analysis:</strong>
-                            Hot days reduce revenue by approximately 31% - Consider
+                            {{60.analyticsResults.weatherAnalytics.businessInsights.heat.simpleExplanation}} - Consider
                             discount offerings on hot days to maximize revenue and customer satisfaction.
                         </div>
                         <div class="insight-item">
                             <strong>Post-Rain Analysis:</strong>
-                            Days after rain generate approximately 21% more revenue -
+                            {{60.analyticsResults.weatherAnalytics.businessInsights.yesterdayRain.simpleExplanation}} -
                             Plan marketing campaigns for days following rainfall to capture increased demand.
                         </div>
                     </div>
@@ -1410,35 +1535,35 @@
                             <div
                                 style="padding: 0.75rem; background: #f8fafc; border-radius: var(--radius-sm); border-left: 4px solid var(--secondary-blue);">
                                 <strong>Week Overview:</strong>
-                                Week Overview: 5 rainy days forecast - prepare for post-rain demand spikes
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[1]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fcfaf8; border-radius: var(--radius-sm); border-left: 4px solid #fbb738;">
-                                Sunday (2025-06-02): Rain expected (0.2mm, 64.5% prob). Prepare for 7% boost on Monday
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[2]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f0fff2; border-radius: var(--radius-sm); border-left: 4px solid var(--accent-green);">
-                                Monday (2025-06-03): Rain expected (3.2mm, 83.9% prob). Prepare for 7% boost on Tuesday
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[3]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f8fafc; border-radius: var(--radius-sm); border-left: 4px solid #5cecf6;">
-                                Tuesday (2025-06-04): Rain expected (5.9mm, 90.3% prob). Prepare for 7% boost on Wednesday
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[4]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fef7ff; border-radius: var(--radius-sm); border-left: 4px solid #8b5cf6;">
-                                Wednesday (2025-06-05): Rain expected (36.7mm, 100% prob). Prepare for 7% boost on Thursday
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[5]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fff7f7; border-radius: var(--radius-sm); border-left: 4px solid #f65c5c;">
-                                Saturday (2025-06-08): Rain expected (15.4mm, 51.6% prob). Prepare for 7% boost on Next day
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[6]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f9fff7; border-radius: var(--radius-sm); border-left: 4px solid #6ef65c;">
-                                
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[7]}}
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fffff7; border-radius: var(--radius-sm); border-left: 4px solid #fad30e;">
-                                
+                                {{60.analyticsResults.weatherAnalytics.forecastInsights[8]}}
                             </div>
                         </div>
                     </div>
@@ -1464,16 +1589,24 @@
                             <div class="chart-header">
                                 <h3 class="chart-title">Revenue Concentration Risk Analysis</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/revenue_concentration.html" class="chart-iframe"
-                                loading="lazy" title="Revenue Concentration Risk Analysis Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="revenueConcentration" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Risk Analysis...</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="chart-container">
                             <div class="chart-header">
                                 <h3 class="chart-title">Predictive Capacity Optimization</h3>
                             </div>
-                            <iframe src="https://lucaslopezpuerta.github.io/LavpopReports/charts/predictive_capacity_forecast.html" class="chart-iframe"
-                                loading="lazy" title="Predictive Capacity Optimization Chart"></iframe>
+                            <div class="chart-content">
+                                <div id="predictiveCapacityForecast" class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <span>Loading Capacity Forecast...</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1492,28 +1625,7 @@
                     <p class="section-subtitle">Data-driven insights and actionable recommendations</p>
                 </div>
                 <div class="section-content">
-                   
-                        <div class="recommendation-grid">
-    <div class="recommendation-item">
-        <div class="recommendation-title">Launch Off-Peak Discount Campaigns</div>
-        <div class="recommendation-text">
-            Use MaxPan's time-based pricing to offer a 10–15% cycle discount during off-peak hours (e.g., 8–9 AM, 1–2 PM, 8–10 PM), which currently show low machine utilization. This will help balance demand throughout the day and increase total cycles, improving overall revenue without overloading peak times.
-        </div>
-    </div>
-    <div class="recommendation-item">
-        <div class="recommendation-title">Introduce a WhatsApp Loyalty Reengagement Campaign</div>
-        <div class="recommendation-text">
-            Create WhatsApp messages targeted at inactive or infrequent users, offering them limited-time coupons or cashback bonuses to incentivize return visits. With only 23.1% of customers active and a low 10.9% 30-day return rate, this campaign can re-engage users while leveraging existing cashback incentives.
-        </div>
-    </div>
-    <div class="recommendation-item">
-        <div class="recommendation-title">Bundle “Laundry Bag + Credit” Offers to Drive Prepaid Usage</div>
-        <div class="recommendation-text">
-            Promote a bundle via WhatsApp that combines the purchase of Lavpop's laundry bag with bonus prepaid credit—e.g., buy a bag and get BRL 20 worth of credit. This taps into your average visit habits (3.3/month) and our POS's prepaid feature to lock in repeat usage while promoting your ancillary product.
-        </div>
-    </div>
-</div>
-                    
+                    {{76.output[].content[].text}}
                 </div>
             </section>
         </main>
@@ -1529,45 +1641,396 @@
                     <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>
                 </p>
                 <p style="margin-top: 1rem; opacity: 0.8;">
-                    Generated on 2025-06-02T02:14:38.730Z | Powered by Nova Lopez Lavanderia Analytics Engine
+                    Generated on {{now}} | Powered by Nova Lopez Lavanderia Analytics Engine
                 </p>
             </div>
         </footer>
     </div>
 
-    <!-- Optional: Add JavaScript for enhanced interactivity -->
-    <script>
-        // Add loading states for charts
-        document.addEventListener('DOMContentLoaded', function () {
-            const iframes = document.querySelectorAll('.chart-iframe');
+    <!-- Chart Embedding JavaScript -->
+    <script type="text/javascript">
+        // Configuration for your GitHub repo and charts
+        const GITHUB_CONFIG = {
+            baseUrl: 'https://raw.githubusercontent.com/lucaslopezpuerta/LavpopReports/main/charts/',
+            charts: {
+                // Performance Overview Charts
+                'monthlyRevenueTrend': 'monthly_revenue_trend.html',
+                'comparativePerformance': 'comparative_performance.html',
+                'weekVsAveragePerformance': 'week_vs_4Waverage_growth.html',
+                'dayofWeekRevenueDistribution': 'day_of_week_revenue_distribution.html',
+                
+                // Operational Excellence Charts
+                'bestWorstDayComparison': 'best_worst_day_comparison.html',
+                'peakVsOffPeak': 'peak_vs_offpeak.html',
+                'hourlyRevenue': 'enhanced_hourly_revenue.html',
+                'hourlyUtilization': '4Week_hourly_utilization.html',
+                'capacityEfficiencyScatter': 'capacity_efficiency_scatter.html',
+                
+                // Customer Intelligence Charts
+                'customerSegmentValuePyramid': 'customer_segment_value_pyramid.html',
+                'customerRetentionFunnel': 'customer_retention_funnel.html',
+                'behaviorBySegment': 'segment_behavior_summary.html',
+                'activeVsLapsed': 'active_vs_lapsed.html',
+                
+                // Marketing Effectiveness Charts
+                'marketingROIDashboard': 'marketing_roi_dashboard.html',
+                'paymentMethodDistribution': 'payment_method_distribution.html',
+                
+                // Weather Impact Charts
+                'correlationHeatmap': 'weather_correlation_heatmap.html',
+                'weatherRevenueTimeline': 'weather_revenue_timeline.html',
+                
+                // Strategic Analysis Charts
+                'revenueConcentration': 'revenue_concentration.html',
+                'predictiveCapacityForecast': 'predictive_capacity_forecast.html'
+            }
+        };
 
-            iframes.forEach(iframe => {
-                iframe.addEventListener('load', function () {
-                    this.style.opacity = '1';
-                });
+        // Chart embedding functionality
+        class ChartEmbedder {
+            constructor() {
+                this.loadedCharts = new Set();
+                this.googleChartsLoaded = false;
+                this.chartQueue = [];
+                this.initGoogleCharts();
+            }
 
-                iframe.style.opacity = '0.7';
-                iframe.style.transition = 'opacity 0.3s ease';
-            });
-
-            // Add smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
+            async initGoogleCharts() {
+                try {
+                    // Load all possible Google Charts packages
+                    google.charts.load('current', {
+                        'packages': ['corechart', 'bar', 'gauge', 'table', 'sankey', 'treemap', 'scatter', 'line', 'timeline']
                     });
+                    
+                    google.charts.setOnLoadCallback(() => {
+                        this.googleChartsLoaded = true;
+                        console.log('Google Charts loaded successfully');
+                        this.processChartQueue();
+                    });
+                } catch (error) {
+                    console.error('Failed to load Google Charts:', error);
+                    this.showGlobalError();
+                }
+            }
+
+            processChartQueue() {
+                // Process any charts that were queued while Google Charts was loading
+                while (this.chartQueue.length > 0) {
+                    const chartId = this.chartQueue.shift();
+                    this.loadChart(chartId);
+                }
+                
+                // Load all charts
+                this.loadAllCharts();
+            }
+
+            async loadAllCharts() {
+                const chartPromises = Object.keys(GITHUB_CONFIG.charts).map(chartId => 
+                    this.loadChart(chartId)
+                );
+                
+                try {
+                    await Promise.all(chartPromises);
+                    console.log('All charts loaded successfully');
+                } catch (error) {
+                    console.error('Some charts failed to load:', error);
+                }
+            }
+
+            async loadChart(chartId) {
+                if (this.loadedCharts.has(chartId)) {
+                    return;
+                }
+
+                if (!this.googleChartsLoaded) {
+                    // Queue the chart for loading once Google Charts is ready
+                    if (!this.chartQueue.includes(chartId)) {
+                        this.chartQueue.push(chartId);
+                    }
+                    return;
+                }
+
+                const chartElement = document.getElementById(chartId);
+                if (!chartElement) {
+                    console.warn(`Chart element with id "${chartId}" not found`);
+                    return;
+                }
+
+                try {
+                    // Show loading state
+                    this.showLoading(chartElement);
+
+                    // Fetch the chart HTML
+                    const chartUrl = GITHUB_CONFIG.baseUrl + GITHUB_CONFIG.charts[chartId];
+                    console.log(`Loading chart: ${chartId} from ${chartUrl}`);
+                    
+                    const response = await fetch(chartUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch chart: ${response.status} - ${response.statusText}`);
+                    }
+
+                    const chartHtml = await response.text();
+                    
+                    // Extract and execute the chart code
+                    await this.extractAndExecuteChart(chartHtml, chartId);
+                    
+                    this.loadedCharts.add(chartId);
+                    console.log(`Successfully loaded chart: ${chartId}`);
+                    
+                } catch (error) {
+                    console.error(`Failed to load chart ${chartId}:`, error);
+                    this.showError(chartElement, error.message, chartId);
+                }
+            }
+
+            async extractAndExecuteChart(chartHtml, chartId) {
+                try {
+                    // Parse the HTML
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(chartHtml, 'text/html');
+                    
+                    // Extract the script content
+                    const scripts = doc.querySelectorAll('script');
+                    let chartScript = '';
+                    
+                    for (const script of scripts) {
+                        if (script.textContent && script.textContent.includes('drawChart')) {
+                            chartScript = script.textContent;
+                            break;
+                        }
+                    }
+
+                    if (!chartScript) {
+                        throw new Error('Chart script not found in HTML');
+                    }
+
+                    // Modify the script to use our chart container
+                    const modifiedScript = this.modifyChartScript(chartScript, chartId);
+                    
+                    // Execute the modified script
+                    eval(modifiedScript);
+                    
+                } catch (error) {
+                    throw new Error(`Failed to extract chart code: ${error.message}`);
+                }
+            }
+
+            modifyChartScript(scriptContent, chartId) {
+                // Replace the chart_div reference with our specific chart ID
+                let modified = scriptContent
+                    .replace(/document\.getElementById\(['"]chart_div['"]\)/g, `document.getElementById('${chartId}')`)
+                    .replace(/chart_div/g, chartId);
+
+                // Make charts responsive by modifying the options
+                modified = modified
+                    // Replace fixed width values with responsive calculation
+                    .replace(/"width":\s*\d+/g, '"width": Math.min(document.getElementById(\'' + chartId + '\').offsetWidth - 40, 900)')
+                    .replace(/width:\s*\d+/g, 'width: Math.min(document.getElementById(\'' + chartId + '\').offsetWidth - 40, 900)')
+                    // Replace fixed height values with responsive calculation  
+                    .replace(/"height":\s*\d+/g, '"height": Math.min(480, Math.max(300, document.getElementById(\'' + chartId + '\').offsetWidth * 0.5))')
+                    .replace(/height:\s*\d+/g, 'height: Math.min(480, Math.max(300, document.getElementById(\'' + chartId + '\').offsetWidth * 0.5))')
+                    // Ensure chart area is responsive
+                    .replace(/"left":\s*"\d+%"/g, '"left": "8%"')
+                    .replace(/"width":\s*"\d+%"/g, '"width": "85%"')
+                    .replace(/"height":\s*"\d+%"/g, '"height": "75%"')
+                    .replace(/left:\s*"\d+%"/g, 'left: "8%"')
+                    .replace(/width:\s*"\d+%"/g, 'width: "85%"')
+                    .replace(/height:\s*"\d+%"/g, 'height: "75%"');
+
+                // Extract the drawChart function
+                const drawChartMatch = modified.match(/function\s+drawChart\s*\(\s*\)\s*{[\s\S]*?(?=function\s+\w+|$)/);
+                
+                if (drawChartMatch) {
+                    let drawChartFunction = drawChartMatch[0];
+                    
+                    // Ensure the function ends properly
+                    if (!drawChartFunction.trim().endsWith('}')) {
+                        const braceCount = (drawChartFunction.match(/{/g) || []).length;
+                        const closeBraceCount = (drawChartFunction.match(/}/g) || []).length;
+                        const missingBraces = braceCount - closeBraceCount;
+                        
+                        for (let i = 0; i < missingBraces; i++) {
+                            drawChartFunction += '}';
+                        }
+                    }
+                    
+                    // Return the function with immediate execution
+                    return `
+                        (function() {
+                            try {
+                                ${drawChartFunction}
+                                if (typeof google !== 'undefined' && google.charts) {
+                                    drawChart();
+                                } else {
+                                    throw new Error('Google Charts not available');
+                                }
+                            } catch (error) {
+                                console.error('Error executing chart ${chartId}:', error);
+                                const element = document.getElementById('${chartId}');
+                                if (element) {
+                                    element.innerHTML = '<div class="chart-error"><h4>Chart Error</h4><p>' + error.message + '</p></div>';
+                                }
+                            }
+                        })();
+                    `;
+                }
+
+                // Fallback: try to execute the entire script
+                return `
+                    (function() {
+                        try {
+                            ${modified}
+                        } catch (error) {
+                            console.error('Error executing chart ${chartId}:', error);
+                            const element = document.getElementById('${chartId}');
+                            if (element) {
+                                element.innerHTML = '<div class="chart-error"><h4>Chart Error</h4><p>' + error.message + '</p></div>';
+                            }
+                        }
+                    })();
+                `;
+            }
+
+            showLoading(element) {
+                element.innerHTML = `
+                    <div class="chart-loading">
+                        <div class="spinner"></div>
+                        <span>Loading chart...</span>
+                    </div>
+                `;
+            }
+
+            showError(element, message, chartId) {
+                element.innerHTML = `
+                    <div class="chart-error">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="#dc2626">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"/>
+                        </svg>
+                        <h4>Failed to load chart</h4>
+                        <p style="font-size: 0.875rem; margin: 0.5rem 0;">${message}</p>
+                        <button onclick="chartEmbedder.refreshChart('${chartId}')" style="
+                            background: var(--primary-blue); 
+                            color: white; 
+                            border: none; 
+                            padding: 0.5rem 1rem; 
+                            border-radius: 0.25rem; 
+                            cursor: pointer;
+                            margin-top: 1rem;
+                            font-size: 0.875rem;
+                        ">Retry</button>
+                    </div>
+                `;
+            }
+
+            showGlobalError() {
+                const allChartElements = document.querySelectorAll('[id*="chart"], [class*="chart-loading"]');
+                allChartElements.forEach(element => {
+                    if (element.classList.contains('chart-loading') || element.id) {
+                        this.showError(element, 'Google Charts failed to load', 'global');
+                    }
                 });
-            });
+            }
+
+            // Method to refresh a specific chart
+            async refreshChart(chartId) {
+                this.loadedCharts.delete(chartId);
+                await this.loadChart(chartId);
+            }
+
+            // Method to refresh all charts
+            async refreshAllCharts() {
+                this.loadedCharts.clear();
+                await this.loadAllCharts();
+            }
+        }
+
+        // Initialize the chart embedder when the page loads
+        let chartEmbedder;
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing chart embedder...');
+            chartEmbedder = new ChartEmbedder();
+        });
+
+        // Utility function to manually trigger chart refresh
+        function refreshCharts() {
+            if (chartEmbedder) {
+                chartEmbedder.refreshAllCharts();
+            }
+        }
+
+        // Handle window resize for chart responsiveness
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (chartEmbedder) {
+                    chartEmbedder.refreshAllCharts();
+                }
+            }, 500);
+        });
+
+        // Optional: Auto-refresh charts every 30 minutes to get latest data
+        setInterval(() => {
+            if (chartEmbedder && document.visibilityState === 'visible') {
+                console.log('Auto-refreshing charts...');
+                chartEmbedder.refreshAllCharts();
+            }
+        }, 30 * 60 * 1000); // 30 minutes
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible' && chartEmbedder) {
+                // Refresh charts when page becomes visible (user returns to tab)
+                setTimeout(() => {
+                    chartEmbedder.refreshAllCharts();
+                }, 1000);
+            }
         });
 
         // Print optimization
-        window.addEventListener('beforeprint', function () {
+        window.addEventListener('beforeprint', function() {
             document.body.style.fontSize = '12px';
         });
 
-        window.addEventListener('afterprint', function () {
+        window.addEventListener('afterprint', function() {
             document.body.style.fontSize = '';
+        });
+
+        // Add smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            console.log('Dashboard loaded successfully');
+            
+            // Log performance metrics
+            if (window.performance && window.performance.timing) {
+                const timing = window.performance.timing;
+                const loadTime = timing.loadEventEnd - timing.navigationStart;
+                console.log(`Total load time: ${loadTime}ms`);
+            }
+        });
+
+        // Error handling for global JavaScript errors
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
         });
     </script>
 </body>
