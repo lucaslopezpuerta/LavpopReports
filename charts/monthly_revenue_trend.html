@@ -18,12 +18,13 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({type: 'string', role: 'tooltip'});
     data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
     data.addRows([
-['January', 8231.795749999965, 'R$8k', 'Month: January\nRevenue: R$8231.80\nTransactions: 486\nUtilization: 9%\nGrowth: +0.0%', 9],
-      ['February', 7497.764999999969, 'R$7k', 'Month: February\nRevenue: R$7497.76\nTransactions: 451\nUtilization: 9%\nGrowth: -8.9%', 9],
-      ['March', 7578.746999999963, 'R$8k', 'Month: March\nRevenue: R$7578.75\nTransactions: 453\nUtilization: 8%\nGrowth: +1.1%', 8],
-      ['April', 8993.45124999999, 'R$9k', 'Month: April\nRevenue: R$8993.45\nTransactions: 497\nUtilization: 10%\nGrowth: +18.7%', 10],
-      ['May', 10972.291750000055, 'R$11k', 'Month: May\nRevenue: R$10972.29\nTransactions: 593\nUtilization: 12%\nGrowth: +22.0%', 12],
+['January', 8231.795749999965, 'R$8k', 'Month: January\nRevenue: R$8231.80\nTransactions: 486\nUtilization: 9%\nGrowth: +0.0%', 9, '9%'],
+      ['February', 7497.764999999969, 'R$7k', 'Month: February\nRevenue: R$7497.76\nTransactions: 451\nUtilization: 9%\nGrowth: -8.9%', 9, '9%'],
+      ['March', 7578.746999999963, 'R$8k', 'Month: March\nRevenue: R$7578.75\nTransactions: 453\nUtilization: 8%\nGrowth: +1.1%', 8, '8%'],
+      ['April', 8993.45124999999, 'R$9k', 'Month: April\nRevenue: R$8993.45\nTransactions: 497\nUtilization: 10%\nGrowth: +18.7%', 10, '10%'],
+      ['May', 10972.291750000055, 'R$11k', 'Month: May\nRevenue: R$10972.29\nTransactions: 593\nUtilization: 12%\nGrowth: +22.0%', 12, '12%'],
     ]);
   
 
@@ -35,7 +36,7 @@ function drawChart() {
     "fontSize": 20,
     "bold": true
   },
-  "width": 650,
+  "width": 850,
   "height": 480,
   "backgroundColor": "#ffffff",
   "seriesType": "columns",
@@ -88,7 +89,7 @@ function drawChart() {
     }
   },
   "chartArea": {
-    "left": "10%",
+    "left": "15%",
     "top": "12%",
     "width": "78%",
     "height": "75%"
