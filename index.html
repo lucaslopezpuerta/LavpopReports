@@ -271,7 +271,7 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-light);
             position: relative;
-            padding-bottom: 3%;
+            padding-bottom: 0%;
         }
 
         .chart-header {
@@ -293,14 +293,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            padding-left: 1.5rem;
+            padding-top: 1rem;
             overflow: hidden;
         }
 
+        /* Ensure charts fill their containers properly */
         .chart-content > div {
             width: 100% !important;
             max-width: 100% !important;
-            height: auto !important;
         }
 
         .chart-loading {
@@ -574,7 +575,13 @@
             }
 
             .chart-content {
-                height: 400px;
+                min-height: 350px;
+                padding: 0.5rem;
+            }
+
+            /* Make charts more compact on mobile */
+            .chart-content > div {
+                min-width: 280px !important;
             }
         }
 
@@ -1822,22 +1829,6 @@
                     .replace(/document\.getElementById\(['"]chart_div['"]\)/g, `document.getElementById('${chartId}')`)
                     .replace(/chart_div/g, chartId);
 
-                // Make charts responsive by modifying the options
-                modified = modified
-                    // Replace fixed width values with responsive calculation
-                    .replace(/"width":\s*\d+/g, '"width": Math.min(document.getElementById(\'' + chartId + '\').offsetWidth - 40, 900)')
-                    .replace(/width:\s*\d+/g, 'width: Math.min(document.getElementById(\'' + chartId + '\').offsetWidth - 40, 900)')
-                    // Replace fixed height values with responsive calculation  
-                    .replace(/"height":\s*\d+/g, '"height": Math.min(480, Math.max(300, document.getElementById(\'' + chartId + '\').offsetWidth * 0.5))')
-                    .replace(/height:\s*\d+/g, 'height: Math.min(480, Math.max(300, document.getElementById(\'' + chartId + '\').offsetWidth * 0.5))')
-                    // Ensure chart area is responsive
-                    .replace(/"left":\s*"\d+%"/g, '"left": "8%"')
-                    .replace(/"width":\s*"\d+%"/g, '"width": "85%"')
-                    .replace(/"height":\s*"\d+%"/g, '"height": "75%"')
-                    .replace(/left:\s*"\d+%"/g, 'left: "8%"')
-                    .replace(/width:\s*"\d+%"/g, 'width: "85%"')
-                    .replace(/height:\s*"\d+%"/g, 'height: "75%"');
-
                 // Extract the drawChart function
                 const drawChartMatch = modified.match(/function\s+drawChart\s*\(\s*\)\s*{[\s\S]*?(?=function\s+\w+|$)/);
                 
@@ -1855,13 +1846,54 @@
                         }
                     }
                     
-                    // Return the function with immediate execution
+                    // Return the function with responsive modifications and immediate execution
                     return `
                         (function() {
                             try {
                                 ${drawChartFunction}
+                                
+                                // Override the original drawChart to make it responsive
+                                const originalDrawChart = drawChart;
+                                window.drawChart_${chartId} = function() {
+                                    const container = document.getElementById('${chartId}');
+                                    if (!container) return;
+                                    
+                                    // Get container dimensions
+                                    const containerWidth = container.offsetWidth || container.clientWidth;
+                                    const containerHeight = container.offsetHeight || container.clientHeight || 480;
+                                    
+                                    // Call original function but modify options for responsiveness
+                                    const originalOptionsVar = typeof options !== 'undefined' ? options : {};
+                                    
+                                    // Create responsive options
+                                    const responsiveOptions = {
+                                        ...originalOptionsVar,
+                                        width: Math.max(containerWidth - 40, 300), // Leave some padding
+                                        height: Math.min(Math.max(containerHeight - 40, 300), 500), // Responsive height with limits
+                                        chartArea: {
+                                            ...originalOptionsVar.chartArea,
+                                            left: containerWidth > 600 ? '8%' : '12%',
+                                            top: '12%',
+                                            width: containerWidth > 600 ? '80%' : '75%',
+                                            height: '75%'
+                                        }
+                                    };
+                                    
+                                    // Execute original draw function with responsive options
+                                    originalDrawChart();
+                                    
+                                    // If chart variable exists, redraw with responsive options
+                                    if (typeof chart !== 'undefined' && typeof data !== 'undefined') {
+                                        try {
+                                            chart.draw(data, responsiveOptions);
+                                        } catch (e) {
+                                            console.warn('Could not apply responsive options for ${chartId}:', e);
+                                        }
+                                    }
+                                };
+                                
                                 if (typeof google !== 'undefined' && google.charts) {
-                                    drawChart();
+                                    window.drawChart_${chartId}();
                                 } else {
                                     throw new Error('Google Charts not available');
                                 }
@@ -1876,11 +1908,21 @@
                     `;
                 }
 
-                // Fallback: try to execute the entire script
+                // Fallback: try to execute the entire script with responsive modifications
                 return `
                     (function() {
                         try {
                             ${modified}
+                            
+                            // Add resize listener for this specific chart
+                            window.addEventListener('resize', function() {
+                                if (typeof window.drawChart_${chartId} === 'function') {
+                                    clearTimeout(window.resizeTimer_${chartId});
+                                    window.resizeTimer_${chartId} = setTimeout(() => {
+                                        window.drawChart_${chartId}();
+                                    }, 250);
+                                }
+                            });
                         } catch (error) {
                             console.error('Error executing chart ${chartId}:', error);
                             const element = document.getElementById('${chartId}');
@@ -1935,12 +1977,22 @@
             // Method to refresh a specific chart
             async refreshChart(chartId) {
                 this.loadedCharts.delete(chartId);
+                // Clear any existing resize timer for this chart
+                if (window[`resizeTimer_${chartId}`]) {
+                    clearTimeout(window[`resizeTimer_${chartId}`]);
+                }
                 await this.loadChart(chartId);
             }
 
             // Method to refresh all charts
             async refreshAllCharts() {
                 this.loadedCharts.clear();
+                // Clear all resize timers
+                Object.keys(GITHUB_CONFIG.charts).forEach(chartId => {
+                    if (window[`resizeTimer_${chartId}`]) {
+                        clearTimeout(window[`resizeTimer_${chartId}`]);
+                    }
+                });
                 await this.loadAllCharts();
             }
         }
@@ -1964,10 +2016,17 @@
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                if (chartEmbedder) {
-                    chartEmbedder.refreshAllCharts();
-                }
-            }, 500);
+                // Trigger individual chart resize functions if they exist
+                Object.keys(GITHUB_CONFIG.charts).forEach(chartId => {
+                    if (typeof window[`drawChart_${chartId}`] === 'function') {
+                        try {
+                            window[`drawChart_${chartId}`]();
+                        } catch (e) {
+                            console.warn(`Failed to resize chart ${chartId}:`, e);
+                        }
+                    }
+                });
+            }, 300);
         });
 
         // Optional: Auto-refresh charts every 30 minutes to get latest data
@@ -1981,10 +2040,18 @@
         // Handle page visibility changes
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'visible' && chartEmbedder) {
-                // Refresh charts when page becomes visible (user returns to tab)
+                // Just resize existing charts when page becomes visible instead of full refresh
                 setTimeout(() => {
-                    chartEmbedder.refreshAllCharts();
-                }, 1000);
+                    Object.keys(GITHUB_CONFIG.charts).forEach(chartId => {
+                        if (typeof window[`drawChart_${chartId}`] === 'function') {
+                            try {
+                                window[`drawChart_${chartId}`]();
+                            } catch (e) {
+                                console.warn(`Failed to resize chart ${chartId}:`, e);
+                            }
+                        }
+                    });
+                }, 500);
             }
         });
 
