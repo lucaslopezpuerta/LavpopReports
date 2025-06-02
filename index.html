@@ -271,7 +271,7 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-light);
             position: relative;
-            padding-bottom: 0%;
+            padding-bottom: 3%;
         }
 
         .chart-header {
@@ -293,15 +293,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-left: 1.5rem;
-            padding-top: 1rem;
+            padding: 0.5rem;
             overflow: hidden;
         }
 
-        /* Ensure charts fill their containers properly */
+        /* Force charts to fit containers */
         .chart-content > div {
             width: 100% !important;
             max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Override Google Charts inline styles */
+        .chart-content svg {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
         }
 
         .chart-loading {
@@ -1829,6 +1836,10 @@
                     .replace(/document\.getElementById\(['"]chart_div['"]\)/g, `document.getElementById('${chartId}')`)
                     .replace(/chart_div/g, chartId);
 
+                // Simple fix: Replace fixed width values with responsive width
+                modified = modified.replace(/["']width["']\s*:\s*\d+/g, '"width": "100%"');
+                modified = modified.replace(/width:\s*\d+/g, 'width: "100%"');
+                
                 // Extract the drawChart function
                 const drawChartMatch = modified.match(/function\s+drawChart\s*\(\s*\)\s*{[\s\S]*?(?=function\s+\w+|$)/);
                 
@@ -1846,54 +1857,28 @@
                         }
                     }
                     
-                    // Return the function with responsive modifications and immediate execution
+                    // Simple responsive wrapper
                     return `
                         (function() {
                             try {
                                 ${drawChartFunction}
                                 
-                                // Override the original drawChart to make it responsive
+                                // Simple responsive override
                                 const originalDrawChart = drawChart;
-                                window.drawChart_${chartId} = function() {
+                                drawChart = function() {
                                     const container = document.getElementById('${chartId}');
-                                    if (!container) return;
-                                    
-                                    // Get container dimensions
-                                    const containerWidth = container.offsetWidth || container.clientWidth;
-                                    const containerHeight = container.offsetHeight || container.clientHeight || 480;
-                                    
-                                    // Call original function but modify options for responsiveness
-                                    const originalOptionsVar = typeof options !== 'undefined' ? options : {};
-                                    
-                                    // Create responsive options
-                                    const responsiveOptions = {
-                                        ...originalOptionsVar,
-                                        width: Math.max(containerWidth - 40, 300), // Leave some padding
-                                        height: Math.min(Math.max(containerHeight - 40, 300), 500), // Responsive height with limits
-                                        chartArea: {
-                                            ...originalOptionsVar.chartArea,
-                                            left: containerWidth > 600 ? '8%' : '12%',
-                                            top: '12%',
-                                            width: containerWidth > 600 ? '80%' : '75%',
-                                            height: '75%'
-                                        }
-                                    };
-                                    
-                                    // Execute original draw function with responsive options
-                                    originalDrawChart();
-                                    
-                                    // If chart variable exists, redraw with responsive options
-                                    if (typeof chart !== 'undefined' && typeof data !== 'undefined') {
-                                        try {
-                                            chart.draw(data, responsiveOptions);
-                                        } catch (e) {
-                                            console.warn('Could not apply responsive options for ${chartId}:', e);
+                                    if (container && typeof options !== 'undefined') {
+                                        const containerWidth = container.offsetWidth || 600;
+                                        options.width = Math.max(containerWidth - 20, 300);
+                                        if (options.chartArea) {
+                                            options.chartArea.width = '85%';
                                         }
                                     }
+                                    originalDrawChart();
                                 };
                                 
                                 if (typeof google !== 'undefined' && google.charts) {
-                                    window.drawChart_${chartId}();
+                                    drawChart();
                                 } else {
                                     throw new Error('Google Charts not available');
                                 }
@@ -1908,21 +1893,11 @@
                     `;
                 }
 
-                // Fallback: try to execute the entire script with responsive modifications
+                // Fallback: execute with simple width fix
                 return `
                     (function() {
                         try {
                             ${modified}
-                            
-                            // Add resize listener for this specific chart
-                            window.addEventListener('resize', function() {
-                                if (typeof window.drawChart_${chartId} === 'function') {
-                                    clearTimeout(window.resizeTimer_${chartId});
-                                    window.resizeTimer_${chartId} = setTimeout(() => {
-                                        window.drawChart_${chartId}();
-                                    }, 250);
-                                }
-                            });
                         } catch (error) {
                             console.error('Error executing chart ${chartId}:', error);
                             const element = document.getElementById('${chartId}');
