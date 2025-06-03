@@ -487,12 +487,114 @@
                         : values;
                     
                     filteredHeaders.forEach((header, index) => {
-                        row[header] = filteredValues[index] || '';
+                        let value = filteredValues[index] || '';
+                        
+                        // Format dates if detected
+                        if (this.isDateColumn(header) && value) {
+                            value = this.formatDate(value);
+                        }
+                        
+                        row[header] = value;
                     });
                     return row;
                 });
                 
                 return { headers: filteredHeaders, rows };
+            }
+
+            isDateColumn(header) {
+                const dateColumns = ['Data_Hora', 'Data Medicao', 'lastContactDate', 'date', 'data'];
+                return dateColumns.some(col => header.toLowerCase().includes(col.toLowerCase()));
+            }
+
+            formatDate(dateString) {
+                try {
+                    // Handle various date formats
+                    let date;
+                    
+                    if (dateString.includes('-')) {
+                        // YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format
+                        date = new Date(dateString);
+                    } else if (dateString.includes('/')) {
+                        // Already in DD/MM/YYYY format
+                        return dateString;
+                    } else {
+                        return dateString;
+                    }
+                    
+                    if (isNaN(date.getTime())) {
+                        return dateString;
+                    }
+                    
+                    // Format to DD/MM/YYYY HH:MM:SS
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    
+                    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+                } catch (error) {
+                    return dateString;
+                }
+            }
+
+            getColumnDefs(headers) {
+                const columnDefs = [];
+                
+                headers.forEach((header, index) => {
+                    if (this.isDateColumn(header)) {
+                        columnDefs.push({
+                            targets: index,
+                            type: 'date',
+                            render: function(data, type, row) {
+                                if (type === 'display' || type === 'type') {
+                                    return data;
+                                }
+                                return data;
+                            }
+                        });
+                    }
+                });
+                
+                return columnDefs;
+            }
+
+            addColumnFilters(tableType, tableId, headers) {
+                // Add filter row below header
+                const filterRow = $('<tr class="filter-row"></tr>');
+                
+                headers.forEach((header, index) => {
+                    if (this.isDateColumn(header)) {
+                        filterRow.append(`
+                            <th>
+                                <input type="text" class="form-control date-filter" 
+                                       placeholder="DD/MM/YYYY" 
+                                       data-column="${index}"
+                                       style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 3px;">
+                            </th>
+                        `);
+                    } else {
+                        filterRow.append(`
+                            <th>
+                                <input type="text" class="form-control column-filter" 
+                                       placeholder="Filter ${header}" 
+                                       data-column="${index}"
+                                       style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 3px;">
+                            </th>
+                        `);
+                    }
+                });
+                
+                $(`#${tableId} thead`).append(filterRow);
+                
+                // Add event listeners
+                $(`#${tableId} .column-filter, #${tableId} .date-filter`).on('keyup change', (e) => {
+                    const columnIndex = $(e.target).data('column');
+                    const searchValue = e.target.value;
+                    this.tables[tableType].column(columnIndex).search(searchValue).draw();
+                });
             }
 
             parseCSVLine(line, separator = ',') {
@@ -537,7 +639,7 @@
                     </table>
                 `;
 
-                // Initialize DataTable
+                // Initialize DataTable with advanced features
                 this.tables[tableType] = $(`#${tableId}`).DataTable({
                     responsive: true,
                     pageLength: 25,
@@ -555,6 +657,7 @@
                     ],
                     order: [[0, 'desc']],
                     scrollX: true,
+                    columnDefs: this.getColumnDefs(data.headers),
                     language: {
                         search: "Search:",
                         lengthMenu: "Show _MENU_ entries",
@@ -569,6 +672,9 @@
                         }
                     }
                 });
+
+                // Add column-specific filters
+                this.addColumnFilters(tableType, tableId, data.headers);
             }
 
             getTableName(tableType) {
