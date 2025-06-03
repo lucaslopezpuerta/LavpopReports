@@ -58,7 +58,7 @@
 
         .header {
             background: #020024;
-            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(42, 224, 30, 1) 100%);
+            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 40%, rgba(42, 224, 30, 1) 100%);
             padding: 2rem 0;
             box-shadow: var(--shadow-lg);
             margin-bottom: 2rem;
@@ -670,7 +670,7 @@
                 headers.forEach((header, index) => {
                     if (this.isDateColumn(header)) {
                         columnDefs.push({
-                            targets: index,
+                            targets: index + 1, // +1 for checkbox column
                             type: 'date',
                             render: function(data, type, row) {
                                 if (type === 'sort' || type === 'type') {
@@ -701,9 +701,9 @@
                     return;
                 }
                 
-                // Create filter container above the table
+                // Create filter container in stats panel area
                 const filterContainer = $(`
-                    <div class="column-filters" style="margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                    <div class="column-filters" style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
                         <h4 style="margin-bottom: 1rem; color: #1e293b;">Column Filters</h4>
                         <div class="filter-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;"></div>
                     </div>
@@ -724,8 +724,8 @@
                     `);
                 });
                 
-                // Insert filter container before the table
-                $(`#${tableId}`).parent().prepend(filterContainer);
+                // Insert filter container in stats panel area
+                $('#stats-panel').append(filterContainer);
                 
                 // Add event listeners after container is in DOM
                 headers.forEach((header, index) => {
