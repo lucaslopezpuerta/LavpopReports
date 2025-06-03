@@ -403,17 +403,17 @@
                         this.tables[tableType].destroy();
                     }
 
-                    // Create appropriate download URL based on file type
+                    // Alternative: Use Google's public CSV URLs that bypass CORS
                     let csvUrl;
                     if (this.googleSheets.includes(tableType)) {
-                        // Google Sheets CSV export URL
+                        // Google Sheets public CSV - works with link sharing
                         csvUrl = `https://docs.google.com/spreadsheets/d/${this.fileIds[tableType]}/export?format=csv&gid=0`;
                     } else {
-                        // Regular Google Drive file CSV export URL  
-                        csvUrl = `https://drive.google.com/uc?export=download&id=${this.fileIds[tableType]}`;
+                        // Convert Google Drive URLs to direct download format
+                        csvUrl = `https://drive.usercontent.google.com/download?id=${this.fileIds[tableType]}&export=download`;
                     }
                     
-                    // Fetch CSV data
+                    console.log(`Fetching: ${csvUrl}`);
                     const response = await fetch(csvUrl);
                     if (!response.ok) {
                         throw new Error(`Failed to fetch data: ${response.status}`);
