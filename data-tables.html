@@ -57,8 +57,7 @@
         }
 
         .header {
-            background: #020024;
-            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 40%, rgba(42, 224, 30, 1) 100%);
+            background: linear-gradient(324deg, rgba(16, 48, 107, 1) 0%, rgba(26, 71, 152, 1) 70%);
             padding: 2rem 0;
             box-shadow: var(--shadow-lg);
             margin-bottom: 2rem;
@@ -426,22 +425,22 @@
 
                 <!-- Summary Stats Panel -->
                 <div id="stats-panel" class="stats-panel" style="display: none;">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="total-records">-</div>
-                            <div class="stat-label">Total Records</div>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div class="stat-card" style="padding: 0.75rem;">
+                            <div class="stat-value" id="total-records" style="font-size: 1.25rem;">-</div>
+                            <div class="stat-label" style="font-size: 0.75rem;">Total Records</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="filtered-records">-</div>
-                            <div class="stat-label">Filtered Records</div>
+                        <div class="stat-card" style="padding: 0.75rem;">
+                            <div class="stat-value" id="filtered-records" style="font-size: 1.25rem;">-</div>
+                            <div class="stat-label" style="font-size: 0.75rem;">Filtered Records</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="date-range">-</div>
-                            <div class="stat-label">Date Range</div>
+                        <div class="stat-card" id="date-range-card" style="padding: 0.75rem;">
+                            <div class="stat-value" id="date-range" style="font-size: 1.25rem;">-</div>
+                            <div class="stat-label" style="font-size: 0.75rem;">Date Range</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="selected-rows">0</div>
-                            <div class="stat-label">Selected Rows</div>
+                        <div class="stat-card" style="padding: 0.75rem;">
+                            <div class="stat-value" id="selected-rows" style="font-size: 1.25rem;">0</div>
+                            <div class="stat-label" style="font-size: 0.75rem;">Selected Rows</div>
                         </div>
                     </div>
                 </div>
@@ -607,10 +606,12 @@
                         // Handle different value types properly
                         if (value === null || value === undefined || value === 'null') {
                             value = '';
-                        } else if (value === 0 || value === '0') {
+                        } else if (value === 0 || value === '0' || (typeof value === 'string' && value.trim() === '0')) {
                             value = '0';
-                        } else if (value === '') {
+                        } else if (value === '' || (typeof value === 'string' && value.trim() === '')) {
                             value = '';
+                        } else {
+                            value = String(value).trim();
                         }
                         
                         // Format dates if detected
@@ -701,6 +702,10 @@
                     return;
                 }
                 
+                // Clear existing filters to prevent duplication
+                $('#stats-panel .column-filters').remove();
+                $('#stats-panel .quick-filters').remove();
+                
                 // Create filter container in stats panel area
                 const filterContainer = $(`
                     <div class="column-filters" style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
@@ -752,7 +757,7 @@
                     </div>
                 `);
 
-                $('.column-filters').after(quickFilters);
+                $('#stats-panel .column-filters').after(quickFilters);
 
                 quickFilters.find('.quick-filter-btn').on('click', (e) => {
                     const btn = $(e.target);
@@ -813,6 +818,15 @@
 
             showStatsPanel(tableType, data) {
                 $('#stats-panel').show();
+                
+                // Hide date range for certain tabs
+                const hideDateRangeTabs = ['rfm', 'blacklist', 'balance'];
+                if (hideDateRangeTabs.includes(tableType)) {
+                    $('#date-range-card').hide();
+                } else {
+                    $('#date-range-card').show();
+                }
+                
                 this.updateStats(tableType, data);
             }
 
