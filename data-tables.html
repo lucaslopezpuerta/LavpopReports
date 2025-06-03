@@ -248,6 +248,7 @@
         table.dataTable tbody td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-light);
+            text-align: center;
         }
 
         table.dataTable tbody tr:hover {
@@ -916,22 +917,32 @@
 
             exportFiltered(tableType) {
                 const table = this.tables[tableType];
-                const filteredData = table.rows({search: 'applied'}).data().toArray();
+                const originalData = this.csvData[tableType];
                 
-                // Convert to CSV
-                const headers = Object.keys(this.csvData[tableType].rows[0] || {});
+                // Get filtered row indices
+                const filteredIndexes = table.rows({search: 'applied'}).indexes().toArray();
+                
+                // Get filtered data
+                const filteredRows = filteredIndexes.map(index => originalData.rows[index]);
+                
+                // Create CSV content
+                const headers = originalData.headers;
                 const csvContent = [
                     headers.join(','),
-                    ...filteredData.map(row => headers.map(header => `"${row[header] || ''}"`).join(','))
+                    ...filteredRows.map(row => 
+                        headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
+                    )
                 ].join('\n');
 
                 // Download
-                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${this.getTableName(tableType)}_filtered.csv`;
+                a.download = `Lavpop_${this.getTableName(tableType)}_Filtered_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             }
 
@@ -982,16 +993,28 @@
                 this.tables[tableType] = $(`#${tableId}`).DataTable({
                     responsive: true,
                     pageLength: 25,
-                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-                    dom: 'Bfrtip',
+                    lengthMenu: [[25, 50, 100], [25, 50, 100]],
+                    dom: 'Blfrtip',
                     buttons: [
                         'copy',
-                        'csv', 
-                        'excel',
-                        'pdf',
+                        {
+                            extend: 'csv',
+                            title: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
+                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`
+                        },
+                        {
+                            extend: 'excel',
+                            title: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
+                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`
+                        },
+                        {
+                            extend: 'pdf',
+                            title: `Lavpop - ${this.getTableName(tableType)} - ${new Date().toLocaleDateString()}`,
+                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`
+                        },
                         {
                             extend: 'print',
-                            title: `Lavpop - ${this.getTableName(tableType)}`
+                            title: `Lavpop - ${this.getTableName(tableType)} - ${new Date().toLocaleDateString()}`
                         },
                         {
                             text: 'Export Filtered',
@@ -1003,7 +1026,7 @@
                     columnDefs: this.getColumnDefs(data.headers),
                     language: {
                         search: "Search:",
-                        lengthMenu: "Show _MENU_ entries",
+                        lengthMenu: "Show _MENU_ entries per page",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
                         infoEmpty: "No entries found",
                         infoFiltered: "(filtered from _MAX_ total entries)",
