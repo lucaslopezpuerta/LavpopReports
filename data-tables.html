@@ -51,7 +51,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
-            background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
+            background: #020024;
+            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(42, 224, 30, 1) 100%);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -491,18 +492,10 @@
                         
                         // Format dates if detected
                         if (this.isDateColumn(header) && value) {
-                            const dateObj = this.formatDate(value);
-                            if (typeof dateObj === 'object' && dateObj.display) {
-                                row[header] = {
-                                    display: dateObj.display,
-                                    sort: dateObj.timestamp
-                                };
-                            } else {
-                                row[header] = value;
-                            }
-                        } else {
-                            row[header] = value;
+                            value = this.formatDate(value);
                         }
+                        
+                        row[header] = value;
                     });
                     return row;
                 });
@@ -517,19 +510,15 @@
 
             formatDate(dateString) {
                 try {
+                    // Handle various date formats
                     let date;
                     
                     if (dateString.includes('-')) {
+                        // YYYY-MM-DD or YYYY-MM-DD HH:MM:SS format
                         date = new Date(dateString);
                     } else if (dateString.includes('/')) {
-                        // Try to parse DD/MM/YYYY format
-                        const parts = dateString.split(/[\/\s:]/);
-                        if (parts.length >= 3) {
-                            date = new Date(parts[2], parts[1] - 1, parts[0], 
-                                          parts[3] || 0, parts[4] || 0, parts[5] || 0);
-                        } else {
-                            return dateString;
-                        }
+                        // Already in DD/MM/YYYY format
+                        return dateString;
                     } else {
                         return dateString;
                     }
@@ -546,13 +535,7 @@
                     const minutes = String(date.getMinutes()).padStart(2, '0');
                     const seconds = String(date.getSeconds()).padStart(2, '0');
                     
-                    const formatted = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-                    
-                    // Return object with display value and sort value
-                    return {
-                        display: formatted,
-                        timestamp: date.getTime()
-                    };
+                    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
                 } catch (error) {
                     return dateString;
                 }
@@ -565,20 +548,62 @@
                     if (this.isDateColumn(header)) {
                         columnDefs.push({
                             targets: index,
-                            type: 'num',
-                            render: function(data, type, row, meta) {
-                                if (type === 'display' || type === 'type') {
+                            type: 'date',
+                            render: function(data, type, row) {
+                                if (type === 'sort' || type === 'type') {
+                                    // Convert DD/MM/YYYY HH:MM:SS to sortable format
+                                    if (data && data.includes('/')) {
+                                        const parts = data.split(' ');
+                                        const datePart = parts[0].split('/');
+                                        const timePart = parts[1] || '00:00:00';
+                                        // Return YYYY-MM-DD HH:MM:SS for sorting
+                                        return `${datePart[2]}-${datePart[1]}-${datePart[0]} ${timePart}`;
+                                    }
                                     return data;
                                 }
-                                // For sorting, use the data-sort attribute
-                                const cell = $(`#table-${dataTableManager.currentTable} tbody tr:eq(${meta.row}) td:eq(${meta.col})`);
-                                return cell.data('sort') || data;
+                                return data;
                             }
                         });
                     }
                 });
                 
                 return columnDefs;
+            }
+
+            addColumnFilters(tableType, tableId, headers) {
+                // Use DataTables API to add individual column search
+                const table = this.tables[tableType];
+                
+                // Create filter container above the table
+                const filterContainer = $(`
+                    <div class="column-filters" style="margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                        <h4 style="margin-bottom: 1rem; color: #1e293b;">Column Filters</h4>
+                        <div class="filter-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;"></div>
+                    </div>
+                `);
+                
+                const filterInputs = filterContainer.find('.filter-inputs');
+                
+                headers.forEach((header, index) => {
+                    const inputId = `filter-${tableType}-${index}`;
+                    filterInputs.append(`
+                        <div>
+                            <label style="display: block; font-weight: 500; margin-bottom: 0.25rem;">${header}</label>
+                            <input type="text" id="${inputId}" 
+                                   placeholder="Filter ${header}" 
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;">
+                        </div>
+                    `);
+                    
+                    // Add event listener
+                    $(`#${inputId}`).on('keyup change', function() {
+                        const searchValue = this.value;
+                        table.column(index).search(searchValue).draw();
+                    });
+                });
+                
+                // Insert filter container before the table
+                $(`#${tableId}`).parent().prepend(filterContainer);
             }
 
             parseCSVLine(line, separator = ',') {
@@ -606,7 +631,7 @@
             createDataTable(tableType, data) {
                 const container = document.getElementById('table-container');
                 
-                // Create table HTML with filter row
+                // Create table HTML
                 const tableId = `table-${tableType}`;
                 container.innerHTML = `
                     <table id="${tableId}" class="display" style="width:100%">
@@ -614,32 +639,16 @@
                             <tr>
                                 ${data.headers.map(header => `<th>${header}</th>`).join('')}
                             </tr>
-                            <tr class="filter-row">
-                                ${data.headers.map((header, index) => `
-                                    <th>
-                                        <input type="text" class="column-filter" 
-                                               placeholder="Filter..." 
-                                               data-column="${index}"
-                                               style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px;">
-                                    </th>
-                                `).join('')}
-                            </tr>
                         </thead>
                         <tbody>
                             ${data.rows.map(row => 
-                                `<tr>${data.headers.map(header => {
-                                    const cellData = row[header] || '';
-                                    if (typeof cellData === 'object' && cellData.display) {
-                                        return `<td data-sort="${cellData.sort}">${cellData.display}</td>`;
-                                    }
-                                    return `<td>${cellData}</td>`;
-                                }).join('')}</tr>`
+                                `<tr>${data.headers.map(header => `<td>${row[header] || ''}</td>`).join('')}</tr>`
                             ).join('')}
                         </tbody>
                     </table>
                 `;
 
-                // Initialize DataTable
+                // Initialize DataTable with advanced features
                 this.tables[tableType] = $(`#${tableId}`).DataTable({
                     responsive: true,
                     pageLength: 25,
@@ -673,15 +682,8 @@
                     }
                 });
 
-                // Add column filter functionality
-                $(`#${tableId} .column-filter`).on('keyup change clear', function() {
-                    const columnIndex = $(this).data('column');
-                    const searchValue = this.value;
-                    
-                    if (dataTableManager.tables[tableType]) {
-                        dataTableManager.tables[tableType].column(columnIndex).search(searchValue).draw();
-                    }
-                });
+                // Add column-specific filters
+                this.addColumnFilters(tableType, tableId, data.headers);
             }
 
             getTableName(tableType) {
