@@ -604,11 +604,6 @@
                     filteredHeaders.forEach((header, index) => {
                         let value = filteredValues[index];
                         
-                        // Debug logging for weather tab
-                        if (tableType === 'weather' && index === 1) { // precipitation column
-                            console.log('Raw value:', value, 'Type:', typeof value, 'String:', String(value));
-                        }
-                        
                         // Handle different value types properly
                         if (value === null || value === undefined) {
                             value = '';
@@ -619,7 +614,12 @@
                             const strValue = String(value).trim();
                             
                             if (strValue === '' || strValue === 'undefined' || strValue === 'null') {
-                                value = '';
+                                // For weather data, convert empty precipitation/temperature/humidity to "0"
+                                if (tableType === 'weather' && this.isNumericWeatherColumn(header)) {
+                                    value = '0';
+                                } else {
+                                    value = '';
+                                }
                             } else if (strValue === '0' || strValue === '0.0' || parseFloat(strValue) === 0) {
                                 value = '0';
                             } else {
@@ -643,6 +643,11 @@
             isDateColumn(header) {
                 const dateColumns = ['Data_Hora', 'Data Medicao', 'lastContactDate', 'date', 'data'];
                 return dateColumns.some(col => header.toLowerCase().includes(col.toLowerCase()));
+            }
+
+            isNumericWeatherColumn(header) {
+                const numericColumns = ['PRECIPITACAO', 'TEMPERATURA', 'UMIDADE'];
+                return numericColumns.some(col => header.toUpperCase().includes(col));
             }
 
             formatDate(dateString) {
@@ -779,9 +784,9 @@
                     // Remove active class from all buttons
                     quickFilters.find('.quick-filter-btn').removeClass('active');
 
-                    // Clear any existing date search filters
+                    // Clear existing search functions for this table
                     $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function(fn) {
-                        return fn.toString().indexOf('table-' + tableType) === -1;
+                        return !fn._tableType || fn._tableType !== tableType;
                     });
 
                     if (clear) {
@@ -800,8 +805,8 @@
                 const targetDate = new Date();
                 targetDate.setDate(targetDate.getDate() - days);
 
-                // Apply custom search function for date range
-                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                // Create a unique search function for this table
+                const searchFunction = function(settings, data, dataIndex) {
                     if (settings.nTable.id !== `table-${tableType}`) return true;
                     
                     const dateStr = data[dateColumnIndex + 1]; // +1 for checkbox column
@@ -813,8 +818,11 @@
                     
                     const rowDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
                     return rowDate >= targetDate;
-                });
+                };
 
+                // Store reference to remove later
+                searchFunction._tableType = tableType;
+                $.fn.dataTable.ext.search.push(searchFunction);
                 this.tables[tableType].draw();
             }
 
