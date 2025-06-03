@@ -432,9 +432,7 @@
                         throw new Error(`Failed to fetch data: ${response.status}`);
                     }
                     
-                    // Parse CSV data
-                    console.log(`Parsing CSV data for ${tableType}`);
-                    const data = this.parseCSV(csvText);
+                    const data = this.parseCSV(csvText, tableType);
                     
                     // Store data
                     this.csvData[tableType] = data;
@@ -462,23 +460,42 @@
                 }
             }
 
-            parseCSV(csvText) {
+            parseCSV(csvText, tableType) {
+                // Determine separator based on table type
+                const separator = tableType === 'customers' ? ';' : ',';
+                
                 const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+                const headers = this.parseCSVLine(lines[0], separator).map(h => h.replace(/"/g, '').trim());
+                
+                // Filter out unwanted columns for sales table
+                let filteredHeaders = headers;
+                let excludeIndices = [];
+                
+                if (tableType === 'sales') {
+                    const excludeColumns = ['Comprovante_cartao', 'Bandeira_Cartao', 'Loja'];
+                    excludeIndices = excludeColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
+                    filteredHeaders = headers.filter((_, index) => !excludeIndices.includes(index));
+                }
                 
                 const rows = lines.slice(1).map(line => {
-                    const values = this.parseCSVLine(line);
+                    const values = this.parseCSVLine(line, separator);
                     const row = {};
-                    headers.forEach((header, index) => {
-                        row[header] = values[index] || '';
+                    
+                    // Filter values for sales table
+                    const filteredValues = tableType === 'sales' 
+                        ? values.filter((_, index) => !excludeIndices.includes(index))
+                        : values;
+                    
+                    filteredHeaders.forEach((header, index) => {
+                        row[header] = filteredValues[index] || '';
                     });
                     return row;
                 });
                 
-                return { headers, rows };
+                return { headers: filteredHeaders, rows };
             }
 
-            parseCSVLine(line) {
+            parseCSVLine(line, separator = ',') {
                 const result = [];
                 let current = '';
                 let inQuotes = false;
@@ -488,7 +505,7 @@
                     
                     if (char === '"') {
                         inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
+                    } else if (char === separator && !inQuotes) {
                         result.push(current.trim());
                         current = '';
                     } else {
