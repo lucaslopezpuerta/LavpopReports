@@ -347,7 +347,7 @@
                 this.tables = {};
                 this.csvData = {};
                 
-                // Google Apps Script web app URL (replace with your deployed URL)
+                // Google Apps Script web app URL - updated with your actual URL
                 this.scriptUrl = 'https://script.google.com/macros/s/AKfycbzZJOxFSEj3Ue2PfdbfJ2sK8YCbDYLI4thSk9DqumhIfEx0VOAZIbwjVCBQO7Rlm2DI/exec';
                 
                 // Google Drive file IDs and Google Sheets IDs
@@ -412,6 +412,21 @@
                     
                     console.log(`Fetching via Google Apps Script: ${csvUrl}`);
                     const response = await fetch(csvUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const csvText = await response.text();
+                    console.log(`Response for ${tableType}:`, csvText.substring(0, 200) + '...');
+                    
+                    if (!csvText || csvText.trim() === '') {
+                        throw new Error('Empty response from server');
+                    }
+                    
+                    if (csvText.startsWith('Error:')) {
+                        throw new Error(csvText);
+                    }
                     if (!response.ok) {
                         throw new Error(`Failed to fetch data: ${response.status}`);
                     }
