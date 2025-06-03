@@ -51,14 +51,14 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
-            background: #020024;
-            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(42, 224, 30, 1) 100%);
+            background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         .header {
-            background: linear-gradient(324deg, rgba(16, 48, 107, 1) 0%, rgba(26, 71, 152, 1) 70%);
+            background: #020024;
+            background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(42, 224, 30, 1) 100%);
             padding: 2rem 0;
             box-shadow: var(--shadow-lg);
             margin-bottom: 2rem;
@@ -571,8 +571,12 @@
             }
 
             addColumnFilters(tableType, tableId, headers) {
-                // Use DataTables API to add individual column search
+                // Get the DataTable instance
                 const table = this.tables[tableType];
+                if (!table) {
+                    console.error('Table not found for filters');
+                    return;
+                }
                 
                 // Create filter container above the table
                 const filterContainer = $(`
@@ -594,16 +598,20 @@
                                    style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;">
                         </div>
                     `);
-                    
-                    // Add event listener
-                    $(`#${inputId}`).on('keyup change', function() {
-                        const searchValue = this.value;
-                        table.column(index).search(searchValue).draw();
-                    });
                 });
                 
                 // Insert filter container before the table
                 $(`#${tableId}`).parent().prepend(filterContainer);
+                
+                // Add event listeners after container is in DOM
+                headers.forEach((header, index) => {
+                    const inputId = `filter-${tableType}-${index}`;
+                    $(`#${inputId}`).on('keyup change', function() {
+                        const searchValue = this.value;
+                        console.log(`Filtering column ${index} with: ${searchValue}`);
+                        table.column(index).search(searchValue).draw();
+                    });
+                });
             }
 
             parseCSVLine(line, separator = ',') {
