@@ -8,6 +8,7 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
     
     <!-- jQuery and DataTables JS -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -17,7 +18,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
 
     <style>
         /* Inherit styles from main dashboard */
@@ -242,6 +243,7 @@
             padding: 1rem;
             font-weight: 600;
             border-bottom: none;
+            text-align: center;
         }
 
         table.dataTable tbody td {
@@ -274,6 +276,103 @@
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.5rem;
+            }
+
+            hasDateColumn(headers) {
+                return headers.some(header => this.isDateColumn(header));
+            }
+
+            updateSummaryStats(tableType, data) {
+                const statsContainer = $('#summary-stats');
+                const totalRows = data.rows.length;
+                
+                let stats = `
+                    <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 0.25rem;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary-blue);">${totalRows}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Total Records</div>
+                    </div>
+                `;
+                
+                if (this.hasDateColumn(data.headers)) {
+                    const dateCol = data.headers.find(h => this.isDateColumn(h));
+                    const dates = data.rows.map(r => r[dateCol]).filter(d => d).map(d => new Date(d.split(' ')[0].split('/').reverse().join('-')));
+                    if (dates.length > 0) {
+                        const minDate = new Date(Math.min(...dates));
+                        const maxDate = new Date(Math.max(...dates));
+                        stats += `
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 0.25rem;">
+                                <div style="font-size: 0.875rem; font-weight: 600; color: var(--primary-blue);">${minDate.toLocaleDateString('pt-BR')}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">First Date</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 0.25rem;">
+                                <div style="font-size: 0.875rem; font-weight: 600; color: var(--primary-blue);">${maxDate.toLocaleDateString('pt-BR')}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">Last Date</div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                statsContainer.html(stats);
+            }
+
+            addEnhancedEventHandlers(tableType, data) {
+                // Refresh button
+                $('#refresh-data').off('click').on('click', () => {
+                    this.loadTable(this.currentTable);
+                });
+                
+                // Export filtered data
+                $('#export-filtered').off('click').on('click', () => {
+                    const table = this.tables[tableType];
+                    const filteredData = table.rows({search: 'applied'}).data().toArray();
+                    this.exportFilteredData(filteredData, tableType);
+                });
+                
+                // Quick date filters
+                $('.quick-filter').off('click').on('click', (e) => {
+                    const days = parseInt($(e.target).data('days'));
+                    this.applyQuickDateFilter(tableType, days);
+                });
+                
+                // Toggle filters for mobile
+                $('#toggle-filters').off('click').on('click', () => {
+                    $('.filter-inputs').slideToggle();
+                });
+            }
+
+            applyQuickDateFilter(tableType, days) {
+                const table = this.tables[tableType];
+                const headers = Object.keys(this.csvData[tableType].rows[0] || {});
+                const dateColumnIndex = headers.findIndex(h => this.isDateColumn(h));
+                
+                if (dateColumnIndex === -1 || days === 0) {
+                    table.columns().search('').draw();
+                    return;
+                }
+                
+                if (days > 0) {
+                    const cutoffDate = new Date();
+                    cutoffDate.setDate(cutoffDate.getDate() - days);
+                    const cutoffStr = cutoffDate.toLocaleDateString('pt-BR');
+                    
+                    table.column(dateColumnIndex + 1).search(cutoffStr, true, false).draw();
+                }
+            }
+
+            exportFilteredData(data, tableType) {
+                const headers = Object.keys(this.csvData[tableType].rows[0] || {});
+                let csv = headers.join(',') + '\n';
+                data.forEach(row => {
+                    csv += row.join(',') + '\n';
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${this.getTableName(tableType)}_filtered_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
             }
             
             .main-content {
@@ -330,7 +429,39 @@
                     <button class="tab-button" data-table="blacklist">Message Blacklist</button>
                     <button class="tab-button" data-table="balance">Customers w/ Balance</button>
                     <button class="tab-button" data-table="weather">Weather Master</button>
+                    
+                    <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                        <button id="refresh-data" style="
+                            background: var(--accent-green);
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: var(--radius-md);
+                            cursor: pointer;
+                            font-size: 0.875rem;
+                        ">🔄 Refresh</button>
+                        <button id="export-filtered" style="
+                            background: var(--secondary-blue);
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: var(--radius-md);
+                            cursor: pointer;
+                            font-size: 0.875rem;
+                        ">📥 Export Filtered</button>
+                    </div>
                 </div>
+
+                <!-- Summary Stats Panel -->
+                <div id="summary-stats" style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    gap: 1rem;
+                    margin-bottom: 1.5rem;
+                    padding: 1rem;
+                    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                    border-radius: var(--radius-md);
+                "></div>
 
                 <div id="table-container">
                     <div class="loading">
@@ -488,10 +619,17 @@
                         : values;
                     
                     filteredHeaders.forEach((header, index) => {
-                        let value = filteredValues[index] || '';
+                        let value = filteredValues[index];
+                        
+                        // Handle empty/null values properly
+                        if (value === null || value === undefined || value === 'null') {
+                            value = '';
+                        } else if (value === '' || value === ' ') {
+                            value = '';
+                        }
                         
                         // Format dates if detected
-                        if (this.isDateColumn(header) && value) {
+                        if (this.isDateColumn(header) && value && value !== '') {
                             value = this.formatDate(value);
                         }
                         
@@ -581,7 +719,17 @@
                 // Create filter container above the table
                 const filterContainer = $(`
                     <div class="column-filters" style="margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
-                        <h4 style="margin-bottom: 1rem; color: #1e293b;">Column Filters</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h4 style="margin: 0; color: #1e293b;">Column Filters</h4>
+                            <div class="quick-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                ${this.hasDateColumn(headers) ? `
+                                    <button class="quick-filter" data-days="7" style="padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; background: white; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem;">Last 7 Days</button>
+                                    <button class="quick-filter" data-days="30" style="padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; background: white; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem;">Last 30 Days</button>
+                                    <button class="quick-filter" data-days="0" style="padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; background: white; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem;">Clear</button>
+                                ` : ''}
+                                <button id="toggle-filters" style="padding: 0.25rem 0.5rem; border: 1px solid #d1d5db; background: white; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem;">📱 Toggle</button>
+                            </div>
+                        </div>
                         <div class="filter-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;"></div>
                     </div>
                 `);
@@ -596,6 +744,7 @@
                             <input type="text" id="${inputId}" 
                                    placeholder="Filter ${header}" 
                                    style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem;">
+                            ${this.isDateColumn(header) ? '<small style="color: #6b7280;">Format: DD/MM/YYYY</small>' : ''}
                         </div>
                     `);
                 });
@@ -645,18 +794,19 @@
                     <table id="${tableId}" class="display" style="width:100%">
                         <thead>
                             <tr>
+                                <th>☑️</th>
                                 ${data.headers.map(header => `<th>${header}</th>`).join('')}
                             </tr>
                         </thead>
                         <tbody>
                             ${data.rows.map(row => 
-                                `<tr>${data.headers.map(header => `<td>${row[header] || ''}</td>`).join('')}</tr>`
+                                `<tr><td></td>${data.headers.map(header => `<td>${row[header] || ''}</td>`).join('')}</tr>`
                             ).join('')}
                         </tbody>
                     </table>
                 `;
 
-                // Initialize DataTable with advanced features
+                // Initialize DataTable with enhanced features
                 this.tables[tableType] = $(`#${tableId}`).DataTable({
                     responsive: true,
                     pageLength: 25,
@@ -670,11 +820,31 @@
                         {
                             extend: 'print',
                             title: `Lavpop - ${this.getTableName(tableType)}`
+                        },
+                        {
+                            extend: 'selectAll',
+                            text: '✓ All'
+                        },
+                        {
+                            extend: 'selectNone', 
+                            text: '✗ None'
                         }
                     ],
-                    order: [[0, 'desc']],
+                    select: {
+                        style: 'multi',
+                        selector: 'td:first-child'
+                    },
+                    columnDefs: [
+                        {
+                            targets: 0,
+                            checkboxes: {
+                                selectRow: true
+                            }
+                        },
+                        ...this.getColumnDefs(data.headers)
+                    ],
+                    order: [[1, 'desc']],
                     scrollX: true,
-                    columnDefs: this.getColumnDefs(data.headers),
                     language: {
                         search: "Search:",
                         lengthMenu: "Show _MENU_ entries",
@@ -692,6 +862,12 @@
 
                 // Add column-specific filters
                 this.addColumnFilters(tableType, tableId, data.headers);
+                
+                // Update summary stats
+                this.updateSummaryStats(tableType, data);
+                
+                // Add event handlers for new features
+                this.addEnhancedEventHandlers(tableType, data);
             }
 
             getTableName(tableType) {
