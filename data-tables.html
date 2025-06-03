@@ -604,15 +604,27 @@
                     filteredHeaders.forEach((header, index) => {
                         let value = filteredValues[index];
                         
+                        // Debug logging for weather tab
+                        if (tableType === 'weather' && index === 1) { // precipitation column
+                            console.log('Raw value:', value, 'Type:', typeof value, 'String:', String(value));
+                        }
+                        
                         // Handle different value types properly
-                        if (value === null || value === undefined || value === 'null') {
+                        if (value === null || value === undefined) {
                             value = '';
-                        } else if (String(value).trim() === '' || String(value).trim() === 'undefined') {
+                        } else if (value === 'null' || value === 'undefined') {
                             value = '';
-                        } else if (String(value).trim() === '0' || value === 0) {
-                            value = '0';
                         } else {
-                            value = String(value).trim();
+                            // Convert to string and trim
+                            const strValue = String(value).trim();
+                            
+                            if (strValue === '' || strValue === 'undefined' || strValue === 'null') {
+                                value = '';
+                            } else if (strValue === '0' || strValue === '0.0' || parseFloat(strValue) === 0) {
+                                value = '0';
+                            } else {
+                                value = strValue;
+                            }
                         }
                         
                         // Format dates if detected
@@ -767,6 +779,11 @@
                     // Remove active class from all buttons
                     quickFilters.find('.quick-filter-btn').removeClass('active');
 
+                    // Clear any existing date search filters
+                    $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function(fn) {
+                        return fn.toString().indexOf('table-' + tableType) === -1;
+                    });
+
                     if (clear) {
                         this.tables[tableType].search('').columns().search('').draw();
                     } else {
@@ -782,9 +799,23 @@
 
                 const targetDate = new Date();
                 targetDate.setDate(targetDate.getDate() - days);
-                const targetDateStr = targetDate.toLocaleDateString('pt-BR');
 
-                this.tables[tableType].column(dateColumnIndex + 1).search(targetDateStr).draw();
+                // Apply custom search function for date range
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    if (settings.nTable.id !== `table-${tableType}`) return true;
+                    
+                    const dateStr = data[dateColumnIndex + 1]; // +1 for checkbox column
+                    if (!dateStr || dateStr === '') return false;
+                    
+                    // Parse DD/MM/YYYY format
+                    const dateParts = dateStr.split(' ')[0].split('/');
+                    if (dateParts.length !== 3) return false;
+                    
+                    const rowDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                    return rowDate >= targetDate;
+                });
+
+                this.tables[tableType].draw();
             }
 
             addRowSelection(tableType, tableId) {
