@@ -347,6 +347,9 @@
                 this.tables = {};
                 this.csvData = {};
                 
+                // Google Apps Script web app URL (replace with your deployed URL)
+                this.scriptUrl = 'https://script.google.com/macros/s/AKfycbziDAHB_EJ1yVhNPD6ZsFG5Oa10QOXJC2S5GFb5U0hK7kqu8aADQzMsNhXto7M5kZU/exec';
+                
                 // Google Drive file IDs and Google Sheets IDs
                 this.fileIds = {
                     sales: '1yQI0n37uXqBfy22pObBn947mSsjtVKvj',
@@ -403,15 +406,12 @@
                         this.tables[tableType].destroy();
                     }
 
-                // Google Apps Script URL (replace with your deployed script URL)
-                this.scriptUrl = 'https://script.google.com/macros/s/AKfycbxnzlC3n4ep748qreMjmmK4ktcmgxgWe-rlhuPCyvEx4F_4Xmzbd1kZYMqOlGLrkAHx/exec';
-                
-                // Use Google Apps Script as middleware for reliable access
-                const isSheet = this.googleSheets.includes(tableType);
-                csvUrl = `${this.scriptUrl}?fileId=${this.fileIds[tableType]}&sheet=${isSheet}`;
-                
-                console.log(`Using Google Apps Script: ${csvUrl}`);
-                const response = await fetch(csvUrl);
+                    // Use Google Apps Script as secure middleware
+                    const isSheet = this.googleSheets.includes(tableType);
+                    const csvUrl = `${this.scriptUrl}?fileId=${this.fileIds[tableType]}&sheet=${isSheet}`;
+                    
+                    console.log(`Fetching via Google Apps Script: ${csvUrl}`);
+                    const response = await fetch(csvUrl);
                     if (!response.ok) {
                         throw new Error(`Failed to fetch data: ${response.status}`);
                     }
