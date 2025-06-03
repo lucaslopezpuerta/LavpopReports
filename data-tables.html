@@ -431,7 +431,6 @@
                         throw new Error(`Failed to fetch data: ${response.status}`);
                     }
                     
-                    const csvText = await response.text();
                     const data = this.parseCSV(csvText);
                     
                     // Store data
