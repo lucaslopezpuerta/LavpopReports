@@ -1003,20 +1003,7 @@
                             title: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
                             filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
                             exportOptions: {
-                                columns: ':not(:first-child)', // Skip checkbox column
-                                format: {
-                                    body: function(data, row, column, node) {
-                                        // Force text format for all data to preserve decimal commas
-                                        return data;
-                                    }
-                                }
-                            },
-                            customize: function(xlsx) {
-                                // Force all cells to text format to preserve decimal commas
-                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                $('row c', sheet).each(function() {
-                                    $(this).attr('t', 'inlineStr');
-                                });
+                                columns: ':not(:first-child)' // Skip checkbox column
                             }
                         },
                         {
