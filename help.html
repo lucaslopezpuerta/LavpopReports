@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavpop Dashboard Help</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #10306b;
+        }
+        h2 {
+            color: #1a4798;
+            margin-top: 2rem;
+        }
+        a {
+            color: #1a4798;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Using the Lavpop Dashboard</h1>
+    <p>The dashboard offers two main pages:</p>
+    <ul>
+        <li>
+            <strong>index.html</strong> – interactive charts and key performance indicators. Scroll through the sections to view each chart. Use the <em>View Data Tables</em> button in the header to switch to the table view or the <em>Help</em> button to return here.
+        </li>
+        <li>
+            <strong>data-tables.html</strong> – sortable and searchable tables with export options. Use the tabs across the top of the page to switch datasets, the search box to filter rows, and the CSV/PDF buttons to download data. Click <em>Back to Dashboard</em> in the header to return to the charts.
+        </li>
+    </ul>
+
+    <h2>Chart Guide</h2>
+    <p>Each chart in the dashboard visualizes a different metric. Hover over the charts to see exact values. Key visualizations include:</p>
+    <ul>
+        <li><strong>Monthly Revenue & Utilization Trend</strong> – bars show monthly net revenue while the line shows machine utilization percentage. Look for seasonal changes. Utilization is calculated as <code>(cycles completed / available cycles) × 100</code>.</li>
+        <li><strong>Weekly Performance Comparison</strong> – compares the current week with the previous week and the 4‑week average. Net revenue and utilization are plotted together. Percentage change is <code>((current - previous) / previous) × 100</code>.</li>
+        <li><strong>Current Week vs 4‑Week Average Growth</strong> – highlights how much this week differs from the recent average. Positive bars mean growth above the average.</li>
+        <li><strong>Revenue Distribution by Day of Week</strong> – daily revenue bars overlaid with a line for the 4‑week average. Identify your strongest and weakest days.</li>
+        <li><strong>Best vs Worst Day Comparison</strong> – side‑by‑side metrics for the highest and lowest revenue days. Helps pinpoint what drives good performance.</li>
+        <li><strong>Peak vs Off‑Peak Performance</strong> – contrasts busy hours with quieter periods. The difference percentage is <code>((peak - off‑peak) / off‑peak) × 100</code>.</li>
+        <li><strong>Hourly Revenue Distribution & 4‑Week Hourly Utilization</strong> – show when customers visit most often. The utilization charts use the formula above.</li>
+        <li><strong>Capacity vs Revenue Efficiency</strong> – a scatter plot of utilization versus revenue efficiency (net revenue divided by utilization percentage). Points in the upper right signal the most profitable use of machines.</li>
+        <li><strong>Customer Segment and Retention Charts</strong> – visualize how customer groups contribute to revenue and how many customers remain active. Average value per customer equals <code>total revenue ÷ number of customers</code>.</li>
+        <li><strong>Marketing ROI Dashboard</strong> – tracks campaign performance. A simple ROI formula is <code>(revenue from campaign - cost) ÷ cost</code>. Values above zero indicate profit.</li>
+        <li><strong>Payment Method Distribution</strong> – pie chart showing how customers pay. Percentages are <code>(method total / overall revenue) × 100</code>.</li>
+        <li><strong>Weather Impact and Forecast</strong> – correlation charts show how weather metrics relate to revenue. The correlation coefficient ranges from -1 to +1. Values near ±1 imply a strong relationship. Forecast charts project future revenue using recent trends.</li>
+        <li><strong>Revenue Concentration & Predictive Capacity</strong> – reveal which customer segments generate most revenue and suggest optimal machine capacity by hour.</li>
+    </ul>
+
+    <h2>Metric Definitions</h2>
+    <p>The following formulas appear throughout the dashboard:</p>
+    <ul>
+        <li><strong>Net Revenue</strong> = total revenue − refunds and adjustments.</li>
+        <li><strong>Utilization (%)</strong> = <code>(completed cycles ÷ maximum possible cycles) × 100</code>. Example: if 120 cycles run out of 240 available, utilization = 50%.</li>
+        <li><strong>Revenue Efficiency</strong> = net revenue ÷ utilization %. Example: with R$500 net revenue and 20% utilization, efficiency = R$25 per utilization point.</li>
+        <li><strong>Growth Rate</strong> = <code>((current − reference) ÷ reference) × 100</code>. Used for week‑over‑week and month‑over‑month comparisons.</li>
+        <li><strong>Average Value per Customer</strong> = total revenue ÷ number of unique customers.</li>
+        <li><strong>Correlation Coefficient</strong> – measures how two variables move together. A value of 1 means perfect positive correlation, −1 perfect negative, and 0 no correlation.</li>
+    </ul>
+
+    <h2>Need Help?</h2>
+    <p>Questions about this report? Contact <strong>Gabrielle Vilanova</strong> or <strong>Lucas López</strong> at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>.</p>
+    <p>Return to the <a href="index.html">Dashboard</a> or view the <a href="data-tables.html">Data Tables</a>.</p>
+</body>
+</html>
