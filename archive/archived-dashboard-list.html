@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavpop Dashboard Help</title>
+    <title>Archived Dashboards</title>
     <style>
-
         :root {
             --primary-blue: #10306b;
             --secondary-blue: #1a4798;
@@ -14,11 +13,9 @@
             --background-light: #f8fafc;
             --background-white: #ffffff;
             --text-primary: #1e293b;
-            --text-secondary: #64748b;
             --border-light: #e2e8f0;
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-            --radius-md: 0.5rem;
             --radius-lg: 0.75rem;
             --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -32,8 +29,6 @@
             line-height: 1.6;
             color: var(--text-primary);
             background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         .header {
             background: linear-gradient(324deg, rgba(16, 48, 107, 1) 0%, rgba(26, 71, 152, 1) 70%);
@@ -79,80 +74,58 @@
             font-weight: 500;
             transition: var(--transition);
             border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-right: 0.5rem;
         }
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.3);
         }
         .main-content {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 0 2rem 2rem;
         }
-        .section {
-            background: var(--background-white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-light);
-            padding: 2rem;
-            margin-bottom: 2rem;
+        .week-list {
+            list-style: none;
+            padding: 0;
         }
-        h2 {
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
+        .week-list li {
+            margin-bottom: 0.75rem;
         }
-        a {
+        .week-link {
             color: var(--secondary-blue);
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 2rem;
-            line-height: 1.6;
+            text-decoration: none;
         }
-        h1 {
-            color: #10306b;
-        }
-        h2 {
-            color: #1a4798;
-            margin-top: 2rem;
-        }
-        a {
-            color: #1a4798;
-
-        }
-        code {
-            background: #f5f5f5;
-            padding: 0.1rem 0.3rem;
-            border-radius: 4px;
+        .week-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-
     <header class="header">
         <div class="header-content">
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
-            <h1>Dashboard Help</h1>
-            <p>How to navigate and understand your reports</p>
+            <h1>Past Weekly Dashboards</h1>
+            <p>Every Monday at 2AM Brazilian time the current dashboard is exported as a PDF and stored here.</p>
             <nav class="nav-bar">
-                <a href="index.html" class="nav-link">
+                <a href="../index.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                     </svg>
                     Home
                 </a>
-                <a href="data-tables.html" class="nav-link">
+                <a href="../data-tables.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
                     </svg>
                     Data Tables
                 </a>
-                <a href="archive/archived-dashboard-list.html" class="nav-link">
+                <a href="archived-dashboard-list.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M10 4H2v16h20V6H12l-2-2z"/>
                     </svg>
                     Archive
                 </a>
-                <a href="help.html" class="nav-link">
+                <a href="../help.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm1.07-7.75l-.9.92A1.97 1.97 0 0012 12h-1v-2h1a1 1 0 001-1c0-.55-.45-1-1-1s-1 .45-1 1H9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .8-.31 1.53-.93 2.25z"/>
                     </svg>
@@ -162,35 +135,10 @@
         </div>
     </header>
     <main class="main-content">
-        <div class="section">
-            <h2>Navigating the Dashboard</h2>
-            <p>The dashboard has two main pages. The <strong>index.html</strong> file contains interactive charts and key performance indicators. Use the <em>View Data Tables</em> button at the top to switch views. The <strong>data-tables.html</strong> page provides sortable tables with export options. Use its tabs to choose datasets and the CSV/PDF buttons to download data.</p>
-        </div>
-        <div class="section">
-            <h2>Chart Guide</h2>
-            <p>Hover over each chart to see exact values. Important visualizations include:</p>
-            <ul>
-                <li><strong>Monthly Revenue &amp; Utilization Trend</strong> – bars show monthly net revenue while the line tracks machine utilization (<code>(cycles completed / available cycles) × 100</code>).</li>
-                <li><strong>Weekly Performance Comparison</strong> – current week vs. last week and the 4‑week average. Percentage change uses <code>((current - previous) / previous) × 100</code>.</li>
-                <li><strong>Revenue Distribution by Day</strong> – daily revenue bars and a 4‑week average line reveal strong and weak days.</li>
-                <li><strong>Customer Segment Charts</strong> – see how different groups contribute to revenue. Average value per customer equals <code>total revenue ÷ number of customers</code>.</li>
-                <li><strong>Marketing ROI Dashboard</strong> – ROI is <code>(revenue from campaign - cost) ÷ cost</code>. Values above zero indicate profit.</li>
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Metric Definitions</h2>
-            <ul>
-                <li><strong>Net Revenue</strong> = total revenue − refunds and adjustments.</li>
-                <li><strong>Utilization (%)</strong> = <code>(completed cycles ÷ maximum possible cycles) × 100</code>.</li>
-                <li><strong>Revenue Efficiency</strong> = net revenue ÷ utilization %.</li>
-                <li><strong>Growth Rate</strong> = <code>((current − reference) ÷ reference) × 100</code>.</li>
-                <li><strong>Correlation Coefficient</strong> – values near ±1 indicate a strong relationship.</li>
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Need Help?</h2>
-            <p>Questions about this report? Contact <strong>Gabrielle Vilanova</strong> or <strong>Lucas López</strong> at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>.</p>
-        </div>
+        <ul class="week-list">
+            <li><a href="2025-06-07/dashboard.pdf" class="week-link">Week ending 2025-06-07</a></li>
+            <li><a href="2025-05-31/dashboard.pdf" class="week-link">Week ending 2025-05-31</a></li>
+        </ul>
     </main>
 </body>
 </html>

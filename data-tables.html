@@ -111,6 +111,27 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
+        .nav-bar {
+            margin-top: 1rem;
+        }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-right: 0.5rem;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -396,18 +417,32 @@
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
             <h1>Data Tables</h1>
             <p>Master files and analytics data</p>
-            <a href="index.html" class="back-button">
+            <nav class="nav-bar">
+            <a href="index.html" class="nav-link">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                 </svg>
-                Back to Dashboard
+                Home
             </a>
-            <a href="help.html" class="back-button" style="margin-left: 0.5rem;">
+            <a href="data-tables.html" class="nav-link">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
+                </svg>
+                Data Tables
+            </a>
+            <a href="archive/archived-dashboard-list.html" class="nav-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 4H2v16h20V6H12l-2-2z"/>
+                </svg>
+                Archive
+            </a>
+            <a href="help.html" class="nav-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm1.07-7.75l-.9.92A1.97 1.97 0 0012 12h-1v-2h1a1 1 0 001-1c0-.55-.45-1-1-1s-1 .45-1 1H9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .8-.31 1.53-.93 2.25z"/>
                 </svg>
                 Help
             </a>
+            </nav>
         </div>
     </header>
 
