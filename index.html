@@ -121,42 +121,34 @@
             font-weight: 500;
             box-shadow: var(--shadow-md);
         }
+
+        /* Navigation Bar Styles */
         .nav-bar {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
+        
         .nav-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
             text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-lg);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
             font-weight: 500;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
         }
+        
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            text-decoration: none;
         }
 
-        .archive-btn {
-            margin-top: 1rem;
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: var(--accent-green);
-            color: white;
-            border: none;
-            border-radius: var(--radius-lg);
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .archive-btn:hover {
-            background: var(--light-green);
-        }
         /* Main Content */
         .main-content {
             max-width: 1400px;
@@ -332,6 +324,35 @@
             align-items: center;
             padding: 0.2rem;
             overflow: hidden;
+        }
+
+        /* Chart Insights Footer */
+        .chart-insights {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-top: 1px solid var(--border-light);
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .chart-insights.loading {
+            opacity: 0.7;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .chart-insights.error {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+            color: #dc2626;
+        }
+
+        .insight-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-blue);
         }
 
         /* Force charts to fit containers */
@@ -628,6 +649,11 @@
             .chart-content > div {
                 min-width: 280px !important;
             }
+            
+            .nav-link {
+                font-size: 0.875rem;
+                padding: 0.4rem 0.8rem;
+            }
         }
 
         /* Print Styles */
@@ -708,37 +734,38 @@
                     </svg>
                     2025-05-25 to
                     2025-05-31
-                </div>                
-<nav class="nav-bar">
-    <a href="index.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-        </svg>
-        Home
-    </a>
-    <a href="data-tables.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
-        </svg>
-        Data Tables
-    </a>
-    <a href="archive/archived-dashboard-list.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 4H2v16h20V6H12l-2-2z"/>
-        </svg>
-        Archive
-    </a>
-    <a href="help.html" class="nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm1.07-7.75l-.9.92A1.97 1.97 0 0012 12h-1v-2h1a1 1 0 001-1c0-.55-.45-1-1-1s-1 .45-1 1H9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .8-.31 1.53-.93 2.25z"/>
-        </svg>
-        Help
-    </a>
-</nav>
-        <button class="archive-btn" onclick="manualArchive()">Export PDF</button>
+                </div>
+                
+                <!-- Navigation Bar -->
+                <nav class="nav-bar">
+                    <a href="index.html" class="nav-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="data-tables.html" class="nav-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
+                        </svg>
+                        Data Tables
+                    </a>
+                    <a href="archive/archived-dashboard-list.html" class="nav-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 4H2v16h20V6H12l-2-2z"/>
+                        </svg>
+                        Archive
+                    </a>
+                    <a href="help.html" class="nav-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm1.07-7.75l-.9.92A1.97 1.97 0 0012 12h-1v-2h1a1 1 0 001-1c0-.55-.45-1-1-1s-1 .45-1 1H9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .8-.31 1.53-.93 2.25z"/>
+                        </svg>
+                        Help
+                    </a>
+                </nav>
             </div>
         </header>
-            </div>
+
         <main class="main-content">
             <!-- Executive Summary -->
             <section class="section executive-summary">
@@ -754,7 +781,7 @@
                 </div>
                 <div class="section-content">
                     <div class="summary-text">
-                        Lavpop Autosserviço Caxias do Sul experienced a strong performance boost this week, marked by notable growth in both net revenue and service cycles compared to the previous week. Despite still operating under modest utilization levels, there was a meaningful uptick in machine use efficiency. Customer activity peaked during mid to late afternoon hours, with Friday emerging as the highest-performing day, while Wednesday showed the lowest engagement. Usage remained higher during specific hours such as 10:00, 11:00, 15:00, and especially at 16:00, which saw the most activity. Service demand was balanced between wash and dry cycles. External factors such as temperature, rainfall, and humidity had minimal to weak correlations with customer usage patterns, indicating that consumer behavior this week was more influenced by internal factors or routine habits rather than weather conditions.
+                        During the past week, Lavpop Autosserviço Caxias do Sul demonstrated a solid upward trend in overall performance, marked by a significant increase in revenue and total service cycles compared to the previous week. The growth in customer activity translated into slightly improved machine utilization rates. Service usage remained balanced between wash and dry cycles, indicating consistent demand for both services. Peak customer engagement was observed in the mid to late afternoon, especially around 4 PM, with Friday emerging as the most active day, while Wednesday saw the lowest foot traffic. Off-peak periods spanned most morning and evening slots, suggesting opportunities for targeted promotions or operational adjustments. External factors like temperature appeared to have a modest inverse impact on demand, while rainfall and humidity showed minimal influence. Overall, the data reflects stronger customer engagement and operational momentum, highlighting potential to further optimize usage during non-peak hours.
                     </div>
 
                     <!-- Enhanced KPI Grid -->
@@ -828,6 +855,15 @@
                                 <span>Loading Monthly Revenue Trend...</span>
                             </div>
                         </div>
+                        <div id="monthlyRevenueTrend-insights" class="chart-insights loading">
+                            <div class="insight-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                AI Insight
+                            </div>
+                            <span>Generating insights...</span>
+                        </div>
                     </div>
 
                     <!-- Performance Comparison Charts -->
@@ -847,6 +883,15 @@
                                     <span>Loading Weekly Comparison...</span>
                                 </div>
                             </div>
+                            <div id="comparativePerformance-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -862,6 +907,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Growth Analysis...</span>
                                 </div>
+                            </div>
+                            <div id="weekVsAveragePerformance-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -880,6 +934,15 @@
                                 <div class="spinner"></div>
                                 <span>Loading Daily Revenue Distribution...</span>
                             </div>
+                        </div>
+                        <div id="dayofWeekRevenueDistribution-insights" class="chart-insights loading">
+                            <div class="insight-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                AI Insight
+                            </div>
+                            <span>Generating insights...</span>
                         </div>
                     </div>
 
@@ -968,6 +1031,15 @@
                                     <span>Loading Best vs Worst Day...</span>
                                 </div>
                             </div>
+                            <div id="bestWorstDayComparison-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -984,6 +1056,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Peak Analysis...</span>
                                 </div>
+                            </div>
+                            <div id="peakVsOffPeak-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -1004,6 +1085,15 @@
                                 <span>Loading Hourly Revenue...</span>
                             </div>
                         </div>
+                        <div id="hourlyRevenue-insights" class="chart-insights loading">
+                            <div class="insight-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                AI Insight
+                            </div>
+                            <span>Generating insights...</span>
+                        </div>
                     </div>
 
                     <div class="chart-grid-2">
@@ -1022,6 +1112,15 @@
                                     <span>Loading Utilization...</span>
                                 </div>
                             </div>
+                            <div id="hourlyUtilization-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1038,6 +1137,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Efficiency Analysis...</span>
                                 </div>
+                            </div>
+                            <div id="capacityEfficiencyScatter-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -1088,20 +1196,20 @@
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Average Visit Frequency</div>
-                            <div class="kpi-value">3.7 visits/month
+                            <div class="kpi-value">3.3 visits/month
                             </div>
                             <div class="kpi-change neutral-change">Visits per month</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">30-Day Return Rate</div>
                             <div class="kpi-value">
-                                11.3%</div>
+                                11.6%</div>
                             <div class="kpi-change neutral-change">Customer retention</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Active Customers</div>
                             <div class="kpi-value">
-                                23.4%
+                                23.8%
                             </div>
                             <div class="kpi-change neutral-change">Currently active</div>
                         </div>
@@ -1119,6 +1227,15 @@
                                     <span>Loading Customer Segments...</span>
                                 </div>
                             </div>
+                            <div id="customerSegmentValuePyramid-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1130,6 +1247,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Retention Funnel...</span>
                                 </div>
+                            </div>
+                            <div id="customerRetentionFunnel-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -1145,6 +1271,15 @@
                                     <span>Loading Behavior Analysis...</span>
                                 </div>
                             </div>
+                            <div id="behaviorBySegment-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1157,6 +1292,15 @@
                                     <span>Loading Customer Status...</span>
                                 </div>
                             </div>
+                            <div id="activeVsLapsed-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1166,7 +1310,7 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Champions</h4>
                                 <span
-                                    class="segment-badge">37
+                                    class="segment-badge">38
                                     customers</span>
                             </div>
                             <div class="customer-item">
@@ -1177,13 +1321,13 @@
                             </div>
                             <div class="customer-item">
                                 <span
-                                    class="customer-name">Clademir Antonio Barcarollo</span>
+                                    class="customer-name">Jussara Fagundes</span>
                                 <span
-                                    class="customer-value">R$1732.2</span>
+                                    class="customer-value">R$1732.62</span>
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$457.36</div>
+                                    R$462.47</div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
                         </div>
@@ -1192,7 +1336,7 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Loyal Customers</h4>
                                 <span
-                                    class="segment-badge">52
+                                    class="segment-badge">51
                                     customers</span>
                             </div>
                             <div class="customer-item">
@@ -1209,7 +1353,7 @@
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$192.29
+                                    R$197.61
                                 </div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
@@ -1219,7 +1363,7 @@
                             <div class="segment-header">
                                 <h4 class="segment-title">Potential Customers</h4>
                                 <span
-                                    class="segment-badge">82
+                                    class="segment-badge">83
                                     customers</span>
                             </div>
                             <div class="customer-item">
@@ -1236,7 +1380,7 @@
                             </div>
                             <div class="stat-item mt-2">
                                 <div class="stat-value">
-                                    R$69.28</div>
+                                    R$69</div>
                                 <div class="stat-label">Average Value per Customer</div>
                             </div>
                         </div>
@@ -1262,18 +1406,18 @@
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-title">WhatsApp Messages Sent</div>
-                            <div class="kpi-value">248</div>
-                            <div class="kpi-change neutral-change">R$12.8
+                            <div class="kpi-value">86</div>
+                            <div class="kpi-change neutral-change">R$4.93
                                 total cost</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Customer Responses</div>
-                            <div class="kpi-value">26</div>
-                            <div class="kpi-change neutral-change">10.4% response rate</div>
+                            <div class="kpi-value">2</div>
+                            <div class="kpi-change neutral-change">2.3% response rate</div>
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Active Campaigns</div>
-                            <div class="kpi-value">2
+                            <div class="kpi-value">4
                             </div>
                             <div class="kpi-change neutral-change">
                                 1 with reliable data
@@ -1411,6 +1555,15 @@
                                     <span>Loading Marketing ROI...</span>
                                 </div>
                             </div>
+                            <div id="marketingROIDashboard-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1426,6 +1579,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Payment Methods...</span>
                                 </div>
+                            </div>
+                            <div id="paymentMethodDistribution-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -1533,7 +1695,7 @@
                         </div>
                         <div class="kpi-card">
                             <div class="kpi-title">Analysis Period</div>
-                            <div class="kpi-value">423</div>
+                            <div class="kpi-value">425</div>
                             <div class="kpi-change neutral-change">Data points over
                                 6 months</div>
                         </div>
@@ -1555,6 +1717,15 @@
                                 <span>Loading Weather Correlations...</span>
                             </div>
                         </div>
+                        <div id="correlationHeatmap-insights" class="chart-insights loading">
+                            <div class="insight-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                AI Insight
+                            </div>
+                            <span>Generating insights...</span>
+                        </div>
                     </div>
 
                     <div class="chart-container">
@@ -1571,6 +1742,15 @@
                                 <div class="spinner"></div>
                                 <span>Loading Weather Forecast...</span>
                             </div>
+                        </div>
+                        <div id="weatherRevenueTimeline-insights" class="chart-insights loading">
+                            <div class="insight-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                AI Insight
+                            </div>
+                            <span>Generating insights...</span>
                         </div>
                     </div>
 
@@ -1598,31 +1778,31 @@
                             <div
                                 style="padding: 0.75rem; background: #f8fafc; border-radius: var(--radius-sm); border-left: 4px solid var(--secondary-blue);">
                                 <strong>Week Overview:</strong>
-                                Week Overview: 6 rainy days forecast - prepare for post-rain demand spikes
+                                Week Overview: 2 rainy days forecast - prepare for post-rain demand spikes
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fcfaf8; border-radius: var(--radius-sm); border-left: 4px solid #fbb738;">
-                                Monday (2025-06-03): Rain expected (4.5mm, 67.7% prob). Prepare for 7% boost on Tuesday
+                                Wednesday (2025-06-05): Rain expected (15.7mm, 100% prob). Prepare for 7% boost on Thursday
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f0fff2; border-radius: var(--radius-sm); border-left: 4px solid var(--accent-green);">
-                                Tuesday (2025-06-04): Rain expected (2.4mm, 100% prob). Prepare for 7% boost on Wednesday
+                                Saturday (2025-06-08): Rain expected (3.9mm, 48.4% prob). Prepare for 7% boost on Sunday
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f8fafc; border-radius: var(--radius-sm); border-left: 4px solid #5cecf6;">
-                                Wednesday (2025-06-05): Rain expected (20.4mm, 100% prob). Prepare for 7% boost on Thursday
+                                Monday (2025-06-10): Cold day forecast (8.9°C). Possible increase in laundry demand
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fef7ff; border-radius: var(--radius-sm); border-left: 4px solid #8b5cf6;">
-                                Friday (2025-06-07): Rain expected (0.2mm, 61.3% prob). Prepare for 7% boost on Saturday
+                                Tuesday (2025-06-11): Cold day forecast (6.8°C). Possible increase in laundry demand
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fff7f7; border-radius: var(--radius-sm); border-left: 4px solid #f65c5c;">
-                                Saturday (2025-06-08): Rain expected (2.3mm, 74.2% prob). Prepare for 7% boost on Sunday
+                                
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #f9fff7; border-radius: var(--radius-sm); border-left: 4px solid #6ef65c;">
-                                Sunday (2025-06-09): Rain expected (7.9mm, 32.3% prob). Prepare for 7% boost on Next day
+                                
                             </div>
                             <div
                                 style="padding: 0.75rem; background: #fffff7; border-radius: var(--radius-sm); border-left: 4px solid #fad30e;">
@@ -1658,6 +1838,15 @@
                                     <span>Loading Risk Analysis...</span>
                                 </div>
                             </div>
+                            <div id="revenueConcentration-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
+                            </div>
                         </div>
 
                         <div class="chart-container">
@@ -1669,6 +1858,15 @@
                                     <div class="spinner"></div>
                                     <span>Loading Capacity Forecast...</span>
                                 </div>
+                            </div>
+                            <div id="predictiveCapacityForecast-insights" class="chart-insights loading">
+                                <div class="insight-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    AI Insight
+                                </div>
+                                <span>Generating insights...</span>
                             </div>
                         </div>
                     </div>
@@ -1690,21 +1888,21 @@
                 <div class="section-content">
                     <div class="recommendation-grid">
     <div class="recommendation-item">
-        <div class="recommendation-title">Launch Time-Based Discounts During Off-Peak Hours</div>
+        <div class="recommendation-title">Introduce Time-Based Discounts During Off-Peak Hours</div>
         <div class="recommendation-text">
-            Machine utilization is still relatively low at 15% despite recent growth, and off-peak hours (such as 8 AM, 12 PM, and after 6 PM) dominate most of the day. Leverage MaxPan's time-based pricing feature to offer 10–15% discounts during these off-peak slots, smoothing customer distribution across the day and increasing total daily cycles.
+            Leverage MaxPan's automatic pricing tool to apply a 10% discount during consistently underutilized time slots (e.g., 8–9 AM, 8–10 PM). This will redistribute usage, increase cycle volume during low-demand periods, and optimize existing machine capacity, which remains under 20% utilization overall.
         </div>
     </div>
     <div class="recommendation-item">
-        <div class="recommendation-title">Boost Customer Return Rates with WhatsApp Coupon Campaigns</div>
+        <div class="recommendation-title">Create WhatsApp Campaigns to Upsell Cycle Bundles and Laundry Bags</div>
         <div class="recommendation-text">
-            Return likelihood within 30 days is only 11.3% despite cashback and high visit frequencies among Champions and Loyal segments. Introduce personalized WhatsApp coupons (e.g., 10% off next wash if used within 7 days) aimed at first-time or infrequent users to accelerate re-engagement and improve monthly retention.
+            Design WhatsApp messages promoting bundles (e.g., “Buy 4 cycles, get 1 free” or laundry bag + 2 cycles combo) to boost customer average spend per visit beyond 1.08 cycles. Target Champion and Loyal segments who already visit 3–4 times monthly, encouraging additional spending while on site.
         </div>
     </div>
     <div class="recommendation-item">
-        <div class="recommendation-title">Upsell Cycle Bundles and Laundry Bags to Increase Average Ticket</div>
+        <div class="recommendation-title">Re-engagement Coupons Based on Return Probability</div>
         <div class="recommendation-text">
-            With an average of 1.08 cycles per visit, there is untapped potential in multi-cycle or product bundling. Offer pre-paid packages like "5 washes + free laundry bag" or “Buy 4 cycles, get 1 free” upsold directly via WhatsApp or at check-in, raising average purchase value and encouraging repeat use.
+            Use the data on return likelihood to issue limited-time 15% coupons via WhatsApp to inactive users between 30 and 60 days since their last visit. Target this group (11.6% to 19.8% return probability) to reactivate usage and increase the low 23.8% active customer rate.
         </div>
     </div>
 </div>
@@ -1723,7 +1921,7 @@
                     <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>
                 </p>
                 <p style="margin-top: 1rem; opacity: 0.8;">
-                    Generated on 2025-06-02T20:05:29.197Z | Powered by Nova Lopez Lavanderia Analytics Engine
+                    Generated on 2025-06-04T23:51:55.870Z | Powered by Nova Lopez Lavanderia Analytics Engine
                 </p>
             </div>
         </footer>
@@ -1768,7 +1966,219 @@
             }
         };
 
-        // Chart embedding functionality
+        // OpenAI API Integration
+        class AIInsightGenerator {
+            constructor() {
+                // API key should be injected during build time from GitHub Actions
+                this.apiKey = window.OPENAI_API_KEY || 'YOUR_API_KEY_HERE';
+                this.apiUrl = 'https://api.openai.com/v1/chat/completions';
+                this.insightCache = new Map();
+            }
+
+            async generateInsight(chartId, chartData, chartContext) {
+                const cacheKey = `${chartId}-${JSON.stringify(chartData)}`;
+                
+                // Check cache first
+                if (this.insightCache.has(cacheKey)) {
+                    return this.insightCache.get(cacheKey);
+                }
+
+                const insightElement = document.getElementById(`${chartId}-insights`);
+                if (!insightElement) return;
+
+                try {
+                    insightElement.className = 'chart-insights loading';
+                    insightElement.innerHTML = `
+                        <div class="insight-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            AI Insight
+                        </div>
+                        <span>Analyzing data...</span>
+                    `;
+
+                    const prompt = this.buildPrompt(chartId, chartData, chartContext);
+                    const insight = await this.callOpenAI(prompt);
+                    
+                    // Cache the result
+                    this.insightCache.set(cacheKey, insight);
+                    
+                    this.displayInsight(chartId, insight);
+                    return insight;
+                    
+                } catch (error) {
+                    console.error(`Failed to generate insight for ${chartId}:`, error);
+                    this.displayError(chartId, error.message);
+                }
+            }
+
+            buildPrompt(chartId, chartData, chartContext) {
+                const chartTitles = {
+                    'monthlyRevenueTrend': 'Monthly Revenue & Utilization Trend',
+                    'comparativePerformance': 'Weekly Performance Comparison',
+                    'weekVsAveragePerformance': 'Week vs 4-Week Average Growth',
+                    'dayofWeekRevenueDistribution': 'Daily Revenue Distribution',
+                    'bestWorstDayComparison': 'Best vs Worst Day Analysis',
+                    'peakVsOffPeak': 'Peak vs Off-Peak Performance',
+                    'hourlyRevenue': 'Hourly Revenue Distribution',
+                    'hourlyUtilization': 'Hourly Utilization',
+                    'capacityEfficiencyScatter': 'Capacity vs Revenue Efficiency',
+                    'customerSegmentValuePyramid': 'Customer Segment Value Analysis',
+                    'customerRetentionFunnel': 'Customer Retention Analysis',
+                    'behaviorBySegment': 'Segment Behavior Analysis',
+                    'activeVsLapsed': 'Active vs Lapsed Customers',
+                    'marketingROIDashboard': 'Marketing ROI Analysis',
+                    'paymentMethodDistribution': 'Payment Method Distribution',
+                    'correlationHeatmap': 'Weather Impact Correlation',
+                    'weatherRevenueTimeline': 'Weather Revenue Forecast',
+                    'revenueConcentration': 'Revenue Concentration Risk',
+                    'predictiveCapacityForecast': 'Predictive Capacity Forecast'
+                };
+
+                return `You are analyzing a ${chartTitles[chartId] || chartId} for a Brazilian laundromat business (Lavpop). 
+
+Context: ${chartContext || 'This chart shows business performance metrics for operational analysis.'}
+
+Data summary: ${JSON.stringify(chartData).substring(0, 500)}
+
+Provide a concise, actionable insight (2-3 sentences max) focusing on:
+1. Key trend or pattern identified
+2. Business implication or opportunity
+3. Specific recommendation
+
+Write in professional but accessible language. Focus on what matters most for business decisions.`;
+            }
+
+            async callOpenAI(prompt) {
+                const response = await fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a business analytics expert specializing in laundromat operations. Provide concise, actionable insights from data visualizations.'
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        max_tokens: 150,
+                        temperature: 0.7
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`OpenAI API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content.trim();
+            }
+
+            displayInsight(chartId, insight) {
+                const insightElement = document.getElementById(`${chartId}-insights`);
+                if (insightElement) {
+                    insightElement.className = 'chart-insights';
+                    insightElement.innerHTML = `
+                        <div class="insight-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            AI Insight
+                        </div>
+                        ${insight}
+                    `;
+                }
+            }
+
+            displayError(chartId, errorMessage) {
+                const insightElement = document.getElementById(`${chartId}-insights`);
+                if (insightElement) {
+                    insightElement.className = 'chart-insights error';
+                    insightElement.innerHTML = `
+                        <div class="insight-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"/>
+                            </svg>
+                            Insight Unavailable
+                        </div>
+                        Unable to generate insight: ${errorMessage}
+                    `;
+                }
+            }
+
+            // Extract mock data for charts (in production, this would extract real data)
+            extractChartData(chartId) {
+                const mockData = {
+                    'monthlyRevenueTrend': {
+                        revenue: [15000, 17500, 19200, 18800, 21300],
+                        utilization: [65, 72, 78, 75, 82],
+                        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+                    },
+                    'comparativePerformance': {
+                        currentWeek: { revenue: 5200, utilization: 78 },
+                        previousWeek: { revenue: 4800, utilization: 72 },
+                        fourWeekAverage: { revenue: 4950, utilization: 75 }
+                    },
+                    'weekVsAveragePerformance': {
+                        revenueGrowth: 5.1,
+                        utilizationGrowth: 4.0,
+                        servicesGrowth: 8.2
+                    },
+                    'dayofWeekRevenueDistribution': {
+                        daily: [650, 720, 680, 790, 860, 1100, 950],
+                        average: [680, 740, 710, 820, 840, 980, 890]
+                    },
+                    'peakVsOffPeak': {
+                        peak: { revenue: 180, utilization: 85, hours: '18:00-21:00' },
+                        offPeak: { revenue: 95, utilization: 45, hours: '06:00-09:00' }
+                    },
+                    'customerSegmentValuePyramid': {
+                        champions: { count: 28, avgValue: 285 },
+                        loyal: { count: 67, avgValue: 142 },
+                        potential: { count: 134, avgValue: 78 }
+                    },
+                    'marketingROIDashboard': {
+                        whatsapp: { spent: 156, revenue: 890, roi: 5.7 },
+                        coupons: { spent: 245, revenue: 1240, roi: 5.1 }
+                    },
+                    'correlationHeatmap': {
+                        temperature: 0.23,
+                        humidity: -0.15,
+                        precipitation: 0.41
+                    }
+                };
+
+                return mockData[chartId] || {};
+            }
+
+            getChartContext(chartId) {
+                const contexts = {
+                    'monthlyRevenueTrend': 'Shows 5-month revenue and utilization trends for capacity planning.',
+                    'comparativePerformance': 'Compares current week performance against recent benchmarks.',
+                    'weekVsAveragePerformance': 'Identifies growth trends relative to historical averages.',
+                    'dayofWeekRevenueDistribution': 'Reveals daily demand patterns for staffing optimization.',
+                    'peakVsOffPeak': 'Analyzes high vs low demand periods for pricing strategy.',
+                    'customerSegmentValuePyramid': 'Customer value segmentation for targeted marketing.',
+                    'marketingROIDashboard': 'Marketing channel effectiveness and budget allocation.',
+                    'correlationHeatmap': 'Weather impact analysis for demand forecasting.'
+                };
+
+                return contexts[chartId] || 'Business performance analysis for operational insights.';
+            }
+        }
+
+        // Initialize AI Insight Generator
+        let aiInsightGenerator;
+
+        // ChartEmbedder class definition
         class ChartEmbedder {
             constructor() {
                 this.loadedCharts = new Set();
@@ -1860,9 +2270,26 @@
                     this.loadedCharts.add(chartId);
                     console.log(`Successfully loaded chart: ${chartId}`);
                     
+                    // Generate AI insight after chart loads
+                    if (aiInsightGenerator) {
+                        setTimeout(() => {
+                            this.generateChartInsight(chartId);
+                        }, 2000); // Wait 2 seconds for chart to fully render
+                    }
+                    
                 } catch (error) {
                     console.error(`Failed to load chart ${chartId}:`, error);
                     this.showError(chartElement, error.message, chartId);
+                }
+            }
+
+            async generateChartInsight(chartId) {
+                try {
+                    const chartData = aiInsightGenerator.extractChartData(chartId);
+                    const chartContext = aiInsightGenerator.getChartContext(chartId);
+                    await aiInsightGenerator.generateInsight(chartId, chartData, chartContext);
+                } catch (error) {
+                    console.error(`Failed to generate insight for ${chartId}:`, error);
                 }
             }
 
@@ -2040,11 +2467,27 @@
             }
         }
 
-        // Initialize the chart embedder when the page loads
+        // Initialize when page loads
         let chartEmbedder;
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing chart embedder...');
+            
+            // Initialize AI Insight Generator
+            aiInsightGenerator = new AIInsightGenerator();
+            
+            // Initialize Chart Embedder
             chartEmbedder = new ChartEmbedder();
+        });
+
+        // Set API key from GitHub Actions environment
+        window.addEventListener('load', function() {
+            // API key should be injected by GitHub Actions
+            if (typeof OPENAI_API_KEY !== 'undefined') {
+                window.OPENAI_API_KEY = OPENAI_API_KEY;
+            } else {
+                console.warn('OpenAI API key not found. AI insights will be disabled.');
+            }
         });
 
         // Utility function to manually trigger chart refresh
@@ -2142,11 +2585,6 @@
         window.addEventListener('unhandledrejection', function(e) {
             console.error('Unhandled promise rejection:', e.reason);
         });
-
-        // Manual archive export
-        function manualArchive() {
-            window.print();
-        }
     </script>
 </body>
 
