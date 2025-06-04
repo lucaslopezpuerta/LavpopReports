@@ -142,6 +142,21 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
+        .archive-btn {
+            margin-top: 1rem;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .archive-btn:hover {
+            background: var(--light-green);
+        }
         /* Main Content */
         .main-content {
             max-width: 1400px;
@@ -696,6 +711,34 @@
                 </div>
                 <!-- Add this in the header-content div, after the period-badge -->
 <nav class="nav-bar">
+    <a href="index.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        Home
+    </a>
+    <a href="data-tables.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
+        </svg>
+        Data Tables
+    </a>
+    <a href="archive/archived-dashboard-list.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 4H2v16h20V6H12l-2-2z"/>
+        </svg>
+        Archive
+    </a>
+    <a href="help.html" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm1.07-7.75l-.9.92A1.97 1.97 0 0012 12h-1v-2h1a1 1 0 001-1c0-.55-.45-1-1-1s-1 .45-1 1H9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .8-.31 1.53-.93 2.25z"/>
+        </svg>
+        Help
+    </a>
+</nav>
+                <button class="archive-btn" onclick="manualArchive()">Export PDF</button>
+            </div>
+        </header>
     <a href="index.html" class="nav-link">Home</a>
     <a href="data-tables.html" class="nav-link">Data Tables</a>
     <a href="archive/arquived-dashboard-list.html" class="nav-link">Archive</a>
@@ -703,7 +746,6 @@
 </nav>
             </div>
         </header>
-
         <main class="main-content">
             <!-- Executive Summary -->
             <section class="section executive-summary">
@@ -2107,6 +2149,11 @@
         window.addEventListener('unhandledrejection', function(e) {
             console.error('Unhandled promise rejection:', e.reason);
         });
+
+        // Manual archive export
+        function manualArchive() {
+            window.print();
+        }
     </script>
 </body>
 
