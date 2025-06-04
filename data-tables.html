@@ -18,6 +18,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="config.js"></script>
 
     <style>
         /* Inherit styles from main dashboard */
@@ -464,18 +465,9 @@
                 this.tables = {};
                 this.csvData = {};
                 
-                // Google Apps Script web app URL - updated with your actual URL
-                this.scriptUrl = 'https://script.google.com/macros/s/AKfycbzZJOxFSEj3Ue2PfdbfJ2sK8YCbDYLI4thSk9DqumhIfEx0VOAZIbwjVCBQO7Rlm2DI/exec';
-                
-                // Google Drive file IDs and Google Sheets IDs
-                this.fileIds = {
-                    sales: '1yQI0n37uXqBfy22pObBn947mSsjtVKvj',
-                    customers: '15WwBn4LOgxtp3c6isn-BxGKB3BLtGxEf', 
-                    rfm: '1WEMwl0qOM3Figc3adqEbz3JDx4PmLq7l',
-                    blacklist: '1xp1kKfYmQet29lGKZUtnMZKd9JrOmokn',
-                    balance: '1Cv1K2LezSHr3gTtmOqWiGRME1hEbvJQxkeqm8Um8Tz0', // Google Sheets
-                    weather: '19xaziVGLiOaflMSKYcd7C4h6Z8KXm9AcFOV96KnhS7s'  // Google Sheets
-                };
+                // Configuration loaded from config.js
+                this.scriptUrl = DATA_TABLES_CONFIG.scriptUrl;
+                this.fileIds = DATA_TABLES_CONFIG.fileIds;
                 
                 // Track which files are Google Sheets vs CSV files
                 this.googleSheets = ['balance', 'weather'];
