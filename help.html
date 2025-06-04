@@ -64,10 +64,10 @@
             font-size: 1rem;
             margin-bottom: 1.5rem;
         }
-        .nav-buttons {
+        .nav-bar {
             margin-top: 1rem;
         }
-        .nav-button {
+        .nav-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -80,7 +80,7 @@
             transition: var(--transition);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .nav-button:hover {
+        .nav-link:hover {
             background: rgba(255, 255, 255, 0.3);
         }
         .main-content {
@@ -133,20 +133,12 @@
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
             <h1>Dashboard Help</h1>
             <p>How to navigate and understand your reports</p>
-            <div class="nav-buttons">
-                <a href="index.html" class="nav-button">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
-                    </svg>
-                    Back to Dashboard
-                </a>
-                <a href="data-tables.html" class="nav-button" style="margin-left:0.5rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
-                    </svg>
-                    View Data Tables
-                </a>
-            </div>
+            <nav class="nav-bar">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="data-tables.html" class="nav-link">Data Tables</a>
+                <a href="archive/arquived-dashboard-list.html" class="nav-link">Archive</a>
+                <a href="help.html" class="nav-link">Help</a>
+            </nav>
         </div>
     </header>
     <main class="main-content">
