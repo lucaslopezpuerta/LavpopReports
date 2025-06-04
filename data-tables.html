@@ -111,6 +111,27 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
+        .nav-bar {
+            margin-top: 1rem;
+        }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-right: 0.5rem;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
@@ -396,18 +417,12 @@
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
             <h1>Data Tables</h1>
             <p>Master files and analytics data</p>
-            <a href="index.html" class="back-button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
-                </svg>
-                Back to Dashboard
-            </a>
-            <a href="help.html" class="back-button" style="margin-left: 0.5rem;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                Help
-            </a>
+            <nav class="nav-bar">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="data-tables.html" class="nav-link">Data Tables</a>
+            <a href="archive/arquived-dashboard-list.html" class="nav-link">Archive</a>
+            <a href="help.html" class="nav-link">Help</a>
+            </nav>
         </div>
     </header>
 
