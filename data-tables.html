@@ -502,8 +502,29 @@
                 document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
                 document.querySelector(`[data-table="${tableType}"]`).classList.add('active');
                 
+                // Clear any existing filters and search functions
+                this.clearAllFilters(this.currentTable);
+                
                 this.currentTable = tableType;
                 this.loadTable(tableType);
+            }
+
+            clearAllFilters(tableType) {
+                if (this.tables[tableType]) {
+                    // Clear DataTable searches
+                    this.tables[tableType].search('').columns().search('').draw();
+                }
+                
+                // Clear custom date search functions
+                $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function(fn) {
+                    return !fn._tableType || fn._tableType !== tableType;
+                });
+                
+                // Clear filter inputs
+                $(`[id^="filter-${tableType}-"]`).val('');
+                
+                // Reset quick date filter buttons
+                $('.quick-filter-btn').removeClass('active');
             }
 
             async loadTable(tableType) {
@@ -915,37 +936,6 @@
                 $('#selected-rows').text(selectedRows);
             }
 
-            exportFiltered(tableType) {
-                const table = this.tables[tableType];
-                const originalData = this.csvData[tableType];
-                
-                // Get filtered row indices
-                const filteredIndexes = table.rows({search: 'applied'}).indexes().toArray();
-                
-                // Get filtered data
-                const filteredRows = filteredIndexes.map(index => originalData.rows[index]);
-                
-                // Create CSV content
-                const headers = originalData.headers;
-                const csvContent = [
-                    headers.join(','),
-                    ...filteredRows.map(row => 
-                        headers.map(header => `"${(row[header] || '').toString().replace(/"/g, '""')}"`).join(',')
-                    )
-                ].join('\n');
-
-                // Download
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Lavpop_${this.getTableName(tableType)}_Filtered_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }
-
             parseCSVLine(line, separator = ',') {
                 const result = [];
                 let current = '';
@@ -1000,7 +990,9 @@
                         {
                             extend: 'csv',
                             title: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
-                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`
+                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
+                            fieldSeparator: ';',
+                            fieldBoundary: '"'
                         },
                         {
                             extend: 'excel',
@@ -1010,15 +1002,18 @@
                         {
                             extend: 'pdf',
                             title: `Lavpop - ${this.getTableName(tableType)} - ${new Date().toLocaleDateString()}`,
-                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`
+                            filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
+                            orientation: 'landscape',
+                            pageSize: 'A4',
+                            customize: function(doc) {
+                                doc.defaultStyle.fontSize = 8;
+                                doc.styles.tableHeader.fontSize = 9;
+                                doc.content[1].table.widths = Array(doc.content[1].table.body[0].length).fill('*');
+                            }
                         },
                         {
                             extend: 'print',
                             title: `Lavpop - ${this.getTableName(tableType)} - ${new Date().toLocaleDateString()}`
-                        },
-                        {
-                            text: 'Export Filtered',
-                            action: () => this.exportFiltered(tableType)
                         }
                     ],
                     order: [[1, 'desc']], // Skip checkbox column
