@@ -1006,13 +1006,17 @@
                                 columns: ':not(:first-child)', // Skip checkbox column
                                 format: {
                                     body: function(data, row, column, node) {
-                                        // Preserve decimal commas for numeric values
-                                        if (typeof data === 'string' && data.match(/^\d+,\d+$/)) {
-                                            return '"' + data + '"';
-                                        }
+                                        // Force text format for all data to preserve decimal commas
                                         return data;
                                     }
                                 }
+                            },
+                            customize: function(xlsx) {
+                                // Force all cells to text format to preserve decimal commas
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                $('row c', sheet).each(function() {
+                                    $(this).attr('t', 'inlineStr');
+                                });
                             }
                         },
                         {
