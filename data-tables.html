@@ -1003,7 +1003,16 @@
                             title: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
                             filename: `Lavpop_${this.getTableName(tableType)}_${new Date().toISOString().split('T')[0]}`,
                             exportOptions: {
-                                columns: ':not(:first-child)' // Skip checkbox column
+                                columns: ':not(:first-child)', // Skip checkbox column
+                                format: {
+                                    body: function(data, row, column, node) {
+                                        // Force text format for values containing commas (Brazilian decimals)
+                                        if (typeof data === 'string' && data.includes(',')) {
+                                            return '\t' + data; // Tab prefix forces Excel to treat as text
+                                        }
+                                        return data;
+                                    }
+                                }
                             }
                         },
                         {
