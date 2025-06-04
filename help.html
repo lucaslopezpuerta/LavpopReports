@@ -5,6 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lavpop Dashboard Help</title>
     <style>
+
+        :root {
+            --primary-blue: #10306b;
+            --secondary-blue: #1a4798;
+            --accent-green: #6bbe4c;
+            --light-green: #2ae01e;
+            --background-light: #f8fafc;
+            --background-white: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-light: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .header {
+            background: linear-gradient(324deg, rgba(16, 48, 107, 1) 0%, rgba(26, 71, 152, 1) 70%);
+            padding: 2rem 0;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: brightness(1.1);
+        }
+        .header h1 {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .nav-buttons {
+            margin-top: 1rem;
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .section {
+            background: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        a {
+            color: var(--secondary-blue);
+
         body {
             font-family: Arial, sans-serif;
             margin: 2rem;
@@ -19,6 +117,7 @@
         }
         a {
             color: #1a4798;
+
         }
         code {
             background: #f5f5f5;
@@ -28,6 +127,59 @@
     </style>
 </head>
 <body>
+
+    <header class="header">
+        <div class="header-content">
+            <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
+            <h1>Dashboard Help</h1>
+            <p>How to navigate and understand your reports</p>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+                <a href="data-tables.html" class="nav-button" style="margin-left:0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v2H7zM11 7h6v2h-6zM7 11h2v2H7zM11 11h6v2h-6zM7 15h2v2H7zM11 15h6v2h-6z"/>
+                    </svg>
+                    View Data Tables
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="section">
+            <h2>Navigating the Dashboard</h2>
+            <p>The dashboard has two main pages. The <strong>index.html</strong> file contains interactive charts and key performance indicators. Use the <em>View Data Tables</em> button at the top to switch views. The <strong>data-tables.html</strong> page provides sortable tables with export options. Use its tabs to choose datasets and the CSV/PDF buttons to download data.</p>
+        </div>
+        <div class="section">
+            <h2>Chart Guide</h2>
+            <p>Hover over each chart to see exact values. Important visualizations include:</p>
+            <ul>
+                <li><strong>Monthly Revenue &amp; Utilization Trend</strong> – bars show monthly net revenue while the line tracks machine utilization (<code>(cycles completed / available cycles) × 100</code>).</li>
+                <li><strong>Weekly Performance Comparison</strong> – current week vs. last week and the 4‑week average. Percentage change uses <code>((current - previous) / previous) × 100</code>.</li>
+                <li><strong>Revenue Distribution by Day</strong> – daily revenue bars and a 4‑week average line reveal strong and weak days.</li>
+                <li><strong>Customer Segment Charts</strong> – see how different groups contribute to revenue. Average value per customer equals <code>total revenue ÷ number of customers</code>.</li>
+                <li><strong>Marketing ROI Dashboard</strong> – ROI is <code>(revenue from campaign - cost) ÷ cost</code>. Values above zero indicate profit.</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Metric Definitions</h2>
+            <ul>
+                <li><strong>Net Revenue</strong> = total revenue − refunds and adjustments.</li>
+                <li><strong>Utilization (%)</strong> = <code>(completed cycles ÷ maximum possible cycles) × 100</code>.</li>
+                <li><strong>Revenue Efficiency</strong> = net revenue ÷ utilization %.</li>
+                <li><strong>Growth Rate</strong> = <code>((current − reference) ÷ reference) × 100</code>.</li>
+                <li><strong>Correlation Coefficient</strong> – values near ±1 indicate a strong relationship.</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Need Help?</h2>
+            <p>Questions about this report? Contact <strong>Gabrielle Vilanova</strong> or <strong>Lucas López</strong> at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>.</p>
+        </div>
+    </main>
     <h1>Using the Lavpop Dashboard</h1>
     <p>The dashboard offers two main pages:</p>
     <ul>
@@ -71,5 +223,6 @@
     <h2>Need Help?</h2>
     <p>Questions about this report? Contact <strong>Gabrielle Vilanova</strong> or <strong>Lucas López</strong> at <a href="mailto:lavpop.caxias@outlook.com">lavpop.caxias@outlook.com</a>.</p>
     <p>Return to the <a href="index.html">Dashboard</a> or view the <a href="data-tables.html">Data Tables</a>.</p>
+
 </body>
 </html>
