@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archived Dashboards</title>
+    <title>Lavpop Dashboard Archive</title>
     <style>
         :root {
             --primary-blue: #10306b;
@@ -13,23 +13,29 @@
             --background-light: #f8fafc;
             --background-white: #ffffff;
             --text-primary: #1e293b;
+            --text-secondary: #64748b;
             --border-light: #e2e8f0;
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             --radius-lg: 0.75rem;
+            --radius-md: 0.5rem;
             --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text-primary);
             background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
+            min-height: 100vh;
         }
+
         .header {
             background: linear-gradient(324deg, rgba(16, 48, 107, 1) 0%, rgba(26, 71, 152, 1) 70%);
             padding: 2rem 0;
@@ -37,31 +43,41 @@
             margin-bottom: 2rem;
             text-align: center;
         }
+
         .header-content {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
+
         .logo {
             max-width: 150px;
             height: auto;
             margin-bottom: 1rem;
             filter: brightness(1.1);
         }
+
         .header h1 {
             color: #fff;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
+
         .header p {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
+
         .nav-bar {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
+
         .nav-link {
             display: inline-flex;
             align-items: center;
@@ -75,37 +91,405 @@
             transition: var(--transition);
             border: 1px solid rgba(255, 255, 255, 0.3);
             margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
         }
+
         .nav-link:hover {
             background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
+
         .main-content {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem 2rem;
         }
-        .week-list {
-            list-style: none;
-            padding: 0;
+
+        .archive-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-        .week-list li {
-            margin-bottom: 0.75rem;
+
+        .archive-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-blue);
         }
-        .week-link {
-            color: var(--secondary-blue);
+
+        .archive-stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .filter-controls {
+            background: var(--background-white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background: var(--background-white);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(107, 190, 76, 0.1);
+        }
+
+        .search-button {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            align-self: end;
+        }
+
+        .search-button:hover {
+            background: #5aa83a;
+            transform: translateY(-1px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--background-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255,255,255,0.1)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>') no-repeat center;
+            background-size: 60px;
+            opacity: 0.3;
+        }
+
+        .card-date {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-period {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .card-type {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--background-light);
+            border-radius: var(--radius-md);
+        }
+
+        .metric-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-top: 0.25rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
             text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        .week-link:hover {
-            text-decoration: underline;
+
+        .btn-primary:hover {
+            background: #5aa83a;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: var(--background-light);
+            color: var(--text-primary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .pagination-btn {
+            background: var(--background-white);
+            border: 1px solid var(--border-light);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+        }
+
+        .spinner {
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 0 1rem 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .archive-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .archive-stats {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+            .card-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Year separator */
+        .year-separator {
+            background: var(--background-white);
+            border-radius: var(--radius-lg);
+            padding: 1rem 2rem;
+            margin: 2rem 0 1rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .year-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .year-stats {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
     </style>
 </head>
+
 <body>
     <header class="header">
         <div class="header-content">
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
-            <h1>Past Weekly Dashboards</h1>
-            <p>Every Monday at 2AM Brazilian time the current dashboard is exported as a PDF and stored here.</p>
+            <h1>Dashboard Archive</h1>
+            <p>Historical performance reports automatically generated every Monday at 2AM Brazilian time. Access past insights and track performance trends over time.</p>
             <nav class="nav-bar">
                 <a href="../index.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -134,11 +518,338 @@
             </nav>
         </div>
     </header>
+
     <main class="main-content">
-        <ul class="week-list">
-            <li><a href="2025-06-07/dashboard.pdf" class="week-link">Week ending 2025-06-07</a></li>
-            <li><a href="2025-05-31/dashboard.pdf" class="week-link">Week ending 2025-05-31</a></li>
-        </ul>
+        <div class="archive-header">
+            <h2 class="archive-title">Dashboard Archive</h2>
+            <div class="archive-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalReports">Loading...</div>
+                    <div class="stat-label">Total Reports</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="latestDate">Loading...</div>
+                    <div class="stat-label">Latest Report</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="archiveSize">Loading...</div>
+                    <div class="stat-label">Archive Size</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Search Reports</label>
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Search by date or week...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Year</label>
+                    <select class="filter-select" id="yearFilter">
+                        <option value="">All Years</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Quarter</label>
+                    <select class="filter-select" id="quarterFilter">
+                        <option value="">All Quarters</option>
+                        <option value="Q1">Q1 (Jan-Mar)</option>
+                        <option value="Q2">Q2 (Apr-Jun)</option>
+                        <option value="Q3">Q3 (Jul-Sep)</option>
+                        <option value="Q4">Q4 (Oct-Dec)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="search-button" onclick="applyFilters()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboardContainer">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </button>
+            <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
+            <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                Next
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </button>
+        </div>
     </main>
+
+    <script>
+        // Mock data for demonstration - replace with actual data loading
+        const dashboardReports = [
+            {
+                date: '2025-06-07',
+                weekStart: '2025-06-01',
+                weekEnd: '2025-06-07',
+                type: 'Weekly',
+                revenue: 15420.50,
+                cycles: 1250,
+                utilization: 78.5,
+                fileSize: '2.3 MB'
+            },
+            {
+                date: '2025-05-31',
+                weekStart: '2025-05-25',
+                weekEnd: '2025-05-31',
+                type: 'Weekly',
+                revenue: 14890.25,
+                cycles: 1180,
+                utilization: 76.2,
+                fileSize: '2.1 MB'
+            },
+            {
+                date: '2025-05-24',
+                weekStart: '2025-05-18',
+                weekEnd: '2025-05-24',
+                type: 'Weekly',
+                revenue: 16250.75,
+                cycles: 1320,
+                utilization: 82.1,
+                fileSize: '2.4 MB'
+            },
+            {
+                date: '2025-05-17',
+                weekStart: '2025-05-11',
+                weekEnd: '2025-05-17',
+                type: 'Weekly',
+                revenue: 13980.00,
+                cycles: 1090,
+                utilization: 71.8,
+                fileSize: '2.0 MB'
+            }
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        let filteredReports = [...dashboardReports];
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function getQuarter(date) {
+            const month = new Date(date).getMonth() + 1;
+            return Math.ceil(month / 3);
+        }
+
+        function createDashboardCard(report) {
+            const quarter = getQuarter(report.date);
+            const year = new Date(report.date).getFullYear();
+            
+            return `
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-date">Week ending ${new Date(report.date).toLocaleDateString('pt-BR')}</div>
+                        <div class="card-period">${formatDate(report.weekStart)} - ${formatDate(report.weekEnd)}</div>
+                        <span class="card-type">${report.type} Report</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-metrics">
+                            <div class="metric-item">
+                                <div class="metric-value">${formatCurrency(report.revenue)}</div>
+                                <div class="metric-label">Revenue</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">${report.cycles.toLocaleString()}</div>
+                                <div class="metric-label">Cycles</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">${report.utilization}%</div>
+                                <div class="metric-label">Utilization</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">${report.fileSize}</div>
+                                <div class="metric-label">File Size</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="${report.date}/dashboard.pdf" class="btn-primary" target="_blank">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                </svg>
+                                View PDF
+                            </a>
+                            <button class="btn-secondary" onclick="downloadReport('${report.date}')" title="Download">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createYearSeparator(year, count) {
+            return `
+                <div class="year-separator">
+                    <div class="year-title">${year}</div>
+                    <div class="year-stats">${count} reports available</div>
+                </div>
+            `;
+        }
+
+        function renderDashboards() {
+            const container = document.getElementById('dashboardContainer');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageReports = filteredReports.slice(startIndex, endIndex);
+
+            if (pageReports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9,10H7V12H9V10M13,10H11V12H13V10M17,10H15V12H17V10M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V8H19V19Z"/>
+                        </svg>
+                        <h3>No reports found</h3>
+                        <p>Try adjusting your search criteria or check back later for new reports.</p>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            let currentYear = null;
+            
+            // Group by year for display
+            const reportsByYear = {};
+            pageReports.forEach(report => {
+                const year = new Date(report.date).getFullYear();
+                if (!reportsByYear[year]) reportsByYear[year] = [];
+                reportsByYear[year].push(report);
+            });
+
+            // Generate HTML with year separators
+            Object.keys(reportsByYear).sort((a, b) => b - a).forEach(year => {
+                html += createYearSeparator(year, reportsByYear[year].length);
+                html += '<div class="dashboard-grid">';
+                reportsByYear[year].forEach(report => {
+                    html += createDashboardCard(report);
+                });
+                html += '</div>';
+            });
+
+            container.innerHTML = html;
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+            prevBtn.classList.toggle('disabled', currentPage === 1);
+            nextBtn.classList.toggle('disabled', currentPage === totalPages);
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+            const newPage = currentPage + direction;
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderDashboards();
+            }
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const yearFilter = document.getElementById('yearFilter').value;
+            const quarterFilter = document.getElementById('quarterFilter').value;
+
+            filteredReports = dashboardReports.filter(report => {
+                const matchesSearch = !searchTerm || 
+                    report.date.includes(searchTerm) ||
+                    report.weekStart.includes(searchTerm) ||
+                    report.weekEnd.includes(searchTerm);
+
+                const matchesYear = !yearFilter || 
+                    new Date(report.date).getFullYear().toString() === yearFilter;
+
+                const matchesQuarter = !quarterFilter || 
+                    `Q${getQuarter(report.date)}` === quarterFilter;
+
+                return matchesSearch && matchesYear && matchesQuarter;
+            });
+
+            currentPage = 1;
+            renderDashboards();
+        }
+
+        function downloadReport(date) {
+            // Simulate download
+            const link = document.createElement('a');
+            link.href = `${date}/dashboard.pdf`;
+            link.download = `Lavpop_Dashboard_${date}.pdf`;
+            link.click();
+        }
+
+        function updateStats() {
+            document.getElementById('totalReports').textContent = dashboardReports.length;
+            document.getElementById('latestDate').textContent = new Date(dashboardReports[0].date).toLocaleDateString('pt-BR');
+            
+            const totalSize = dashboardReports.reduce((sum, report) => {
+                const size = parseFloat(report.fileSize.replace(' MB', ''));
+                return sum + size;
+            }, 0);
+            document.getElementById('archiveSize').textContent = `${totalSize.toFixed(1)} MB`;
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('yearFilter').addEventListener('change', applyFilters);
+        document.getElementById('quarterFilter').addEventListener('change', applyFilters);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            renderDashboards();
+        });
+    </script>
 </body>
 </html>
