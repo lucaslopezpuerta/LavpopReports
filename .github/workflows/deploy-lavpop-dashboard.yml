@@ -26,8 +26,18 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Inject OpenAI API Key
+      env:
+        OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
       run: |
-        find . -name "*.html" -exec sed -i "s/YOUR_API_KEY_HERE/${{ secrets.OPENAI_KEY }}/g" {} \;
+        find . -name "*.html" -type f -exec sed -i "s/'YOUR_API_KEY_HERE'/'${OPENAI_KEY}'/g" {} \;
+        
+    - name: Verify API Key Injection
+      run: |
+        if grep -r "YOUR_API_KEY_HERE" . --include="*.html"; then
+          echo "ERROR: API key placeholder still found!"
+          exit 1
+        fi
+        echo "✓ API key injection successful"
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
