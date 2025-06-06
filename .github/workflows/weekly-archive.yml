@@ -83,7 +83,7 @@ jobs:
           });
 
           // Extract metadata from dashboard
-          const metadata = await page.evaluate(() => {
+          const metadata = await page.evaluate((startDate, endDate) => {
             const getTextContent = (selector) => {
               const el = document.querySelector(selector);
               return el ? el.textContent.trim() : 'N/A';
@@ -94,10 +94,10 @@ jobs:
               totalCycles: getTextContent('.kpi-card:nth-child(2) .kpi-value'),
               utilization: getTextContent('.kpi-card:nth-child(3) .kpi-value'),
               generatedAt: new Date().toISOString(),
-              weekStart: process.env.START_DATE,
-              weekEnd: process.env.END_DATE
+              weekStart: startDate,
+              weekEnd: endDate
             };
-          });
+          }, process.env.START_DATE, process.env.END_DATE);
 
           // Generate PDF
           const pdfBuffer = await page.pdf({
