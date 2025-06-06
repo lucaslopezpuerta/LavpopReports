@@ -208,7 +208,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -276,7 +276,7 @@
 
         .card-metrics {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -348,40 +348,20 @@
             color: var(--text-primary);
         }
 
-        .pagination {
+        .loading-spinner {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 1rem;
-            margin-top: 2rem;
+            padding: 4rem;
         }
 
-        .pagination-btn {
-            background: var(--background-white);
-            border: 1px solid var(--border-light);
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .pagination-btn:hover:not(.disabled) {
-            background: var(--accent-green);
-            color: white;
-            border-color: var(--accent-green);
-        }
-
-        .pagination-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination-info {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+        .spinner {
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
         }
 
         .empty-state {
@@ -397,20 +377,13 @@
             opacity: 0.5;
         }
 
-        .loading-spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 4rem;
-        }
-
-        .spinner {
-            border: 3px solid var(--border-light);
-            border-top: 3px solid var(--primary-blue);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        .error-state {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            color: #dc2626;
         }
 
         @keyframes spin {
@@ -459,7 +432,6 @@
             }
         }
 
-        /* Year separator */
         .year-separator {
             background: var(--background-white);
             border-radius: var(--radius-lg);
@@ -489,7 +461,7 @@
         <div class="header-content">
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
             <h1>Dashboard Archive</h1>
-            <p>Historical performance reports automatically generated every Monday at 2AM Brazilian time. Access past insights and track performance trends over time.</p>
+            <p>Historical performance reports automatically generated every Sunday at 3AM Brazilian time. Access past insights and track performance trends over time.</p>
             <nav class="nav-bar">
                 <a href="../index.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -545,16 +517,14 @@
                     <input type="text" class="filter-input" id="searchInput" placeholder="Search by date or week...">
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Year</label>
-                    <select class="filter-select" id="yearFilter">
+                    <label class="filter-label" for="yearFilter">Year</label>
+                    <select class="filter-select" id="yearFilter" name="yearFilter">
                         <option value="">All Years</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Quarter</label>
-                    <select class="filter-select" id="quarterFilter">
+                    <select class="filter-select" id="quarterFilter" title="Quarter">
                         <option value="">All Quarters</option>
                         <option value="Q1">Q1 (Jan-Mar)</option>
                         <option value="Q2">Q2 (Apr-Jun)</option>
@@ -578,132 +548,176 @@
                 <div class="spinner"></div>
             </div>
         </div>
-
-        <div class="pagination" id="pagination" style="display: none;">
-            <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                </svg>
-                Previous
-            </button>
-            <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
-            <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
-                Next
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                </svg>
-            </button>
-        </div>
     </main>
 
     <script>
-        // Mock data for demonstration - replace with actual data loading
-        const dashboardReports = [
-            {
-                date: '2025-06-07',
-                weekStart: '2025-06-01',
-                weekEnd: '2025-06-07',
-                type: 'Weekly',
-                revenue: 15420.50,
-                cycles: 1250,
-                utilization: 78.5,
-                fileSize: '2.3 MB'
-            },
-            {
-                date: '2025-05-31',
-                weekStart: '2025-05-25',
-                weekEnd: '2025-05-31',
-                type: 'Weekly',
-                revenue: 14890.25,
-                cycles: 1180,
-                utilization: 76.2,
-                fileSize: '2.1 MB'
-            },
-            {
-                date: '2025-05-24',
-                weekStart: '2025-05-18',
-                weekEnd: '2025-05-24',
-                type: 'Weekly',
-                revenue: 16250.75,
-                cycles: 1320,
-                utilization: 82.1,
-                fileSize: '2.4 MB'
-            },
-            {
-                date: '2025-05-17',
-                weekStart: '2025-05-11',
-                weekEnd: '2025-05-17',
-                type: 'Weekly',
-                revenue: 13980.00,
-                cycles: 1090,
-                utilization: 71.8,
-                fileSize: '2.0 MB'
+        // GitHub repository configuration
+        const GITHUB_CONFIG = {
+            owner: 'lucaslopezpuerta',
+            repo: 'LavpopReports',
+            archivePath: 'archive'
+        };
+
+        let allReports = [];
+        let filteredReports = [];
+
+        // Fetch archive data from GitHub
+        async function fetchArchiveData() {
+            try {
+                console.log('Fetching archive data from GitHub...');
+                
+                // Fetch archive directory contents
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.archivePath}`);
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+
+                const contents = await response.json();
+                const reports = [];
+
+                for (const item of contents) {
+                    if (item.type === 'dir') {
+                        // Each directory should contain a PDF and metadata.json
+                        try {
+                            const dirResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.archivePath}/${item.name}`);
+                            const dirContents = await dirResponse.json();
+                            
+                            const pdfFile = dirContents.find(file => file.name.endsWith('.pdf'));
+                            const metadataFile = dirContents.find(file => file.name === 'metadata.json');
+                            
+                            if (pdfFile) {
+                                let metadata = null;
+                                
+                                // Try to fetch metadata
+                                if (metadataFile) {
+                                    try {
+                                        const metaResponse = await fetch(metadataFile.download_url);
+                                        metadata = await metaResponse.json();
+                                    } catch (e) {
+                                        console.warn(`Failed to load metadata for ${item.name}:`, e);
+                                    }
+                                }
+                                
+                                // Parse dates from folder name (YYYY-MM-DD format)
+                                const folderDate = item.name;
+                                const dateMatch = folderDate.match(/(\d{4}-\d{2}-\d{2})/);
+                                
+                                if (dateMatch) {
+                                    const endDate = dateMatch[1];
+                                    const startDate = calculateStartDate(endDate);
+                                    
+                                    reports.push({
+                                        folderName: item.name,
+                                        endDate: endDate,
+                                        startDate: startDate,
+                                        pdfUrl: pdfFile.download_url,
+                                        pdfName: pdfFile.name,
+                                        fileSize: formatFileSize(pdfFile.size),
+                                        metadata: metadata || generateDefaultMetadata(folderDate)
+                                    });
+                                }
+                            }
+                        } catch (e) {
+                            console.warn(`Failed to process directory ${item.name}:`, e);
+                        }
+                    }
+                }
+
+                // Sort by date (newest first)
+                reports.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+                
+                return reports;
+            } catch (error) {
+                console.error('Failed to fetch archive data:', error);
+                throw error;
             }
-        ];
+        }
 
-        let currentPage = 1;
-        const itemsPerPage = 6;
-        let filteredReports = [...dashboardReports];
+        // Calculate start date (6 days before end date, Sunday to Saturday)
+        function calculateStartDate(endDate) {
+            const date = new Date(endDate);
+            date.setDate(date.getDate() - 6);
+            return date.toISOString().split('T')[0];
+        }
 
+        // Generate default metadata when not available
+        function generateDefaultMetadata(folderDate) {
+            return {
+                netRevenue: 'N/A',
+                totalCycles: 'N/A',
+                utilization: 'N/A',
+                generatedAt: folderDate
+            };
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Format currency
         function formatCurrency(amount) {
+            if (amount === 'N/A') return 'N/A';
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             }).format(amount);
         }
 
+        // Format date for display
         function formatDate(dateString) {
             return new Date(dateString).toLocaleDateString('pt-BR', {
-                weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
         }
 
+        // Get quarter from date
         function getQuarter(date) {
             const month = new Date(date).getMonth() + 1;
             return Math.ceil(month / 3);
         }
 
+        // Create dashboard card HTML
         function createDashboardCard(report) {
-            const quarter = getQuarter(report.date);
-            const year = new Date(report.date).getFullYear();
+            const year = new Date(report.endDate).getFullYear();
             
             return `
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <div class="card-date">Week ending ${new Date(report.date).toLocaleDateString('pt-BR')}</div>
-                        <div class="card-period">${formatDate(report.weekStart)} - ${formatDate(report.weekEnd)}</div>
-                        <span class="card-type">${report.type} Report</span>
+                        <div class="card-date">Week ending ${formatDate(report.endDate)}</div>
+                        <div class="card-period">${formatDate(report.startDate)} - ${formatDate(report.endDate)}</div>
+                        <span class="card-type">Weekly Report</span>
                     </div>
                     <div class="card-content">
                         <div class="card-metrics">
                             <div class="metric-item">
-                                <div class="metric-value">${formatCurrency(report.revenue)}</div>
-                                <div class="metric-label">Revenue</div>
+                                <div class="metric-value">${formatCurrency(report.metadata.netRevenue)}</div>
+                                <div class="metric-label">Net Revenue</div>
                             </div>
                             <div class="metric-item">
-                                <div class="metric-value">${report.cycles.toLocaleString()}</div>
-                                <div class="metric-label">Cycles</div>
+                                <div class="metric-value">${report.metadata.totalCycles}</div>
+                                <div class="metric-label">Total Cycles</div>
                             </div>
                             <div class="metric-item">
-                                <div class="metric-value">${report.utilization}%</div>
+                                <div class="metric-value">${report.metadata.utilization}${report.metadata.utilization !== 'N/A' ? '%' : ''}</div>
                                 <div class="metric-label">Utilization</div>
-                            </div>
-                            <div class="metric-item">
-                                <div class="metric-value">${report.fileSize}</div>
-                                <div class="metric-label">File Size</div>
                             </div>
                         </div>
                         <div class="card-actions">
-                            <a href="${report.date}/dashboard.pdf" class="btn-primary" target="_blank">
+                            <a href="${report.pdfUrl}" class="btn-primary" target="_blank">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
                                 </svg>
-                                View PDF
+                                View PDF (${report.fileSize})
                             </a>
-                            <button class="btn-secondary" onclick="downloadReport('${report.date}')" title="Download">
+                            <button class="btn-secondary" onclick="downloadReport('${report.pdfUrl}', '${report.pdfName}')" title="Download">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
                                 </svg>
@@ -714,6 +728,7 @@
             `;
         }
 
+        // Create year separator
         function createYearSeparator(year, count) {
             return `
                 <div class="year-separator">
@@ -723,13 +738,11 @@
             `;
         }
 
+        // Render dashboards
         function renderDashboards() {
             const container = document.getElementById('dashboardContainer');
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageReports = filteredReports.slice(startIndex, endIndex);
 
-            if (pageReports.length === 0) {
+            if (filteredReports.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
@@ -739,22 +752,19 @@
                         <p>Try adjusting your search criteria or check back later for new reports.</p>
                     </div>
                 `;
-                document.getElementById('pagination').style.display = 'none';
                 return;
             }
 
-            let html = '';
-            let currentYear = null;
-            
-            // Group by year for display
+            // Group by year
             const reportsByYear = {};
-            pageReports.forEach(report => {
-                const year = new Date(report.date).getFullYear();
+            filteredReports.forEach(report => {
+                const year = new Date(report.endDate).getFullYear();
                 if (!reportsByYear[year]) reportsByYear[year] = [];
                 reportsByYear[year].push(report);
             });
 
-            // Generate HTML with year separators
+            // Generate HTML
+            let html = '';
             Object.keys(reportsByYear).sort((a, b) => b - a).forEach(year => {
                 html += createYearSeparator(year, reportsByYear[year].length);
                 html += '<div class="dashboard-grid">';
@@ -765,79 +775,90 @@
             });
 
             container.innerHTML = html;
-            updatePagination();
         }
 
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
-            const pagination = document.getElementById('pagination');
-            const pageInfo = document.getElementById('pageInfo');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-
-            if (totalPages <= 1) {
-                pagination.style.display = 'none';
-                return;
-            }
-
-            pagination.style.display = 'flex';
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
-            prevBtn.classList.toggle('disabled', currentPage === 1);
-            nextBtn.classList.toggle('disabled', currentPage === totalPages);
-        }
-
-        function changePage(direction) {
-            const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
-            const newPage = currentPage + direction;
-
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderDashboards();
-            }
-        }
-
+        // Apply filters
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const yearFilter = document.getElementById('yearFilter').value;
             const quarterFilter = document.getElementById('quarterFilter').value;
 
-            filteredReports = dashboardReports.filter(report => {
+            filteredReports = allReports.filter(report => {
                 const matchesSearch = !searchTerm || 
-                    report.date.includes(searchTerm) ||
-                    report.weekStart.includes(searchTerm) ||
-                    report.weekEnd.includes(searchTerm);
+                    report.endDate.includes(searchTerm) ||
+                    report.startDate.includes(searchTerm) ||
+                    formatDate(report.endDate).toLowerCase().includes(searchTerm);
 
                 const matchesYear = !yearFilter || 
-                    new Date(report.date).getFullYear().toString() === yearFilter;
+                    new Date(report.endDate).getFullYear().toString() === yearFilter;
 
                 const matchesQuarter = !quarterFilter || 
-                    `Q${getQuarter(report.date)}` === quarterFilter;
+                    `Q${getQuarter(report.endDate)}` === quarterFilter;
 
                 return matchesSearch && matchesYear && matchesQuarter;
             });
 
-            currentPage = 1;
             renderDashboards();
         }
 
-        function downloadReport(date) {
-            // Simulate download
+        // Download report
+        function downloadReport(url, filename) {
             const link = document.createElement('a');
-            link.href = `${date}/dashboard.pdf`;
-            link.download = `Lavpop_Dashboard_${date}.pdf`;
+            link.href = url;
+            link.download = filename;
             link.click();
         }
 
+        // Update stats
         function updateStats() {
-            document.getElementById('totalReports').textContent = dashboardReports.length;
-            document.getElementById('latestDate').textContent = new Date(dashboardReports[0].date).toLocaleDateString('pt-BR');
+            const totalReports = allReports.length;
+            const latestDate = totalReports > 0 ? formatDate(allReports[0].endDate) : 'None';
             
-            const totalSize = dashboardReports.reduce((sum, report) => {
-                const size = parseFloat(report.fileSize.replace(' MB', ''));
-                return sum + size;
+            // Calculate total size (approximate)
+            const totalSizeKB = allReports.reduce((sum, report) => {
+                const sizeStr = report.fileSize;
+                const sizeMatch = sizeStr.match(/([\d.]+)\s*(KB|MB|GB)/);
+                if (sizeMatch) {
+                    const value = parseFloat(sizeMatch[1]);
+                    const unit = sizeMatch[2];
+                    switch (unit) {
+                        case 'KB': return sum + value;
+                        case 'MB': return sum + value * 1024;
+                        case 'GB': return sum + value * 1024 * 1024;
+                    }
+                }
+                return sum;
             }, 0);
-            document.getElementById('archiveSize').textContent = `${totalSize.toFixed(1)} MB`;
+
+            document.getElementById('totalReports').textContent = totalReports;
+            document.getElementById('latestDate').textContent = latestDate;
+            document.getElementById('archiveSize').textContent = formatFileSize(totalSizeKB * 1024);
+
+            // Populate year filter
+            const years = [...new Set(allReports.map(r => new Date(r.endDate).getFullYear()))].sort((a, b) => b - a);
+            const yearFilter = document.getElementById('yearFilter');
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('dashboardContainer').innerHTML = `
+                <div class="error-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-2h-2v2zm0-4h2V7h-2v6z"/>
+                    </svg>
+                    <h3>Failed to Load Archive</h3>
+                    <p>${message}</p>
+                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent-green); color: white; border: none; border-radius: var(--radius-md); cursor: pointer;">
+                        Retry
+                    </button>
+                </div>
+            `;
         }
 
         // Event listeners
@@ -846,9 +867,16 @@
         document.getElementById('quarterFilter').addEventListener('change', applyFilters);
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            renderDashboards();
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                allReports = await fetchArchiveData();
+                filteredReports = [...allReports];
+                updateStats();
+                renderDashboards();
+            } catch (error) {
+                console.error('Failed to load archive:', error);
+                showError('Unable to connect to GitHub repository. Please check your internet connection and try again.');
+            }
         });
     </script>
 </body>
