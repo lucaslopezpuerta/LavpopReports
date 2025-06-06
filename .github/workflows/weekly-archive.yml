@@ -148,7 +148,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-        tag_name: archive-${{ steps.dates.outputs.end_date }}
+        tag_name: archive-${{ steps.dates.outputs.end_date }}-${{ github.run_number }}
         release_name: Weekly Dashboard - ${{ steps.dates.outputs.end_date }}
         body: |
           📊 Automated weekly dashboard archive
