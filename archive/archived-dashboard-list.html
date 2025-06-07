@@ -461,7 +461,7 @@
         <div class="header-content">
             <img src="https://lavpop.com.br/assets/web/images/logos/logo-lavpop-site@2x.png" alt="Lavpop Logo" class="logo">
             <h1>Dashboard Archive</h1>
-            <p>Historical performance reports automatically generated every Sunday at 3AM Brazilian time. Access past insights and track performance trends over time.</p>
+            <p>Historical performance reports. Access past insights and track performance metrics and trends over time.</p>
             <nav class="nav-bar">
                 <a href="../index.html" class="nav-link">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -698,7 +698,7 @@
                     <div class="card-content">
                         <div class="card-metrics">
                             <div class="metric-item">
-                                <div class="metric-value">${formatCurrency(report.metadata.netRevenue)}</div>
+                                <div class="metric-value">${report.metadata.netRevenue}</div>
                                 <div class="metric-label">Net Revenue</div>
                             </div>
                             <div class="metric-item">
@@ -706,7 +706,7 @@
                                 <div class="metric-label">Total Cycles</div>
                             </div>
                             <div class="metric-item">
-                                <div class="metric-value">${report.metadata.utilization}${report.metadata.utilization !== 'N/A' ? '%' : ''}</div>
+                                <div class="metric-value">${report.metadata.utilization}${report.metadata.utilization !== 'N/A' ? : ''}</div>
                                 <div class="metric-label">Utilization</div>
                             </div>
                         </div>
