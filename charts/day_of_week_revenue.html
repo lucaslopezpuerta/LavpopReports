@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>day_of_week_revenue</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Day');
+    data.addColumn('number', 'Revenue (R$)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+['Sunday', 1380.0899999999983, 'R$1380'],
+      ['Monday', 673.4875000000001, 'R$673'],
+      ['Tuesday', 629.1850000000001, 'R$629'],
+      ['Wednesday', 574.5082500000001, 'R$575'],
+      ['Thursday', 360.93250000000006, 'R$361'],
+      ['Friday', 480.1675000000001, 'R$480'],
+      ['Saturday', 905.6675000000001, 'R$906'],
+    ]);
+  
+
+            var options = {
+  "title": "Revenue by Day of Week",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e"
+  ],
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
