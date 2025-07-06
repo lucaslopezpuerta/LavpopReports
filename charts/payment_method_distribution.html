@@ -17,14 +17,13 @@ function drawChart() {
     data.addColumn('number', 'Transactions');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addRows([
-['Cartão de débito', 106, '35%'],
-      ['Pix', 92, '31%'],
-      ['Cartão de crédito', 77, '26%'],
-      ['Saldo da carteira', 25, '8%'],
+['Cartão de débito', 112, '41%'],
+      ['Cartão de crédito', 87, '32%'],
+      ['Pix', 65, '24%'],
+      ['Saldo da carteira', 10, '4%'],
     ]);
   
 
-            // Base options from server
             var options = {
   "title": "Payment Method Distribution",
   "titleTextStyle": {
@@ -51,7 +50,7 @@ function drawChart() {
   },
   "chartArea": {
     "left": "20%",
-    "top": "12%",
+    "top": "15%",
     "width": "78%",
     "height": "75%"
   },
@@ -62,7 +61,6 @@ function drawChart() {
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -72,19 +70,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
