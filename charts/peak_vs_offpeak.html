@@ -13,22 +13,31 @@
 function drawChart() {
             var data = new google.visualization.DataTable();
             
-    data.addColumn('string', 'Period');
-    data.addColumn('number', 'Avg Revenue/Hour');
+    data.addColumn('string', '');
+    data.addColumn('number', 'Peak Hours');
     data.addColumn({type: 'string', role: 'annotation'});
-    data.addColumn('number', 'Avg Utilization');
+    data.addColumn('number', 'Off-Peak Hours');
     data.addColumn({type: 'string', role: 'annotation'});
     
     data.addRows([
-      ['Peak Hours', 505.2075, 'R$505', 
-       35, '35%'],
-      ['Off-Peak Hours', 271.20272727272726, 'R$271', 
-       22, '22%']
+      ['Avg. Net Revenue / H', 
+       505.2075, 
+       'R$505', 
+       271.20272727272726, 
+       'R$271'],
+      ['Utilization (%)', 
+       35, 
+       '35%', 
+       22, 
+       '22%'],
+      ['Avg. Total Cycles / H', 31, 
+      '31', 
+      17, '17']
     ]);
   
 
             var options = {
-  "title": "Peak vs Off-Peak Performance",
+  "title": "Peak vs. Off-Peak Performance Comparison",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -38,14 +47,28 @@ function drawChart() {
   "height": 480,
   "backgroundColor": "#ffffff",
   "colors": [
-    "#2ae01e",
-    "#093eea"
+    "#093eea",
+    "#2ae01e"
   ],
-  "bar": {
-    "groupWidth": "70%"
+  "annotations": {
+    "textStyle": {
+      "fontSize": 11,
+      "color": "000000",
+      "bold": true
+    },
+    "alwaysOutside": true,
+    "stem": {
+      "color": "transparent",
+      "length": 3
+    }
   },
+  "bar": {
+    "groupWidth": "75%"
+  },
+  "isStacked": false,
   "legend": {
     "position": "bottom",
+    "alignment": "center",
     "textStyle": {
       "color": "#333333",
       "fontSize": 12
