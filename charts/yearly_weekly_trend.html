@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yearly_weekly_trend</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Week');
+    data.addColumn('number', 'Net Revenue (R$)');
+    data.addColumn('number', 'Utilization (%)');
+    data.addRows([
+['W16', 0, 9],
+      ['W17', 0, 12.3],
+      ['W18', 0, 10.9],
+      ['W19', 0, 11.8],
+      ['W20', 0, 11.3],
+      ['W21', 0, 15],
+      ['W22', 0, 16.6],
+      ['W23', 0, 22],
+      ['W24', 0, 37],
+      ['W25', 0, 26.1],
+      ['W26', 0, 23.2],
+      ['W27', 0, 0],
+    ]);
+  
+
+            var options = {
+  "title": "Weekly Performance Trend (Last 12 Weeks)",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "lines",
+  "series": {
+    "0": {
+      "type": "lines",
+      "targetAxisIndex": 0,
+      "color": "#2ae01e",
+      "lineWidth": 3,
+      "pointSize": 5
+    },
+    "1": {
+      "type": "lines",
+      "targetAxisIndex": 1,
+      "color": "#093eea",
+      "lineWidth": 3,
+      "pointSize": 5
+    }
+  },
+  "vAxes": {
+    "0": {
+      "title": "Net Revenue (R$)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 12
+      },
+      "minValue": 0
+    },
+    "1": {
+      "title": "Utilization (%)",
+      "titleTextStyle": {
+        "color": "#093eea",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#093eea",
+        "fontSize": 12
+      },
+      "minValue": 0,
+      "maxValue": 100
+    }
+  },
+  "hAxis": {
+    "title": "Week Number",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
