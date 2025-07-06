@@ -13,7 +13,6 @@
 function drawChart() {
             var data = new google.visualization.DataTable();
             
-    // Create two-axis data table for revenue and utilization
     data.addColumn('string', 'Time Period');
     data.addColumn('number', 'Revenue (R$)');
     data.addColumn({type: 'string', role: 'annotation'});
@@ -21,13 +20,12 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'annotation'});
     
     data.addRows([
-      ['Current Week', 5286.889999999976, 'R$5,287', 26, '26%'],
-      ['Previous Week', 7413.722499999964, 'R$7,414', 36, '36%'],
-      ['4-Week Avg', 5020.35244827589, 'R$5,020', 25, '25%']
+      ['Current Week', 5004.04, 'R$5,004', 23, '23%'],
+      ['Previous Week', 5286.89, 'R$5,287', 26, '26%'],
+      ['4-Week Avg', 5379.34551724138, 'R$5,379', 27, '27%']
     ]);
   
 
-            // Base options from server
             var options = {
   "title": "Net Revenue and Utilization Comparison",
   "titleTextStyle": {
@@ -56,13 +54,11 @@ function drawChart() {
       "title": "Net Revenue (R$)",
       "titleTextStyle": {
         "color": "#333333",
-        "fontSize": 11,
-        "padding": 0
+        "fontSize": 11
       },
       "textStyle": {
         "color": "#333333",
-        "fontSize": 11,
-        "padding": 0
+        "fontSize": 11
       },
       "minValue": 0
     },
@@ -70,13 +66,11 @@ function drawChart() {
       "title": "Utilization (%)",
       "titleTextStyle": {
         "color": "#333333",
-        "fontSize": 11,
-        "padding": 0
+        "fontSize": 11
       },
       "textStyle": {
         "color": "#333333",
-        "fontSize": 11,
-        "padding": 0
+        "fontSize": 11
       },
       "minValue": 0,
       "maxValue": 100
@@ -87,8 +81,7 @@ function drawChart() {
     "alignment": "center",
     "textStyle": {
       "color": "#333333",
-      "fontSize": 12,
-      "padding": 10
+      "fontSize": 12
     }
   },
   "annotations": {
@@ -100,14 +93,13 @@ function drawChart() {
     "alwaysOutside": true
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -117,19 +109,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
