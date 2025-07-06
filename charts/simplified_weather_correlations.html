@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simplified_weather_correlations</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Weather Factor');
+    data.addColumn('number', 'Correlation to Revenue');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'style'});
+    
+    data.addRows([
+      ['Heat Index', -0.4382519959983622, '-0.44', 
+       '#093eea'],
+      ['Yesterday Rain', 0.2614847509998914, '0.26', 
+       '#2ae01e']
+    ]);
+  
+
+            var options = {
+  "title": "Weather Impact on Revenue",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "vAxis": {
+    "title": "Correlation Coefficient",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    },
+    "minValue": -1,
+    "maxValue": 1,
+    "baseline": 0,
+    "baselineColor": "#666666",
+    "baselineWidth": 2
+  },
+  "legend": {
+    "position": "none"
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 11,
+      "bold": true,
+      "color": "000000"
+    },
+    "alwaysOutside": true
+  }
+};
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
