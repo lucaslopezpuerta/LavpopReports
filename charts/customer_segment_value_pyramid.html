@@ -21,15 +21,14 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({type: 'string', role: 'style'});
     data.addRows([
-['Champion', 59, '59', 'Segment: Champion\nCustomers: 59 (4%)\nAvg Value: R$482.48\nTotal Spending: R$28466.28', 482.48, 'R$482', 'color: #FFD700'],
-      ['Loyal', 81, '81', 'Segment: Loyal\nCustomers: 81 (5%)\nAvg Value: R$142.83\nTotal Spending: R$11569.05', 142.83, 'R$143', 'color: #093eea'],
-      ['Potential', 115, '115', 'Segment: Potential\nCustomers: 115 (7%)\nAvg Value: R$103.46\nTotal Spending: R$11898.47', 103.46, 'R$103', 'color: #2ae01e'],
-      ['New', 98, '98', 'Segment: New\nCustomers: 98 (6%)\nAvg Value: R$29.14\nTotal Spending: R$2855.36', 29.14, 'R$29', 'color: #2ae01e'],
-      ['AtRisk', 34, '34', 'Segment: AtRisk\nCustomers: 34 (2%)\nAvg Value: R$15.79\nTotal Spending: R$537.00', 15.79, 'R$16', 'color: #e53e3e'],
+['Champion', 65, '65', 'Segment: Champion\nCustomers: 65 (4%)\nAvg Value: R$482.36\nTotal Spending: R$31353.72', 482.36, 'R$482', 'color: #FFD700'],
+      ['Loyal', 93, '93', 'Segment: Loyal\nCustomers: 93 (6%)\nAvg Value: R$131.23\nTotal Spending: R$12204.26', 131.23, 'R$131', 'color: #093eea'],
+      ['Potential', 112, '112', 'Segment: Potential\nCustomers: 112 (7%)\nAvg Value: R$112.02\nTotal Spending: R$12546.45', 112.02, 'R$112', 'color: #2ae01e'],
+      ['New', 104, '104', 'Segment: New\nCustomers: 104 (7%)\nAvg Value: R$29.06\nTotal Spending: R$3021.83', 29.06, 'R$29', 'color: #2ae01e'],
+      ['AtRisk', 36, '36', 'Segment: AtRisk\nCustomers: 36 (2%)\nAvg Value: R$14.92\nTotal Spending: R$537.00', 14.92, 'R$15', 'color: #e53e3e'],
     ]);
   
 
-            // Base options from server
             var options = {
   "title": "Customer Segments: Count vs Value",
   "titleTextStyle": {
@@ -85,14 +84,13 @@ function drawChart() {
     }
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -102,19 +100,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
