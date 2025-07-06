@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hourly_revenue</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Revenue (R$)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+['8H', 99.35, 'R$99'],
+      ['9H', 210.72, 'R$211'],
+      ['10H', 281.48, 'R$281'],
+      ['11H', 314.59, 'R$315'],
+      ['12H', 447.05, 'R$447'],
+      ['13H', 298.04, 'R$298'],
+      ['14H', 458.24, 'R$458'],
+      ['15H', 310.8, 'R$311'],
+      ['16H', 397.38, 'R$397'],
+      ['17H', 347.71, 'R$348'],
+      ['18H', 574.51, 'R$575'],
+      ['19H', 541.03, 'R$541'],
+      ['20H', 392.01, 'R$392'],
+      ['21H', 264.92, 'R$265'],
+      ['22H', 66.23, 'R$66'],
+    ]);
+  
+
+            var options = {
+  "title": "Hourly Revenue Distribution",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2ae01e"
+  ],
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
