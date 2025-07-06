@@ -13,7 +13,6 @@
 function drawChart() {
             var data = new google.visualization.DataTable();
             
-    // 1) Declare columns
     data.addColumn('string', 'Segment');
     data.addColumn('number', 'Customer Count');
     data.addColumn({ type: 'string', role: 'annotation' });
@@ -22,20 +21,17 @@ function drawChart() {
     data.addColumn('number', 'Avg Services/Visit');
     data.addColumn({ type: 'string', role: 'annotation' });
 
-    // 2) Build a small JS array of row objects (one per segment)
     const rows = [
-      ['Champion', 59, '59', 4.06, '4.06', 1.2, '1.20'],
-      ['Loyal', 81, '81', 3.54, '3.54', 1.15, '1.15'],
-      ['Potential', 115, '115', 2.42, '2.42', 1.11, '1.11']
+      ['Champion', 65, '65', 4.3, '4.30', 1.19, '1.19'],
+      ['Loyal', 93, '93', 3.6, '3.60', 1.13, '1.13'],
+      ['Potential', 112, '112', 2.27, '2.27', 1.13, '1.13']
     ];
 
-    // 3) Add each row to the DataTable in turn
     for (let i = 0; i < rows.length; i++) {
       data.addRow(rows[i]);
     }
   
 
-            // Base options from server
             var options = {
   "title": "Customer Segment Behavior",
   "titleTextStyle": {
@@ -73,8 +69,8 @@ function drawChart() {
     }
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   },
@@ -101,7 +97,6 @@ function drawChart() {
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -111,19 +106,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
