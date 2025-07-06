@@ -25,31 +25,30 @@ function drawChart() {
     
     data.addRows([
       ['Sunday', 
-       1636.227499999997, 
-       'R$1636',
-       55,
-       '55%',
-       40,
-       '40',
-       61,
-       '61'
+       1380.0899999999983, 
+       'R$1380',
+       0,
+       '0%',
+       26,
+       '26',
+       58,
+       '58'
       ],
-      ['Wednesday', 
-       231.80500000000004, 
-       'R$232',
-       8,
-       '8%',
-       8,
-       '8',
-       8,
-       '8'
+      ['Thursday', 
+       360.93250000000006, 
+       'R$361',
+       0,
+       '0%',
+       10,
+       '10',
+       14,
+       '14'
       ]
     ]);
   
 
-            // Base options from server
             var options = {
-  "title": "Best Day (Sunday) vs. Worst Day (Wednesday)",
+  "title": "Best Day (Sunday) vs. Worst Day (Thursday)",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -87,8 +86,7 @@ function drawChart() {
       "titleTextStyle": {
         "color": "#093eea",
         "fontSize": 11,
-        "italic": false,
-        "padding": 25
+        "italic": false
       },
       "textStyle": {
         "color": "#093eea",
@@ -102,13 +100,11 @@ function drawChart() {
       "titleTextStyle": {
         "color": "#2ae01e",
         "fontSize": 11,
-        "italic": false,
-        "padding": 0
+        "italic": false
       },
       "textStyle": {
         "color": "#2ae01e",
-        "fontSize": 11,
-        "padding": 0
+        "fontSize": 11
       },
       "minValue": 0,
       "maxValue": 100,
@@ -138,8 +134,8 @@ function drawChart() {
     }
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   },
@@ -160,7 +156,6 @@ function drawChart() {
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -170,19 +165,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
