@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hourly_utilization</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Hour');
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+['8H', 10.3, '10.3%'],
+      ['9H', 21.5, '21.5%'],
+      ['10H', 20.2, '20.2%'],
+      ['11H', 21.7, '21.7%'],
+      ['12H', 30.6, '30.6%'],
+      ['13H', 20.4, '20.4%'],
+      ['14H', 33, '33%'],
+      ['15H', 22.4, '22.4%'],
+      ['16H', 28.9, '28.9%'],
+      ['17H', 25.7, '25.7%'],
+      ['18H', 37.3, '37.3%'],
+      ['19H', 40.7, '40.7%'],
+      ['20H', 28.1, '28.1%'],
+      ['21H', 30.3, '30.3%'],
+      ['22H', 8.6, '8.6%'],
+    ]);
+  
+
+            var options = {
+  "title": "Hourly Machine Utilization",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#093eea"
+  ],
+  "vAxis": {
+    "minValue": 0,
+    "maxValue": 100,
+    "title": "Utilization (%)"
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
