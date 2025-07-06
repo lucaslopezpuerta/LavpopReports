@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yearly_monthly_trend</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Month');
+    data.addColumn('number', 'Net Revenue (R$)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addRows([
+['January', 0, '', 9.6, '9.6%'],
+      ['February', 0, '', 9.7, '9.7%'],
+      ['March', 0, '', 8.7, '8.7%'],
+      ['April', 0, '', 10.1, '10.1%'],
+      ['May', 0, '', 12, '12%'],
+      ['June', 0, '', 25.7, '25.7%'],
+      ['July', 0, '', 19.4, '19.4%'],
+    ]);
+  
+
+            var options = {
+  "title": "Yearly Monthly Performance Trend",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "columns",
+  "series": {
+    "0": {
+      "type": "columns",
+      "targetAxisIndex": 0,
+      "color": "#2ae01e"
+    },
+    "1": {
+      "type": "line",
+      "targetAxisIndex": 1,
+      "color": "#093eea",
+      "lineWidth": 3,
+      "pointSize": 6
+    }
+  },
+  "vAxes": {
+    "0": {
+      "title": "Net Revenue (R$)",
+      "titleTextStyle": {
+        "color": "#333333",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#333333",
+        "fontSize": 12
+      },
+      "minValue": 0
+    },
+    "1": {
+      "title": "Utilization (%)",
+      "titleTextStyle": {
+        "color": "#093eea",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#093eea",
+        "fontSize": 12
+      },
+      "minValue": 0,
+      "maxValue": 100
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "5%",
+    "top": "10%",
+    "width": "90%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 11,
+      "bold": true,
+      "color": "000000"
+    },
+    "alwaysOutside": true
+  }
+};
+            
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
