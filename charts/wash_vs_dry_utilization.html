@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wash_vs_dry_utilization</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Machine Type');
+    data.addColumn('number', 'Current Week (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Previous Week (%)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    
+    data.addRows([
+      ['Washer Utilization', 
+       22.1, 
+       '22.1%',
+       20.5, 
+       '20.5%'],
+      ['Dryer Utilization', 
+       24.1, 
+       '24.1%',
+       29.6, 
+       '29.6%']
+    ]);
+  
+
+            var options = {
+  "title": "Machine Utilization: Wash vs Dry (Week-over-Week)",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2D7DD2",
+    "#97CC04"
+  ],
+  "bar": {
+    "groupWidth": "65%"
+  },
+  "vAxis": {
+    "title": "Utilization (%)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    },
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  },
+  "annotations": {
+    "textStyle": {
+      "fontSize": 11,
+      "bold": true,
+      "color": "000000"
+    },
+    "alwaysOutside": true
+  }
+};
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
