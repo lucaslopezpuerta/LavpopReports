@@ -13,32 +13,22 @@
 function drawChart() {
             var data = new google.visualization.DataTable();
             
-    data.addColumn('string', '');
-    data.addColumn('number', 'Peak Hours');
+    data.addColumn('string', 'Period');
+    data.addColumn('number', 'Avg Revenue/Hour');
     data.addColumn({type: 'string', role: 'annotation'});
-    data.addColumn('number', 'Off-Peak Hours');
+    data.addColumn('number', 'Avg Utilization');
     data.addColumn({type: 'string', role: 'annotation'});
     
     data.addRows([
-      ['Avg. Net Revenue / H', 
-       517.0675, 
-       'R$517', 
-       289.59136363636367, 
-       'R$290'],
-      ['Utilization (%)', 
-       39, 
-       '39%', 
-       22, 
-       '22%'],
-      ['Avg. Total Cycles / H', 33, 
-      '33', 
-      19, '19']
+      ['Peak Hours', 505.2075, 'R$505', 
+       35, '35%'],
+      ['Off-Peak Hours', 271.20272727272726, 'R$271', 
+       22, '22%']
     ]);
   
 
-            // Base options from server
             var options = {
-  "title": "Peak vs. Off-Peak Performance Comparison",
+  "title": "Peak vs Off-Peak Performance",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -48,42 +38,27 @@ function drawChart() {
   "height": 480,
   "backgroundColor": "#ffffff",
   "colors": [
-    "#093eea",
-    "#2ae01e"
+    "#2ae01e",
+    "#093eea"
   ],
-  "annotations": {
-    "textStyle": {
-      "fontSize": 11,
-      "color": "000000",
-      "bold": true
-    },
-    "alwaysOutside": true,
-    "stem": {
-      "color": "transparent",
-      "length": 3
-    }
-  },
   "bar": {
-    "groupWidth": "75%"
+    "groupWidth": "70%"
   },
-  "isStacked": false,
   "legend": {
     "position": "bottom",
-    "alignment": "center",
     "textStyle": {
       "color": "#333333",
       "fontSize": 12
     }
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -93,19 +68,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
