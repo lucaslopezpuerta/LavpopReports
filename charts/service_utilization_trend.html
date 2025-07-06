@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>service_utilization_trend</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Period');
+    data.addColumn('number', 'Wash Utilization (%)');
+    data.addColumn('number', 'Dry Utilization (%)');
+    
+    data.addRows([
+      ['Previous Week', 20.5, 29.6],
+      ['Current Week', 22.1, 24.1]
+    ]);
+  
+
+            var options = {
+  "title": "Wash vs Dry Utilization Trends",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "colors": [
+    "#2D7DD2",
+    "#97CC04"
+  ],
+  "hAxis": {
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "vAxis": {
+    "title": "Utilization (%)",
+    "titleTextStyle": {
+      "color": "#333333",
+      "fontSize": 14
+    },
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
