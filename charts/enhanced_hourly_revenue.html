@@ -20,25 +20,24 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'tooltip'});
     data.addColumn('number', '4-Week Avg Hourly Revenue');
     data.addRows([
-['8H', 186.29000000000002, 'R$186', 'color: #2ae01e; opacity: 0.8', 'Hour: 8H\nCurrent Week Hourly Total: R$186.29\n4-Week Hourly Avg.: R$131.64', 131.640125],
-      ['9H', 215.24750000000003, 'R$215', 'color: #2ae01e; opacity: 0.8', 'Hour: 9H\nCurrent Week Hourly Total: R$215.25\n4-Week Hourly Avg.: R$219.39', 219.38687500000003],
-      ['10H', 344.285, 'R$344', 'color: #2ae01e; opacity: 0.8', 'Hour: 10H\nCurrent Week Hourly Total: R$344.29\n4-Week Hourly Avg.: R$325.23', 325.22999999999973],
-      ['11H', 198.69000000000003, 'R$199', 'color: #2ae01e; opacity: 0.8', 'Hour: 11H\nCurrent Week Hourly Total: R$198.69\n4-Week Hourly Avg.: R$297.71', 297.7087499999998],
-      ['12H', 263.16249999999997, 'R$263', 'color: #2ae01e; opacity: 0.8', 'Hour: 12H\nCurrent Week Hourly Total: R$263.16\n4-Week Hourly Avg.: R$311.79', 311.78937499999984],
-      ['13H', 360.565, 'R$361', 'color: #2ae01e; opacity: 0.8', 'Hour: 13H\nCurrent Week Hourly Total: R$360.56\n4-Week Hourly Avg.: R$352.38', 352.37624999999963],
-      ['14H', 541.0275, 'R$541', 'color: #FFD700; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 14H\nCurrent Week Hourly Total: R$541.03\n4-Week Hourly Avg.: R$441.71', 441.70562499999903],
-      ['15H', 529.84, 'R$530', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 15H\nCurrent Week Hourly Total: R$529.84\n4-Week Hourly Avg.: R$534.00', 534.0024999999988],
-      ['16H', 408.56750000000005, 'R$409', 'color: #2ae01e; opacity: 0.8', 'Hour: 16H\nCurrent Week Hourly Total: R$408.57\n4-Week Hourly Avg.: R$455.01', 455.006249999999],
-      ['17H', 347.70750000000004, 'R$348', 'color: #2ae01e; opacity: 0.8', 'Hour: 17H\nCurrent Week Hourly Total: R$347.71\n4-Week Hourly Avg.: R$448.51', 448.50687499999896],
-      ['18H', 481.7300000000001, 'R$482', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 18H\nCurrent Week Hourly Total: R$481.73\n4-Week Hourly Avg.: R$426.97', 426.96999999999923],
-      ['19H', 515.6725, 'R$516', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 19H\nCurrent Week Hourly Total: R$515.67\n4-Week Hourly Avg.: R$511.79', 511.7937499999988],
-      ['20H', 380.82250000000005, 'R$381', 'color: #2ae01e; opacity: 0.8', 'Hour: 20H\nCurrent Week Hourly Total: R$380.82\n4-Week Hourly Avg.: R$313.04', 313.0393749999998],
-      ['21H', 314.59250000000003, 'R$315', 'color: #2ae01e; opacity: 0.8', 'Hour: 21H\nCurrent Week Hourly Total: R$314.59\n4-Week Hourly Avg.: R$269.06', 269.05937499999993],
-      ['22H', 165.575, 'R$166', 'color: #2ae01e; opacity: 0.8', 'Hour: 22H\nCurrent Week Hourly Total: R$165.57\n4-Week Hourly Avg.: R$120.04', 120.041875],
+['8H', 99.35, 'R$99', 'color: #2ae01e; opacity: 0.8', 'Hour: 8H\nCurrent Week Hourly Total: R$99.35\n4-Week Hourly Avg.: R$133.50', 133.5],
+      ['9H', 210.72, 'R$211', 'color: #2ae01e; opacity: 0.8', 'Hour: 9H\nCurrent Week Hourly Total: R$210.72\n4-Week Hourly Avg.: R$234.81', 234.8125],
+      ['10H', 281.48, 'R$281', 'color: #2ae01e; opacity: 0.8', 'Hour: 10H\nCurrent Week Hourly Total: R$281.48\n4-Week Hourly Avg.: R$304.53', 304.5325],
+      ['11H', 314.59, 'R$315', 'color: #2ae01e; opacity: 0.8', 'Hour: 11H\nCurrent Week Hourly Total: R$314.59\n4-Week Hourly Avg.: R$299.91', 299.9075],
+      ['12H', 447.05, 'R$447', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 12H\nCurrent Week Hourly Total: R$447.05\n4-Week Hourly Avg.: R$375.22', 375.2225],
+      ['13H', 298.04, 'R$298', 'color: #2ae01e; opacity: 0.8', 'Hour: 13H\nCurrent Week Hourly Total: R$298.04\n4-Week Hourly Avg.: R$397.91', 397.91],
+      ['14H', 458.24, 'R$458', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 14H\nCurrent Week Hourly Total: R$458.24\n4-Week Hourly Avg.: R$514.87', 514.8725],
+      ['15H', 310.8, 'R$311', 'color: #2ae01e; opacity: 0.8', 'Hour: 15H\nCurrent Week Hourly Total: R$310.80\n4-Week Hourly Avg.: R$533.05', 533.0525],
+      ['16H', 397.38, 'R$397', 'color: #2ae01e; opacity: 0.8', 'Hour: 16H\nCurrent Week Hourly Total: R$397.38\n4-Week Hourly Avg.: R$479.84', 479.8425],
+      ['17H', 347.71, 'R$348', 'color: #2ae01e; opacity: 0.8', 'Hour: 17H\nCurrent Week Hourly Total: R$347.71\n4-Week Hourly Avg.: R$447.05', 447.0525],
+      ['18H', 574.51, 'R$575', 'color: #FFD700; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 18H\nCurrent Week Hourly Total: R$574.51\n4-Week Hourly Avg.: R$493.29', 493.2925],
+      ['19H', 541.03, 'R$541', 'color: #093eea; opacity: 1.0; stroke-color: #333; stroke-width: 0', 'Hour: 19H\nCurrent Week Hourly Total: R$541.03\n4-Week Hourly Avg.: R$522.87', 522.87],
+      ['20H', 392.01, 'R$392', 'color: #2ae01e; opacity: 0.8', 'Hour: 20H\nCurrent Week Hourly Total: R$392.01\n4-Week Hourly Avg.: R$358.57', 358.5725],
+      ['21H', 264.92, 'R$265', 'color: #2ae01e; opacity: 0.8', 'Hour: 21H\nCurrent Week Hourly Total: R$264.92\n4-Week Hourly Avg.: R$314.59', 314.5925],
+      ['22H', 66.23, 'R$66', 'color: #2ae01e; opacity: 0.8', 'Hour: 22H\nCurrent Week Hourly Total: R$66.23\n4-Week Hourly Avg.: R$120.04', 120.0425],
     ]);
   
 
-            // Base options from server
             var options = {
   "title": "Hourly Revenue Distribution",
   "titleTextStyle": {
@@ -98,7 +97,7 @@ function drawChart() {
   },
   "chartArea": {
     "left": "5%",
-    "top": "12%",
+    "top": "10%",
     "width": "90%",
     "height": "75%"
   },
@@ -115,7 +114,6 @@ function drawChart() {
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -125,19 +123,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
