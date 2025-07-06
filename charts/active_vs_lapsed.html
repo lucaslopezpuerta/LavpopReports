@@ -17,14 +17,13 @@ function drawChart() {
     data.addColumn('number', 'Percentage');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addRows([
-      ['Active', 29.983060417843028, '30%'],
-      ['Lapsed', 70.01693958215698, '70%']
+      ['Active', 30.837004405286343, '31%'],
+      ['Lapsed', 69.16299559471366, '69%']
     ]);
   
 
-            // Base options from server
             var options = {
-  "title": "Active vs. Lapsed Customers",
+  "title": "Active vs Lapsed Customers",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -47,18 +46,12 @@ function drawChart() {
   },
   "chartArea": {
     "left": "20%",
-    "top": "12%",
+    "top": "15%",
     "width": "78%",
     "height": "75%"
-  },
-  "pieSliceTextStyle": {
-    "color": "white",
-    "fontSize": 14,
-    "bold": true
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -68,19 +61,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
