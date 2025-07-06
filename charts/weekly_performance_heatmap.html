@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weekly_performance_heatmap</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'bar', 'gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+            var data = new google.visualization.DataTable();
+            
+    data.addColumn('string', 'Week');
+    data.addColumn('number', 'Revenue (R$)');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn('number', 'Utilization (%)');
+    data.addRows([
+['Week 16', 1854.44, '1854', 9],
+      ['Week 17', 2420.83, '2421', 12.3],
+      ['Week 18', 2304.09, '2304', 10.9],
+      ['Week 19', 2336.51, '2337', 11.8],
+      ['Week 20', 2388.75, '2389', 11.3],
+      ['Week 21', 3060.56, '3061', 15],
+      ['Week 22', 3516.78, '3517', 16.6],
+      ['Week 23', 4581.21, '4581', 22],
+      ['Week 24', 7413.72, '7414', 37],
+      ['Week 25', 5286.89, '5287', 26.1],
+      ['Week 26', 5004.04, '5004', 23.2],
+      ['Week 27', 0, '0', 0],
+    ]);
+  
+
+            var options = {
+  "title": "Weekly Performance Trend (Last 12 Weeks)",
+  "titleTextStyle": {
+    "color": "#333333",
+    "fontSize": 20,
+    "bold": true
+  },
+  "width": 650,
+  "height": 480,
+  "backgroundColor": "#ffffff",
+  "seriesType": "columns",
+  "series": {
+    "0": {
+      "type": "columns",
+      "color": "#2ae01e"
+    },
+    "1": {
+      "type": "line",
+      "color": "#093eea",
+      "lineWidth": 2,
+      "pointSize": 4
+    }
+  },
+  "hAxis": {
+    "textStyle": {
+      "fontSize": 10
+    }
+  },
+  "legend": {
+    "position": "bottom",
+    "textStyle": {
+      "color": "#333333",
+      "fontSize": 12
+    }
+  },
+  "chartArea": {
+    "left": "12%",
+    "top": "10%",
+    "width": "78%",
+    "height": "75%"
+  }
+};
+            
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+            chart.draw(data, options);             
+        }    
+    </script>
+    <style>
+      body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;        
+            background-color: #ffffff;
+            overflow: hidden;
+      }
+      #chart_div {
+            width: 650px;
+            height: 480px;
+            max-width: 650px;
+            max-height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+  
