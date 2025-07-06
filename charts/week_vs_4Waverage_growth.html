@@ -18,25 +18,24 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({type: 'string', role: 'style'});
     data.addRows([
-      ['Net Revenue', 1.7, 
-       '+1.7%', 
-       '#2ae01e'],
-      ['Total Cycles', 3.3, 
-       '+3.3%', 
-       '#2ae01e'],
-      ['Overall Utilization', 1, 
-       '+1.0%', 
-       '#2ae01e'],
+      ['Net Revenue', -10.2, 
+       '-10.2%', 
+       '#e53e3e'],
+      ['Total Cycles', -12, 
+       '-12.0%', 
+       '#e53e3e'],
+      ['Overall Utilization', -4, 
+       '-4.0%', 
+       '#e53e3e'],
       ['Washer Utilization', 0, 
        '+0.0%', 
        '#2ae01e'],
-      ['Dryer Utilization', 2, 
-       '+2.0%', 
-       '#2ae01e']
+      ['Dryer Utilization', -6, 
+       '-6.0%', 
+       '#e53e3e']
     ]);
   
 
-            // Base options from server
             var options = {
   "title": "Current Week vs 4-Week Average % Growth",
   "titleTextStyle": {
@@ -79,8 +78,8 @@ function drawChart() {
     "position": "none"
   },
   "chartArea": {
-    "left": "15%",
-    "top": "12%",
+    "left": "12%",
+    "top": "10%",
     "width": "78%",
     "height": "75%"
   },
@@ -94,7 +93,6 @@ function drawChart() {
   }
 };
             
-            // Create and draw the chart
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);             
         }    
@@ -104,19 +102,19 @@ function drawChart() {
             font-family: Arial, sans-serif; 
             margin: 0; 
             padding: 0;
-            width: 100vw;  /* Use full viewport width */
-            height: 100vh; /* Use full viewport height */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;        
             background-color: #ffffff;
-            overflow: hidden; /* Prevent scrollbars in iframe */
+            overflow: hidden;
       }
       #chart_div {
-            width: 650px;  /* Exact chart width */
-            height: 480px; /* Exact chart height */
+            width: 650px;
+            height: 480px;
             max-width: 650px;
-            max-height:  500px;
+            max-height: 500px;
       }
     </style>
   </head>
