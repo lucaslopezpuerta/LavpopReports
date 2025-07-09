@@ -19,19 +19,19 @@ function drawChart() {
     data.addColumn({type: 'string', role: 'style'});
     
     data.addRows([
-      ['Wash Services', 6.923076923076921, '+6.9%', 
+      ['Wash Cycles', 6.923076923076921, '+6.9%', 
        '#2ae01e'],
-      ['Dry Services', -19.23076923076923, '-19.2%', 
+      ['Dry Cycles', -19.23076923076923, '-19.2%', 
        '#e53e3e'],
-      ['Wash Utilization', 1.6000000000000014, '+1.6pts', 
-       '#093eea'],
-      ['Dry Utilization', -5.5, '-5.5pts', 
+      ['Wash Use', 1.6000000000000014, '+1.6%', 
+       '#2ae01e'],
+      ['Dry Use, -5.5, '-5.5%', 
        '#e53e3e']
     ]);
   
 
             var options = {
-  "title": "Wash vs Dry: Week-over-Week Performance Changes",
+  "title": "Wash vs Dry: Change vs. Last Week",
   "titleTextStyle": {
     "color": "#333333",
     "fontSize": 20,
@@ -48,7 +48,7 @@ function drawChart() {
     },
     "textStyle": {
       "color": "#333333",
-      "fontSize": 12
+      "fontSize": 11
     },
     "baseline": 0,
     "baselineColor": "#666666",
