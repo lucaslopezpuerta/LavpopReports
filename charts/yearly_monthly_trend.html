@@ -23,13 +23,13 @@ function drawChart() {
     data.addColumn('number', 'Dry Cycles');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addRows([
-['January', 8231.8, 'R$8k', 9.6, '9.6%', 310, '310 Cycles', 208, '208 Cycles' ],
-      ['February', 7497.76, 'R$7k', 9.7, '9.7%', 289, '289 Cycles', 201, '201 Cycles' ],
-      ['March', 7578.75, 'R$8k', 8.7, '8.7%', 293, '293 Cycles', 179, '179 Cycles' ],
-      ['April', 8993.45, 'R$9k', 10.1, '10.1%', 312, '312 Cycles', 250, '250 Cycles' ],
-      ['May', 10972.29, 'R$11k', 12, '12%', 372, '372 Cycles', 328, '328 Cycles' ],
-      ['June', 22852.18, 'R$23k', 25.7, '25.7%', 564, '564 Cycles', 870, '870 Cycles' ],
-      ['July', 4768.94, 'R$5k', 19.7, '19.7%', 158, '158 Cycles', 140, '140 Cycles' ],
+['January', 8231.8, 'R$8k', 9.6, '9.6%', 310, '310', 208, '208' ],
+      ['February', 7497.76, 'R$7k', 9.7, '9.7%', 289, '289', 201, '201' ],
+      ['March', 7578.75, 'R$8k', 8.7, '8.7%', 293, '293', 179, '179' ],
+      ['April', 8993.45, 'R$9k', 10.1, '10.1%', 312, '312', 250, '250' ],
+      ['May', 10972.29, 'R$11k', 12, '12%', 372, '372', 328, '328' ],
+      ['June', 22852.18, 'R$23k', 25.7, '25.7%', 564, '564', 870, '870' ],
+      ['July', 4768.94, 'R$5k', 19.7, '19.7%', 158, '158', 140, '140' ],
     ]);
   
 
@@ -43,10 +43,10 @@ function drawChart() {
   "width": 650,
   "height": 480,
   "backgroundColor": "#ffffff",
-  "seriesType": "columns",
+  "seriesType": "line",
   "series": {
     "0": {
-      "type": "columns",
+      "type": "line",
       "targetAxisIndex": 0,
       "color": "#2ae01e"
     },
@@ -67,7 +67,7 @@ function drawChart() {
     "3": {
       "type": "line",
       "targetAxisIndex": 3,
-      "color": "#f2a90c",
+      "color": "#fab107",
       "lineWidth": 3,
       "pointSize": 6
     }
@@ -86,13 +86,38 @@ function drawChart() {
       "minValue": 0
     },
     "1": {
-      "title": "Cycles",
+      "title": "Utilization (%)",
       "titleTextStyle": {
-        "color": "#f2a90c",
+        "color": "#093eea",
         "fontSize": 14
       },
       "textStyle": {
-        "color": "#f2a90c",
+        "color": "#093eea",
+        "fontSize": 12
+      },
+      "minValue": 0,
+      "maxValue": 100
+    },
+    "2": {
+      "title": "Cycles",
+      "titleTextStyle": {
+        "color": "#0dc7d1",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#0dc7d1",
+        "fontSize": 12
+      },
+      "minValue": 0
+    },
+    "3": {
+      "title": "Cycles",
+      "titleTextStyle": {
+        "color": "#fab107",
+        "fontSize": 14
+      },
+      "textStyle": {
+        "color": "#fab107",
         "fontSize": 12
       },
       "minValue": 0
