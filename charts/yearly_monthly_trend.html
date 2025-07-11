@@ -29,7 +29,7 @@ function drawChart() {
       ['April', 8993.45, 'R$9k', 10.1, '10.1%', 312, '312', 250, '250' ],
       ['May', 10972.29, 'R$11k', 12, '12%', 372, '372', 328, '328' ],
       ['June', 22852.18, 'R$23k', 25.7, '25.7%', 564, '564', 870, '870' ],
-      ['July', 4768.94, 'R$5k', 19.7, '19.7%', 158, '158', 140, '140' ],
+      ['July', 5464.35, 'R$5k', 18, '18%', 181, '181', 159, '159' ],
     ]);
   
 
@@ -48,7 +48,9 @@ function drawChart() {
     "0": {
       "type": "line",
       "targetAxisIndex": 0,
-      "color": "#2ae01e"
+      "color": "#2ae01e",
+      "lineWidth": 3,
+      "pointSize": 6
     },
     "1": {
       "type": "line",
@@ -62,21 +64,21 @@ function drawChart() {
       "targetAxisIndex": 2,
       "color": "#0dc7d1",
       "lineWidth": 3,
-      "pointSize": 6
+      "pointSize": 4
     },
     "3": {
       "type": "line",
-      "targetAxisIndex": 3,
+      "targetAxisIndex": 2,
       "color": "#fab107",
       "lineWidth": 3,
-      "pointSize": 6
+      "pointSize": 4
     }
   },
   "vAxes": {
     "0": {
       "title": "Net Revenue (R$)",
       "titleTextStyle": {
-        "color": "#333333",
+        "color": "#2ae01e",
         "fontSize": 14
       },
       "textStyle": {
@@ -101,14 +103,15 @@ function drawChart() {
     "2": {
       "title": "Cycles",
       "titleTextStyle": {
-        "color": "#0dc7d1",
+        "color": "#000000",
         "fontSize": 14
       },
       "textStyle": {
-        "color": "#0dc7d1",
+        "color": "#000000",
         "fontSize": 12
       },
-      "minValue": 0
+      "minValue": 0,
+      "textPosition": "in"
     },
     "3": {
       "title": "Cycles",
@@ -131,9 +134,9 @@ function drawChart() {
     }
   },
   "chartArea": {
-    "left": "5%",
+    "left": "15%",
     "top": "10%",
-    "width": "90%",
+    "width": "75%",
     "height": "75%"
   },
   "annotations": {
