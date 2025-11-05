@@ -1,0 +1,696 @@
+import React, { useState } from 'react';
+import { Upload, TrendingUp, Users, Calendar, Award } from 'lucide-react';
+
+export default function CustomerYearlyVerification() {
+  const [salesFile, setSalesFile] = useState(null);
+  const [rfmFile, setRfmFile] = useState(null);
+  const [customerMetrics, setCustomerMetrics] = useState(null);
+  const [yearlyMetrics, setYearlyMetrics] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const parseBrDate = (dateStr) => {
+    if (!dateStr) return null;
+    const [d, tm = '00:00:00'] = dateStr.split(' ');
+    const parts = d.split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const mon = parseInt(parts[1], 10) - 1;
+      const year = parts[2].length === 2 ? 2000 + parseInt(parts[2], 10) : parseInt(parts[2], 10);
+      return new Date(year, mon, day);
+    }
+    return null;
+  };
+
+  const toNum = (s) => {
+    const t = String(s ?? '').trim();
+    if (t.includes(',') && t.includes('.'))
+      return parseFloat(t.replace(/\./g, '').replace(/,/g, '.')) || 0;
+    else if (t.includes(','))
+      return parseFloat(t.replace(/,/g, '.')) || 0;
+    else
+      return parseFloat(t) || 0;
+  };
+
+  const countMachines = (str) => {
+    if (!str) return { wash: 0, dry: 0 };
+    const machineStr = String(str).toLowerCase().trim();
+    const machines = machineStr.split(',').map(m => m.trim());
+    let wash = 0, dry = 0;
+    machines.forEach(m => {
+      if (m.includes('lavadora')) wash++;
+      else if (m.includes('secadora')) dry++;
+    });
+    return { wash, dry, total: wash + dry };
+  };
+
+  const processFiles = async () => {
+    if (!salesFile) {
+      alert('Please upload Sales CSV');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Normalize document IDs - remove all non-digits and pad to 11 chars
+      const normalizeDoc = (doc) => {
+        if (!doc) return '';
+        const cleaned = String(doc).replace(/\D/g, '');
+        // Only pad if it's a reasonable length (between 1-11 digits)
+        // Don't pad if it's already longer than 11 (might be wrong format)
+        if (cleaned.length > 0 && cleaned.length <= 11) {
+          return cleaned.padStart(11, '0');
+        }
+        return cleaned; // Return as-is if longer than 11
+      };
+
+      const salesText = await salesFile.text();
+      const lines = salesText.split(/\r?\n/).filter(Boolean);
+      
+      // Parse CSV headers and data
+      const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+      const salesData = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let char of lines[i]) {
+          if (char === '"') inQuotes = !inQuotes;
+          else if (char === ',' && !inQuotes) {
+            values.push(current.replace(/^"|"$/g, ''));
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        values.push(current.replace(/^"|"$/g, ''));
+        
+        const row = {};
+        headers.forEach((h, idx) => {
+          row[h] = values[idx] || '';
+        });
+        salesData.push(row);
+      }
+
+      // Parse RFM if provided
+      let rfmData = {};
+      if (rfmFile) {
+        const rfmText = await rfmFile.text();
+        const rfmLines = rfmText.split(/\r?\n/).filter(Boolean);
+        
+        for (let i = 1; i < rfmLines.length; i++) {
+          const values = rfmLines[i].split(',').map(v => v.replace(/^"|"$/g, '').trim());
+          if (values.length >= 3) {
+            const segment = values[0];
+            const doc = values[1];
+            const name = values[2];
+            // Normalize the document ID from RFM
+            const normalizedDoc = normalizeDoc(doc);
+            rfmData[normalizedDoc] = { segment, name, originalDoc: doc };
+          }
+        }
+      }
+
+      // Process customer metrics
+      const customers = {};
+      const CASHBACK_RATE = 0.075;
+      const CASHBACK_START = new Date(2024, 5, 1);
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+      salesData.forEach(row => {
+        const dt = parseBrDate(row.Data_Hora);
+        if (!dt) return;
+        
+        const doc = String(row.Doc_Cliente || '').trim();
+        if (!doc) return;
+        
+        // Normalize the document ID from Sales
+        const normalizedDoc = normalizeDoc(doc);
+        
+        const grossValue = toNum(row.Valor_Venda);
+        let netValue = toNum(row.Valor_Pago);
+        const machines = countMachines(row.Maquinas);
+        
+        if (dt >= CASHBACK_START) {
+          netValue -= grossValue * CASHBACK_RATE;
+        }
+        
+        if (!customers[normalizedDoc]) {
+          customers[normalizedDoc] = {
+            doc: normalizedDoc,
+            originalDoc: doc,
+            name: row.Nome_Cliente || 'Unknown',
+            segment: rfmData[normalizedDoc]?.segment || 'Unclassified',
+            visits: [], recentVisits: [],
+            netTotal: 0, transactions: 0,
+            washServices: 0, dryServices: 0, totalServices: 0
+          };
+        }
+        
+        const visit = {
+          date: dt, netValue, 
+          wash: machines.wash, dry: machines.dry, 
+          services: machines.total
+        };
+        
+        customers[normalizedDoc].visits.push(visit);
+        if (dt >= threeMonthsAgo) customers[normalizedDoc].recentVisits.push(visit);
+        
+        customers[normalizedDoc].netTotal += netValue;
+        customers[normalizedDoc].transactions++;
+        customers[normalizedDoc].washServices += machines.wash;
+        customers[normalizedDoc].dryServices += machines.dry;
+        customers[normalizedDoc].totalServices += machines.total;
+      });
+
+      // Calculate customer metrics with return likelihood (FIXED with Lost category)
+      Object.values(customers).forEach(c => {
+        // Sort visits by date
+        c.visits.sort((a, b) => a.date - b.date);
+        
+        c.firstVisit = c.visits[0].date;
+        c.lastVisit = c.visits[c.visits.length - 1].date;
+        c.servicesPerVisit = c.transactions > 0 ? 
+          (c.totalServices / c.transactions).toFixed(1) : 0;
+        
+        // Calculate avgDaysBetween ONLY for customers with 2+ visits
+        c.avgDaysBetween = null;
+        if (c.visits.length > 1) {
+          const intervals = [];
+          for (let i = 1; i < c.visits.length; i++) {
+            const days = (c.visits[i].date - c.visits[i-1].date) / (1000*60*60*24);
+            // Only count positive intervals (ignore same-day visits)
+            if (days > 0) {
+              intervals.push(days);
+            }
+          }
+          
+          if (intervals.length > 0) {
+            c.avgDaysBetween = Math.round(intervals.reduce((a,b) => a+b, 0) / intervals.length);
+          }
+        }
+        
+        // Calculate days since last visit
+        const daysSinceLastVisit = Math.round((new Date() - c.lastVisit) / (1000*60*60*24));
+        c.daysSinceLastVisit = daysSinceLastVisit;
+        
+        // NEW: Check for Lost customers first (120+ days inactive)
+        if (daysSinceLastVisit > 120) {
+          c.returnLikelihood = 0;
+          c.riskLevel = 'Lost';
+          c.daysOverdue = c.avgDaysBetween ? daysSinceLastVisit - c.avgDaysBetween : 0;
+        }
+        // Check for single-visit customers
+        else if (c.transactions === 1) {
+          c.returnLikelihood = 50;
+          c.riskLevel = 'New Customer';
+          c.daysOverdue = 0;
+        }
+        // Calculate likelihood for active repeat customers
+        else if (c.avgDaysBetween && c.avgDaysBetween > 0) {
+          const ratio = daysSinceLastVisit / c.avgDaysBetween;
+          let likelihood = Math.exp(-Math.max(0, ratio - 1)) * 100;
+          
+          const segmentBonus = {
+            'Champion': 1.2, 'Loyal': 1.1, 'Potential': 1.0,
+            'AtRisk': 0.8, 'Lost': 0.5, 'New': 0.9, 'Unclassified': 0.9
+          };
+          
+          likelihood *= (segmentBonus[c.segment] || 1.0);
+          likelihood = Math.min(100, likelihood);
+          
+          c.returnLikelihood = Math.round(likelihood);
+          c.daysOverdue = Math.max(0, daysSinceLastVisit - c.avgDaysBetween);
+          
+          // NEW: More lenient thresholds
+          if (likelihood > 60) c.riskLevel = 'Healthy';
+          else if (likelihood > 30) c.riskLevel = 'Monitor';
+          else if (likelihood > 15) c.riskLevel = 'At Risk';
+          else c.riskLevel = 'Churning';
+        } else {
+          // Has multiple visits but avgDaysBetween couldn't be calculated
+          c.returnLikelihood = 40;
+          c.riskLevel = 'Monitor';
+          c.daysOverdue = 0;
+        }
+      });
+
+      const topCustomers = Object.values(customers)
+        .sort((a, b) => b.netTotal - a.netTotal)
+        .slice(0, 20);
+
+      const allCustomers = Object.values(customers);
+      
+      // Risk level distribution
+      const riskDistribution = {
+        'Healthy': allCustomers.filter(c => c.riskLevel === 'Healthy').length,
+        'Monitor': allCustomers.filter(c => c.riskLevel === 'Monitor').length,
+        'At Risk': allCustomers.filter(c => c.riskLevel === 'At Risk').length,
+        'Churning': allCustomers.filter(c => c.riskLevel === 'Churning').length,
+        'New Customer': allCustomers.filter(c => c.riskLevel === 'New Customer').length
+      };
+      
+      const visitDistribution = {
+        '1': allCustomers.filter(c => c.transactions === 1).length,
+        '2-5': allCustomers.filter(c => c.transactions >= 2 && c.transactions <= 5).length,
+        '6-10': allCustomers.filter(c => c.transactions >= 6 && c.transactions <= 10).length,
+        '11-20': allCustomers.filter(c => c.transactions >= 11 && c.transactions <= 20).length,
+        '20+': allCustomers.filter(c => c.transactions > 20).length
+      };
+
+      // Calculate segment statistics if RFM data provided
+      let segmentStats = null;
+      if (rfmFile) {
+        const segments = {};
+        allCustomers.forEach(c => {
+          if (!segments[c.segment]) {
+            segments[c.segment] = {
+              count: 0,
+              totalSpending: 0,
+              totalTransactions: 0,
+              totalServices: 0,
+              customers: []
+            };
+          }
+          segments[c.segment].count++;
+          segments[c.segment].totalSpending += c.netTotal;
+          segments[c.segment].totalTransactions += c.transactions;
+          segments[c.segment].totalServices += c.totalServices;
+          segments[c.segment].customers.push(c);
+        });
+
+        segmentStats = Object.entries(segments).map(([name, data]) => ({
+          segment: name,
+          count: data.count,
+          avgSpending: data.totalSpending / data.count,
+          avgTransactions: data.totalTransactions / data.count,
+          avgServices: data.totalServices / data.count,
+          topCustomers: data.customers.sort((a, b) => b.netTotal - a.netTotal).slice(0, 5)
+        })).sort((a, b) => b.count - a.count); // Sort by count descending
+      }
+
+      setCustomerMetrics({
+        totalCustomers: allCustomers.length,
+        avgLifetimeSpend: allCustomers.reduce((s, c) => s + c.netTotal, 0) / allCustomers.length,
+        avgTransactions: allCustomers.reduce((s, c) => s + c.transactions, 0) / allCustomers.length,
+        avgServicesPerVisit: allCustomers.reduce((s, c) => s + parseFloat(c.servicesPerVisit), 0) / allCustomers.length,
+        topCustomers,
+        visitDistribution,
+        riskDistribution,
+        segmentStats,
+        matchStats: rfmFile ? {
+          totalInRFM: Object.keys(rfmData).length,
+          matched: allCustomers.filter(c => c.segment !== 'Unclassified').length,
+          unmatched: allCustomers.filter(c => c.segment === 'Unclassified').length,
+          sampleUnmatched: allCustomers
+            .filter(c => c.segment === 'Unclassified')
+            .slice(0, 10)
+            .map(c => `${c.doc} (${c.originalDoc})`)
+        } : null
+      });
+
+      // Process yearly metrics (unchanged)
+      const monthlyData = {};
+      for (let m = 1; m <= 12; m++) monthlyData[m] = [];
+
+      salesData.forEach(row => {
+        const dt = parseBrDate(row.Data_Hora);
+        if (!dt || dt.getFullYear() !== 2025) return;
+        
+        const grossValue = toNum(row.Valor_Venda);
+        let netValue = toNum(row.Valor_Pago);
+        const machines = countMachines(row.Maquinas);
+        
+        if (dt >= CASHBACK_START) {
+          netValue -= grossValue * CASHBACK_RATE;
+        }
+        
+        monthlyData[dt.getMonth() + 1].push({
+          netValue, wash: machines.wash, dry: machines.dry, 
+          services: machines.total
+        });
+      });
+
+      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const monthlyResults = [];
+      
+      for (let m = 1; m <= 12; m++) {
+        const records = monthlyData[m];
+        if (records.length === 0) continue;
+        
+        monthlyResults.push({
+          month: monthNames[m-1],
+          transactions: records.length,
+          netRevenue: records.reduce((s, r) => s + r.netValue, 0),
+          services: records.reduce((s, r) => s + r.services, 0),
+          servicesPerTxn: (records.reduce((s, r) => s + r.services, 0) / records.length).toFixed(1)
+        });
+      }
+
+      setYearlyMetrics(monthlyResults);
+      setLoading(false);
+
+    } catch (err) {
+      alert('Error processing files: ' + err.message);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
+            <Users className="w-8 h-8 mr-3 text-purple-600" />
+            Customer Lifecycle & Yearly Performance
+          </h1>
+          <p className="text-gray-600 mb-8">
+            Verify your customer metrics and yearly trends
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="border-2 border-dashed border-purple-300 rounded-xl p-6">
+              <label className="flex flex-col items-center cursor-pointer">
+                <Upload className="w-12 h-12 text-purple-500 mb-3" />
+                <span className="text-lg font-semibold text-gray-700">Upload Sales CSV</span>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setSalesFile(e.target.files[0])}
+                  className="hidden"
+                />
+              </label>
+              {salesFile && (
+                <div className="mt-4 text-center text-green-600 font-medium">
+                  ✓ {salesFile.name}
+                </div>
+              )}
+            </div>
+
+            <div className="border-2 border-dashed border-pink-300 rounded-xl p-6">
+              <label className="flex flex-col items-center cursor-pointer">
+                <Upload className="w-12 h-12 text-pink-500 mb-3" />
+                <span className="text-lg font-semibold text-gray-700">RFM CSV (Optional)</span>
+                <span className="text-sm text-gray-500 text-center mt-2">
+                  For segment verification
+                </span>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setRfmFile(e.target.files[0])}
+                  className="hidden"
+                />
+              </label>
+              {rfmFile && (
+                <div className="mt-4 text-center text-green-600 font-medium">
+                  ✓ {rfmFile.name}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button
+            onClick={processFiles}
+            disabled={!salesFile || loading}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
+          >
+            {loading ? 'Processing...' : 'Calculate Metrics'}
+          </button>
+        </div>
+
+        {customerMetrics && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Users className="w-6 h-6 mr-2 text-purple-600" />
+                Customer Overview
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-gray-700">Total Customers</span>
+                  <span className="text-2xl font-bold text-purple-600">
+                    {customerMetrics.totalCustomers.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                  <span className="font-semibold text-gray-700">Avg Lifetime Spend</span>
+                  <span className="text-xl font-bold text-blue-600">
+                    R$ {customerMetrics.avgLifetimeSpend.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                  <span className="font-semibold text-gray-700">Avg Transactions</span>
+                  <span className="text-xl font-bold text-green-600">
+                    {customerMetrics.avgTransactions.toFixed(1)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-pink-50 rounded-lg">
+                  <span className="font-semibold text-gray-700">Avg Services/Visit</span>
+                  <span className="text-xl font-bold text-pink-600">
+                    {customerMetrics.avgServicesPerVisit.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Visit Distribution</h3>
+              <div className="space-y-2">
+                {Object.entries(customerMetrics.visitDistribution).map(([range, count]) => {
+                  const pct = ((count / customerMetrics.totalCustomers) * 100).toFixed(1);
+                  return (
+                    <div key={range} className="flex items-center">
+                      <span className="w-24 text-sm font-medium text-gray-600">{range} visits</span>
+                      <div className="flex-1 bg-gray-200 rounded-full h-4 mx-3">
+                        <div
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full"
+                          style={{ width: `${pct}%` }}
+                        ></div>
+                      </div>
+                      <span className="w-20 text-right text-sm font-semibold text-gray-700">
+                        {count} ({pct}%)
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Return Likelihood</h3>
+              <div className="space-y-2">
+                {Object.entries(customerMetrics.riskDistribution).map(([level, count]) => {
+                  const pct = ((count / customerMetrics.totalCustomers) * 100).toFixed(1);
+                  const colors = {
+                    'Healthy': 'from-green-500 to-green-600',
+                    'Monitor': 'from-blue-500 to-blue-600',
+                    'At Risk': 'from-yellow-500 to-orange-500',
+                    'Churning': 'from-red-500 to-red-600',
+                    'New Customer': 'from-purple-500 to-purple-600'
+                  };
+                  return (
+                    <div key={level} className="flex items-center">
+                      <span className="w-24 text-sm font-medium text-gray-600">{level}</span>
+                      <div className="flex-1 bg-gray-200 rounded-full h-4 mx-3">
+                        <div
+                          className={`bg-gradient-to-r ${colors[level]} h-4 rounded-full`}
+                          style={{ width: `${pct}%` }}
+                        ></div>
+                      </div>
+                      <span className="w-20 text-right text-sm font-semibold text-gray-700">
+                        {count} ({pct}%)
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {customerMetrics.segmentStats && (
+                <>
+                  <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Customer Segments</h3>
+                  
+                  {customerMetrics.matchStats && (
+                    <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+                      <div className="font-semibold text-blue-800 mb-1">RFM Matching Status:</div>
+                      <div className="text-blue-700 space-y-1">
+                        <div>✓ Matched: {customerMetrics.matchStats.matched} customers</div>
+                        <div>✗ Unmatched: {customerMetrics.matchStats.unmatched} customers</div>
+                        <div>📊 RFM Total: {customerMetrics.matchStats.totalInRFM} records</div>
+                        {customerMetrics.matchStats.sampleUnmatched && (
+                          <details className="mt-2">
+                            <summary className="cursor-pointer text-xs text-blue-600 hover:text-blue-800">
+                              Show sample unmatched IDs
+                            </summary>
+                            <div className="mt-1 text-xs font-mono bg-white p-2 rounded border border-blue-200">
+                              {customerMetrics.matchStats.sampleUnmatched.map((id, i) => (
+                                <div key={i}>{id}</div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="space-y-3">
+                    {customerMetrics.segmentStats.map(seg => (
+                      <div key={seg.segment} className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-gray-800">{seg.segment}</span>
+                          <span className="text-sm font-semibold text-purple-600">{seg.count} customers</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+                          <div>Avg Spend: <span className="font-semibold">R$ {seg.avgSpending.toFixed(2)}</span></div>
+                          <div>Avg Visits: <span className="font-semibold">{seg.avgTransactions.toFixed(1)}</span></div>
+                          <div>Avg Services: <span className="font-semibold">{seg.avgServices.toFixed(1)}</span></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <Award className="w-6 h-6 mr-2 text-yellow-500" />
+                Top 20 Customers
+              </h2>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {customerMetrics.topCustomers.map((c, i) => (
+                  <div key={c.doc} className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-1">
+                      <div>
+                        <span className="font-semibold text-gray-800">#{i + 1}. {c.name}</span>
+                        {c.segment && c.segment !== 'Unclassified' && (
+                          <span className="ml-2 px-2 py-0.5 text-xs font-semibold bg-purple-100 text-purple-700 rounded">
+                            {c.segment}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-lg font-bold text-purple-600">
+                        R$ {c.netTotal.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-sm text-gray-600">
+                      <div>Visits: <span className="font-semibold">{c.transactions}</span></div>
+                      <div>Services: <span className="font-semibold">{c.totalServices}</span></div>
+                      <div>Avg/Visit: <span className="font-semibold">{c.servicesPerVisit}</span></div>
+                    </div>
+                    <div className="mt-2 text-xs flex flex-col gap-1">
+                      <div className="flex justify-between text-gray-500">
+                        {c.avgDaysBetween && (
+                          <span>Every {c.avgDaysBetween} days</span>
+                        )}
+                        <span>Last: {c.lastVisit.toLocaleDateString('pt-BR')}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">
+                          Return: <span className="font-semibold">{c.returnLikelihood}%</span>
+                        </span>
+                        <span className={`px-2 py-0.5 text-xs font-semibold rounded ${
+                          c.riskLevel === 'Healthy' ? 'bg-green-100 text-green-700' :
+                          c.riskLevel === 'Monitor' ? 'bg-blue-100 text-blue-700' :
+                          c.riskLevel === 'At Risk' ? 'bg-yellow-100 text-yellow-700' :
+                          c.riskLevel === 'Churning' ? 'bg-red-100 text-red-700' :
+                          'bg-purple-100 text-purple-700'
+                        }`}>
+                          {c.riskLevel}
+                        </span>
+                      </div>
+                      {c.daysOverdue > 0 && (
+                        <div className="text-xs text-red-600">
+                          ⚠️ Overdue by {c.daysOverdue} days
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {yearlyMetrics && (
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <Calendar className="w-6 h-6 mr-2 text-blue-600" />
+              2025 Monthly Performance
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Month</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Transactions</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Net Revenue</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Services</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Services/Txn</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {yearlyMetrics.map((m, i) => (
+                    <tr key={m.month} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-4 py-3 font-medium text-gray-800">{m.month}</td>
+                      <td className="px-4 py-3 text-right">{m.transactions}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-purple-600">
+                        R$ {m.netRevenue.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3 text-right">{m.services}</td>
+                      <td className="px-4 py-3 text-right">{m.servicesPerTxn}</td>
+                    </tr>
+                  ))}
+                  <tr className="bg-blue-50 font-bold">
+                    <td className="px-4 py-3">TOTAL</td>
+                    <td className="px-4 py-3 text-right">
+                      {yearlyMetrics.reduce((s, m) => s + m.transactions, 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-blue-600">
+                      R$ {yearlyMetrics.reduce((s, m) => s + m.netRevenue, 0).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {yearlyMetrics.reduce((s, m) => s + m.services, 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {(yearlyMetrics.reduce((s, m) => s + m.services, 0) / 
+                        yearlyMetrics.reduce((s, m) => s + m.transactions, 0)).toFixed(1)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+              <h3 className="font-semibold text-gray-800 mb-2">Year-to-Date Insights</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {yearlyMetrics.length}
+                  </div>
+                  <div className="text-sm text-gray-600">Active Months</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {Math.max(...yearlyMetrics.map(m => m.transactions))}
+                  </div>
+                  <div className="text-sm text-gray-600">Peak Month Txns</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-pink-600">
+                    R$ {Math.max(...yearlyMetrics.map(m => m.netRevenue)).toFixed(0)}
+                  </div>
+                  <div className="text-sm text-gray-600">Best Month Revenue</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {(yearlyMetrics.reduce((s, m) => s + m.netRevenue, 0) / yearlyMetrics.length).toFixed(0)}
+                  </div>
+                  <div className="text-sm text-gray-600">Avg Monthly Revenue</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
