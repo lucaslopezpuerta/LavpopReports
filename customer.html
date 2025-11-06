@@ -8,20 +8,19 @@
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- React 18 UMD + Babel Standalone (to allow JSX in-browser) -->
+  <!-- React 18 UMD + Babel (for JSX in the browser) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- Optional: prettier default background -->
   <style>body { background: #f3f4f6; }</style>
 </head>
 <body>
   <div id="root"></div>
 
-  <!-- Your component, converted to run without imports -->
+  <!-- UPDATED component (no imports; inline icons) -->
   <script type="text/babel">
-    // --- Minimal inline "lucide" style icons (SVG) so we don't need lucide-react ---
+    // --- Minimal inline icons to avoid lucide-react dependency ---
     const Icon = ({ path, className }) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -67,14 +66,19 @@
       }/>
     );
 
-    // --- Original component with tiny tweaks (no imports; React.useState) ---
+    // --- UPDATED component (matches your latest file) ---
     function CustomerYearlyVerification() {
       const [salesFile, setSalesFile] = React.useState(null);
       const [rfmFile, setRfmFile] = React.useState(null);
       const [customerMetrics, setCustomerMetrics] = React.useState(null);
       const [yearlyMetrics, setYearlyMetrics] = React.useState(null);
-      const [loading, setLoading] = React.useState(false);
 
+      // present in your updated code (not rendered as controls yet)
+      const [topCustomersFilter, setTopCustomersFilter] = React.useState('all');
+      const [topCustomersSort, setTopCustomersSort] = React.useState('spending');
+      const [urgentFilter, setUrgentFilter] = React.useState('all');
+
+      // helpers
       const parseBrDate = (dateStr) => {
         if (!dateStr) return null;
         const [d, tm = '00:00:00'] = String(dateStr).split(' ');
@@ -115,34 +119,29 @@
           alert('Please upload Sales CSV');
           return;
         }
-        setLoading(true);
-
         try {
+          // loading
+          // (minimalistic: we rely on the button disabled/label state)
           const normalizeDoc = (doc) => {
             if (!doc) return '';
             const cleaned = String(doc).replace(/\D/g, '');
-            if (cleaned.length > 0 && cleaned.length <= 11) {
-              return cleaned.padStart(11, '0');
-            }
+            if (cleaned.length > 0 && cleaned.length <= 11) return cleaned.padStart(11, '0');
             return cleaned;
           };
 
           const salesText = await salesFile.text();
           const lines = salesText.split(/\r?\n/).filter(Boolean);
-
           const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
           const salesData = [];
           for (let i = 1; i < lines.length; i++) {
-            const values = [];
-            let current = ''; let inQuotes = false;
+            const values = []; let current = ''; let inQuotes = false;
             for (let char of lines[i]) {
               if (char === '"') inQuotes = !inQuotes;
-              else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current=''; }
+              else if (char === ',' && !inQuotes) { values.push(current.replace(/^"|"$/g, '')); current = ''; }
               else current += char;
             }
             values.push(current.replace(/^"|"$/g, ''));
-            const row = {};
-            headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+            const row = {}; headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
             salesData.push(row);
           }
 
@@ -153,9 +152,7 @@
             for (let i = 1; i < rfmLines.length; i++) {
               const values = rfmLines[i].split(',').map(v => v.replace(/^"|"$/g, '').trim());
               if (values.length >= 3) {
-                const segment = values[0];
-                const doc = values[1];
-                const name = values[2];
+                const segment = values[0]; const doc = values[1]; const name = values[2];
                 const normalizedDoc = normalizeDoc(doc);
                 rfmData[normalizedDoc] = { segment, name, originalDoc: doc };
               }
@@ -165,8 +162,7 @@
           const customers = {};
           const CASHBACK_RATE = 0.075;
           const CASHBACK_START = new Date(2024, 5, 1);
-          const threeMonthsAgo = new Date();
-          threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+          const threeMonthsAgo = new Date(); threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
           salesData.forEach(row => {
             const dt = parseBrDate(row.Data_Hora);
@@ -178,10 +174,7 @@
             const grossValue = toNum(row.Valor_Venda);
             let netValue = toNum(row.Valor_Pago);
             const machines = countMachines(row.Maquinas);
-
-            if (dt >= CASHBACK_START) {
-              netValue -= grossValue * CASHBACK_RATE;
-            }
+            if (dt >= CASHBACK_START) netValue -= grossValue * CASHBACK_RATE;
 
             if (!customers[normalizedDoc]) {
               customers[normalizedDoc] = {
@@ -206,21 +199,19 @@
           });
 
           Object.values(customers).forEach(c => {
-            c.visits.sort((a, b) => a.date - b.date);
+            c.visits.sort((a,b)=>a.date-b.date);
             c.firstVisit = c.visits[0].date;
-            c.lastVisit = c.visits[c.visits.length - 1].date;
-            c.servicesPerVisit = c.transactions > 0 ? (c.totalServices / c.transactions).toFixed(1) : 0;
+            c.lastVisit = c.visits[c.visits.length-1].date;
+            c.servicesPerVisit = c.transactions>0 ? (c.totalServices / c.transactions).toFixed(1) : 0;
 
             c.avgDaysBetween = null;
             if (c.visits.length > 1) {
               const intervals = [];
-              for (let i = 1; i < c.visits.length; i++) {
+              for (let i=1;i<c.visits.length;i++){
                 const days = (c.visits[i].date - c.visits[i-1].date) / (1000*60*60*24);
-                if (days > 0) intervals.push(days);
+                if (days>0) intervals.push(days);
               }
-              if (intervals.length > 0) {
-                c.avgDaysBetween = Math.round(intervals.reduce((a,b)=>a+b,0)/intervals.length);
-              }
+              if (intervals.length>0) c.avgDaysBetween = Math.round(intervals.reduce((a,b)=>a+b,0)/intervals.length);
             }
 
             const daysSinceLastVisit = Math.round((new Date() - c.lastVisit) / (1000*60*60*24));
@@ -239,25 +230,29 @@
               likelihood = Math.min(100, likelihood);
               c.returnLikelihood = Math.round(likelihood);
               c.daysOverdue = Math.max(0, daysSinceLastVisit - c.avgDaysBetween);
-              if (likelihood > 60) c.riskLevel = 'Healthy';
-              else if (likelihood > 30) c.riskLevel = 'Monitor';
-              else if (likelihood > 15) c.riskLevel = 'At Risk';
-              else c.riskLevel = 'Churning';
+              if (likelihood > 60) c.riskLevel='Healthy';
+              else if (likelihood > 30) c.riskLevel='Monitor';
+              else if (likelihood > 15) c.riskLevel='At Risk';
+              else c.riskLevel='Churning';
             } else {
               c.returnLikelihood = 40; c.riskLevel = 'Monitor'; c.daysOverdue = 0;
             }
           });
 
-          const topCustomers = Object.values(customers).sort((a,b)=>b.netTotal-a.netTotal).slice(0,20);
+          const topCustomers = Object.values(customers).sort((a,b)=>b.netTotal-a.netTotal).slice(0,50);
           const allCustomers = Object.values(customers);
+          const activeCustomers = allCustomers.filter(c => c.riskLevel !== 'Lost');
+          const lostCustomers = allCustomers.filter(c => c.riskLevel === 'Lost');
 
           const riskDistribution = {
             'Healthy': allCustomers.filter(c => c.riskLevel === 'Healthy').length,
             'Monitor': allCustomers.filter(c => c.riskLevel === 'Monitor').length,
             'At Risk': allCustomers.filter(c => c.riskLevel === 'At Risk').length,
             'Churning': allCustomers.filter(c => c.riskLevel === 'Churning').length,
-            'New Customer': allCustomers.filter(c => c.riskLevel === 'New Customer').length
+            'New Customer': allCustomers.filter(c => c.riskLevel === 'New Customer').length,
+            'Lost': lostCustomers.length
           };
+
           const visitDistribution = {
             '1': allCustomers.filter(c => c.transactions === 1).length,
             '2-5': allCustomers.filter(c => c.transactions >= 2 && c.transactions <= 5).length,
@@ -271,7 +266,7 @@
             const segments = {};
             allCustomers.forEach(c => {
               if (!segments[c.segment]) {
-                segments[c.segment] = { count:0, totalSpending:0, totalTransactions:0, totalServices:0, customers:[] };
+                segments[c.segment] = { count:0,totalSpending:0,totalTransactions:0,totalServices:0,customers:[] };
               }
               segments[c.segment].count++;
               segments[c.segment].totalSpending += c.netTotal;
@@ -285,15 +280,17 @@
               avgSpending: data.totalSpending / data.count,
               avgTransactions: data.totalTransactions / data.count,
               avgServices: data.totalServices / data.count,
-              topCustomers: data.customers.sort((a, b) => b.netTotal - a.netTotal).slice(0, 5)
+              topCustomers: data.customers.sort((a,b)=>b.netTotal-a.netTotal).slice(0,5)
             })).sort((a,b)=>b.count-a.count);
           }
 
           setCustomerMetrics({
             totalCustomers: allCustomers.length,
-            avgLifetimeSpend: allCustomers.reduce((s,c)=>s+c.netTotal,0)/ (allCustomers.length||1),
-            avgTransactions: allCustomers.reduce((s,c)=>s+c.transactions,0)/ (allCustomers.length||1),
-            avgServicesPerVisit: allCustomers.reduce((s,c)=>s+parseFloat(c.servicesPerVisit||0),0)/ (allCustomers.length||1),
+            activeCustomers: activeCustomers.length,
+            lostCustomers: lostCustomers.length,
+            avgLifetimeSpend: allCustomers.reduce((s,c)=>s+c.netTotal,0)/(allCustomers.length||1),
+            avgTransactions: allCustomers.reduce((s,c)=>s+c.transactions,0)/(allCustomers.length||1),
+            avgServicesPerVisit: allCustomers.reduce((s,c)=>s+parseFloat(c.servicesPerVisit||0),0)/(allCustomers.length||1),
             topCustomers,
             visitDistribution,
             riskDistribution,
@@ -306,6 +303,7 @@
             } : null
           });
 
+          // Yearly (2025)
           const monthlyData = {}; for (let m=1;m<=12;m++) monthlyData[m]=[];
           salesData.forEach(row => {
             const dt = parseBrDate(row.Data_Hora);
@@ -313,8 +311,7 @@
             const grossValue = toNum(row.Valor_Venda);
             let netValue = toNum(row.Valor_Pago);
             const machines = countMachines(row.Maquinas);
-            const CASHBACK_RATE = 0.075;
-            const CASHBACK_START = new Date(2024,5,1);
+            const CASHBACK_RATE = 0.075; const CASHBACK_START = new Date(2024,5,1);
             if (dt >= CASHBACK_START) netValue -= grossValue * CASHBACK_RATE;
             monthlyData[dt.getMonth()+1].push({ netValue, wash:machines.wash, dry:machines.dry, services:machines.total });
           });
@@ -332,10 +329,8 @@
             });
           }
           setYearlyMetrics(monthlyResults);
-          setLoading(false);
         } catch (err) {
           alert('Error processing files: ' + err.message);
-          setLoading(false);
         }
       };
 
@@ -372,9 +367,9 @@
 
               <button
                 onClick={processFiles}
-                disabled={!salesFile || loading}
+                disabled={!salesFile}
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50">
-                {loading ? 'Processing...' : 'Calculate Metrics'}
+                Calculate Metrics
               </button>
             </div>
 
@@ -390,13 +385,21 @@
                       <span className="font-semibold text-gray-700">Total Customers</span>
                       <span className="text-2xl font-bold text-purple-600">{customerMetrics.totalCustomers.toLocaleString()}</span>
                     </div>
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span className="font-semibold text-gray-700">Active Customers</span>
+                      <span className="text-2xl font-bold text-green-600">{customerMetrics.activeCustomers.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                      <span className="font-semibold text-gray-700">Lost (120+ days)</span>
+                      <span className="text-2xl font-bold text-red-600">{customerMetrics.lostCustomers.toLocaleString()}</span>
+                    </div>
                     <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                       <span className="font-semibold text-gray-700">Avg Lifetime Spend</span>
                       <span className="text-xl font-bold text-blue-600">R$ {customerMetrics.avgLifetimeSpend.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                       <span className="font-semibold text-gray-700">Avg Transactions</span>
-                      <span className="text-xl font-bold text-green-600">{customerMetrics.avgTransactions.toFixed(1)}</span>
+                      <span className="text-xl font-bold text-yellow-600">{customerMetrics.avgTransactions.toFixed(1)}</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-pink-50 rounded-lg">
                       <span className="font-semibold text-gray-700">Avg Services/Visit</span>
@@ -420,28 +423,100 @@
                     })}
                   </div>
 
-                  <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Return Likelihood</h3>
-                  <div className="space-y-2">
-                    {Object.entries(customerMetrics.riskDistribution).map(([level, count]) => {
-                      const pct = ((count / customerMetrics.totalCustomers) * 100).toFixed(1);
-                      const colors = {
-                        'Healthy': 'from-green-500 to-green-600',
-                        'Monitor': 'from-blue-500 to-blue-600',
-                        'At Risk': 'from-yellow-500 to-orange-500',
-                        'Churning': 'from-red-500 to-red-600',
-                        'New Customer': 'from-purple-500 to-purple-600'
-                      };
-                      return (
-                        <div key={level} className="flex items-center">
-                          <span className="w-24 text-sm font-medium text-gray-600">{level}</span>
-                          <div className="flex-1 bg-gray-200 rounded-full h-4 mx-3">
-                            <div className={`bg-gradient-to-r ${colors[level]} h-4 rounded-full`} style={{ width: `${pct}%` }}></div>
-                          </div>
-                          <span className="w-20 text-right text-sm font-semibold text-gray-700">{count} ({pct}%)</span>
-                        </div>
-                      );
-                    })}
+                  <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Return Likelihood (Active Customers Only)</h3>
+                  <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                    <strong>Note:</strong> "Lost" customers (120+ days inactive) are shown separately below
                   </div>
+                  <div className="space-y-2">
+                    {Object.entries(customerMetrics.riskDistribution)
+                      .filter(([level]) => level !== 'Lost')
+                      .map(([level, count]) => {
+                        const activeTotal = customerMetrics.totalCustomers - customerMetrics.riskDistribution['Lost'];
+                        const pct = ((count / activeTotal) * 100).toFixed(1);
+                        const colors = {
+                          'Healthy': 'from-green-500 to-green-600',
+                          'Monitor': 'from-blue-500 to-blue-600',
+                          'At Risk': 'from-yellow-500 to-orange-500',
+                          'Churning': 'from-red-500 to-red-600',
+                          'New Customer': 'from-purple-500 to-purple-600'
+                        };
+                        return (
+                          <div key={level} className="flex items-center">
+                            <span className="w-28 text-sm font-medium text-gray-600">{level}</span>
+                            <div className="flex-1 bg-gray-200 rounded-full h-4 mx-3">
+                              <div className={`bg-gradient-to-r ${colors[level]} h-4 rounded-full`} style={{ width: `${pct}%` }}></div>
+                            </div>
+                            <span className="w-24 text-right text-sm font-semibold text-gray-700">{count} ({pct}%)</span>
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  <div className="mt-4 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border-2 border-red-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <div className="text-lg font-bold text-gray-800">Inactive Customers</div>
+                        <div className="text-sm text-gray-600">Last visit 120+ days ago</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-4xl font-bold text-red-600">{customerMetrics.riskDistribution['Lost'].toLocaleString()}</div>
+                        <div className="text-sm text-gray-600">
+                          {((customerMetrics.riskDistribution['Lost'] / customerMetrics.totalCustomers) * 100).toFixed(1)}% of total
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                      <div className="bg-white rounded p-2">
+                        <div className="text-gray-600">Total LTV at Risk</div>
+                        <div className="text-lg font-semibold text-red-700">
+                          R$ {(customerMetrics.lostCustomers * customerMetrics.avgLifetimeSpend).toFixed(0)}
+                        </div>
+                      </div>
+                      <div className="bg-white rounded p-2">
+                        <div className="text-gray-600">Avg LTV per Lost</div>
+                        <div className="text-lg font-semibold text-orange-700">R$ {customerMetrics.avgLifetimeSpend.toFixed(2)}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {customerMetrics.segmentStats && (
+                    <>
+                      <h3 className="text-lg font-bold text-gray-800 mt-6 mb-3">Customer Segments</h3>
+                      {customerMetrics.matchStats && (
+                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+                          <div className="font-semibold text-blue-800 mb-1">RFM Matching Status:</div>
+                          <div className="text-blue-700 space-y-1">
+                            <div>✓ Matched: {customerMetrics.matchStats.matched} customers</div>
+                            <div>✗ Unmatched: {customerMetrics.matchStats.unmatched} customers</div>
+                            <div>📊 RFM Total: {customerMetrics.matchStats.totalInRFM} records</div>
+                            {customerMetrics.matchStats.sampleUnmatched && (
+                              <details className="mt-2">
+                                <summary className="cursor-pointer text-xs text-blue-600 hover:text-blue-800">Show sample unmatched IDs</summary>
+                                <div className="mt-1 text-xs font-mono bg-white p-2 rounded border border-blue-200">
+                                  {customerMetrics.matchStats.sampleUnmatched.map((id, i) => (<div key={i}>{id}</div>))}
+                                </div>
+                              </details>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="space-y-3">
+                        {customerMetrics.segmentStats.map(seg => (
+                          <div key={seg.segment} className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-bold text-gray-800">{seg.segment}</span>
+                              <span className="text-sm font-semibold text-purple-600">{seg.count} customers</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+                              <div>Avg Spend: <span className="font-semibold">R$ {seg.avgSpending.toFixed(2)}</span></div>
+                              <div>Avg Visits: <span className="font-semibold">{seg.avgTransactions.toFixed(1)}</span></div>
+                              <div>Avg Services: <span className="font-semibold">{seg.avgServices.toFixed(1)}</span></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="bg-white rounded-xl shadow-lg p-6">
