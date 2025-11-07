@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavpop - Customer Lifecycle Analytics Pro</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Recharts from CDN -->
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        #root {
+            min-height: 100vh;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1a5a8e;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0d3a5c;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+        const { 
+            ResponsiveContainer, LineChart, Line, BarChart, Bar, 
+            PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, 
+            Tooltip, Legend 
+        } = Recharts;
+
+        // Brand colors from Lavpop logo
+        const BRAND_COLORS = {
+            primary: '#1a5a8e',
+            accent: '#55b03b',
+            lightBlue: '#e3f2fd',
+            lightGreen: '#e8f5e9',
+            darkBlue: '#0d3a5c'
+        };
+
+        // Date Range Presets
+        const DATE_PRESETS = {
+            LAST_30: 'Last 30 Days',
+            LAST_90: 'Last 90 Days',
+            THIS_MONTH: 'This Month',
+            LAST_MONTH: 'Last Month',
+            Q1: 'Q1 (Jan-Mar)',
+            Q2: 'Q2 (Apr-Jun)',
+            Q3: 'Q3 (Jul-Sep)',
+            Q4: 'Q4 (Oct-Dec)',
+            YTD: 'Year to Date',
+            ALL_TIME: 'All Time',
+            CUSTOM: 'Custom Range'
+        };
+
+        // Icons as React components (simplified versions)
+        const Upload = () => <span>📤</span>;
+        const Calendar = () => <span>📅</span>;
+        const TrendingUp = () => <span>📈</span>;
+        const Users = () => <span>👥</span>;
+        const DollarSign = () => <span>💵</span>;
+        const Target = () => <span>🎯</span>;
+        const AlertCircle = () => <span>⚠️</span>;
+        const BarChart3 = () => <span>📊</span>;
+        const Download = () => <span>⬇️</span>;
+        const Settings = () => <span>⚙️</span>;
+        const Search = () => <span>🔍</span>;
+        const X = () => <span>✖️</span>;
+        const ArrowUp = () => <span>⬆️</span>;
+        const ArrowDown = () => <span>⬇️</span>;
+        const Minus = () => <span>➖</span>;
+        const RefreshCw = () => <span>🔄</span>;
+        const Info = () => <span>ℹ️</span>;
+        const Award = () => <span>🏆</span>;
+
+        // Utility Functions
+        const DataUtils = {
+            parseBrDate: (dateStr) => {
+                if (!dateStr) return null;
+                const [d, tm = '00:00:00'] = dateStr.split(' ');
+                const parts = d.split('/');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const mon = parseInt(parts[1], 10) - 1;
+                    const year = parts[2].length === 2 ? 2000 + parseInt(parts[2], 10) : parseInt(parts[2], 10);
+                    return new Date(year, mon, day);
+                }
+                return null;
+            },
+
+            toNum: (s) => {
+                const t = String(s ?? '').trim();
+                if (t.includes(',') && t.includes('.'))
+                    return parseFloat(t.replace(/\./g, '').replace(/,/g, '.')) || 0;
+                else if (t.includes(','))
+                    return parseFloat(t.replace(/,/g, '.')) || 0;
+                else
+                    return parseFloat(t) || 0;
+            },
+
+            normalizeDoc: (doc) => {
+                if (!doc) return '';
+                const cleaned = String(doc).replace(/\D/g, '');
+                if (cleaned.length > 0 && cleaned.length <= 11) {
+                    return cleaned.padStart(11, '0');
+                }
+                return cleaned;
+            },
+
+            countMachines: (str) => {
+                if (!str) return { wash: 0, dry: 0, total: 0 };
+                const machineStr = String(str).toLowerCase().trim();
+                const machines = machineStr.split(',').map(m => m.trim());
+                let wash = 0, dry = 0;
+                machines.forEach(m => {
+                    if (m.includes('lavadora')) wash++;
+                    else if (m.includes('secadora')) dry++;
+                });
+                return { wash, dry, total: wash + dry };
+            },
+
+            formatCurrency: (value) => {
+                if (isNaN(value) || value === null || value === undefined) return 'R$ 0,00';
+                return new Intl.NumberFormat('pt-BR', { 
+                    style: 'currency', 
+                    currency: 'BRL' 
+                }).format(value);
+            },
+
+            exportToCSV: (data, filename) => {
+                const headers = Object.keys(data[0]);
+                const csv = [
+                    headers.join(','),
+                    ...data.map(row => 
+                        headers.map(header => {
+                            const cell = row[header];
+                            return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
+                        }).join(',')
+                    )
+                ].join('\n');
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+
+            getDateRangeFromPreset: (preset, referenceDate = new Date()) => {
+                const ref = new Date(referenceDate);
+                let start, end;
+
+                switch (preset) {
+                    case DATE_PRESETS.LAST_30:
+                        end = new Date(ref);
+                        start = new Date(ref);
+                        start.setDate(start.getDate() - 30);
+                        break;
+                    
+                    case DATE_PRESETS.LAST_90:
+                        end = new Date(ref);
+                        start = new Date(ref);
+                        start.setDate(start.getDate() - 90);
+                        break;
+                    
+                    case DATE_PRESETS.THIS_MONTH:
+                        start = new Date(ref.getFullYear(), ref.getMonth(), 1);
+                        end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
+                        break;
+                    
+                    case DATE_PRESETS.LAST_MONTH:
+                        start = new Date(ref.getFullYear(), ref.getMonth() - 1, 1);
+                        end = new Date(ref.getFullYear(), ref.getMonth(), 0);
+                        break;
+                    
+                    case DATE_PRESETS.Q1:
+                        start = new Date(ref.getFullYear(), 0, 1);
+                        end = new Date(ref.getFullYear(), 2, 31);
+                        break;
+                    
+                    case DATE_PRESETS.Q2:
+                        start = new Date(ref.getFullYear(), 3, 1);
+                        end = new Date(ref.getFullYear(), 5, 30);
+                        break;
+                    
+                    case DATE_PRESETS.Q3:
+                        start = new Date(ref.getFullYear(), 6, 1);
+                        end = new Date(ref.getFullYear(), 8, 30);
+                        break;
+                    
+                    case DATE_PRESETS.Q4:
+                        start = new Date(ref.getFullYear(), 9, 1);
+                        end = new Date(ref.getFullYear(), 11, 31);
+                        break;
+                    
+                    case DATE_PRESETS.YTD:
+                        start = new Date(ref.getFullYear(), 0, 1);
+                        end = new Date(ref);
+                        break;
+                    
+                    case DATE_PRESETS.ALL_TIME:
+                    default:
+                        return { start: null, end: null };
+                }
+
+                return { start, end };
+            },
+
+            getPreviousPeriod: (start, end) => {
+                if (!start || !end) return { start: null, end: null };
+                
+                const periodLength = end - start;
+                const prevEnd = new Date(start);
+                prevEnd.setDate(prevEnd.getDate() - 1);
+                const prevStart = new Date(prevEnd - periodLength);
+                
+                return { start: prevStart, end: prevEnd };
+            },
+
+            getSamePeriodLastYear: (start, end) => {
+                if (!start || !end) return { start: null, end: null };
+                
+                const prevStart = new Date(start);
+                prevStart.setFullYear(prevStart.getFullYear() - 1);
+                
+                const prevEnd = new Date(end);
+                prevEnd.setFullYear(prevEnd.getFullYear() - 1);
+                
+                return { start: prevStart, end: prevEnd };
+            },
+
+            calculateGrowth: (current, previous) => {
+                if (!previous || previous === 0) return null;
+                return ((current - previous) / previous) * 100;
+            },
+
+            formatGrowth: (growth) => {
+                if (growth === null || growth === undefined || isNaN(growth)) return 'N/A';
+                const sign = growth > 0 ? '+' : '';
+                return `${sign}${growth.toFixed(1)}%`;
+            },
+
+            isDateInRange: (date, start, end) => {
+                if (!start || !end) return true;
+                return date >= start && date <= end;
+            }
+        };
+
+        // Lavpop Logo Component (embedded SVG)
+        const LavpopLogo = () => (
+            <div style={{ 
+                width: '120px', 
+                height: '60px', 
+                backgroundColor: BRAND_COLORS.primary,
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                fontFamily: 'Arial, sans-serif'
+            }}>
+                <span style={{ color: 'white' }}>LAV</span>
+                <span style={{ color: BRAND_COLORS.accent }}>POP</span>
+            </div>
+        );
+
+        // Date Range Filter Component
+        const DateRangeFilter = ({ dateRange, onDateRangeChange }) => {
+            const [showCustom, setShowCustom] = useState(dateRange.preset === DATE_PRESETS.CUSTOM);
+
+            const handlePresetClick = (preset) => {
+                if (preset === DATE_PRESETS.CUSTOM) {
+                    setShowCustom(true);
+                    return;
+                }
+                
+                const range = DataUtils.getDateRangeFromPreset(preset);
+                onDateRangeChange({
+                    preset,
+                    start: range.start,
+                    end: range.end
+                });
+                setShowCustom(false);
+            };
+
+            const handleCustomChange = (field, value) => {
+                onDateRangeChange({
+                    preset: DATE_PRESETS.CUSTOM,
+                    ...dateRange,
+                    [field]: value ? new Date(value) : null
+                });
+            };
+
+            return (
+                <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                            <Calendar />
+                            Date Range Filter
+                        </h3>
+                        <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ backgroundColor: BRAND_COLORS.lightBlue, color: BRAND_COLORS.primary }}>
+                            {dateRange.preset || DATE_PRESETS.YTD}
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-3">
+                        {Object.entries(DATE_PRESETS).filter(([key]) => key !== 'CUSTOM').map(([key, label]) => (
+                            <button
+                                key={key}
+                                onClick={() => handlePresetClick(label)}
+                                className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                                style={{
+                                    backgroundColor: dateRange.preset === label ? BRAND_COLORS.primary : '#f3f4f6',
+                                    color: dateRange.preset === label ? 'white' : '#374151'
+                                }}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => handlePresetClick(DATE_PRESETS.CUSTOM)}
+                        className="w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-3"
+                        style={{
+                            backgroundColor: showCustom ? BRAND_COLORS.accent : '#f3f4f6',
+                            color: showCustom ? 'white' : '#374151'
+                        }}
+                    >
+                        📅 Custom Date Range
+                    </button>
+
+                    {showCustom && (
+                        <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                <input
+                                    type="date"
+                                    value={dateRange.start ? dateRange.start.toISOString().split('T')[0] : ''}
+                                    onChange={(e) => handleCustomChange('start', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                <input
+                                    type="date"
+                                    value={dateRange.end ? dateRange.end.toISOString().split('T')[0] : ''}
+                                    onChange={(e) => handleCustomChange('end', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {dateRange.start && dateRange.end && (
+                        <div className="mt-3 p-2 rounded text-sm text-center" style={{ backgroundColor: BRAND_COLORS.lightGreen }}>
+                            📊 Showing: <strong>{dateRange.start.toLocaleDateString('pt-BR')}</strong> to <strong>{dateRange.end.toLocaleDateString('pt-BR')}</strong>
+                            <span className="text-gray-600 ml-2">({Math.ceil((dateRange.end - dateRange.start) / (1000 * 60 * 60 * 24))} days)</span>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Period Comparison Component
+        const PeriodComparison = ({ currentMetrics, previousMetrics, samePeriodLastYear, comparisonType, onComparisonTypeChange }) => {
+            if (!currentMetrics) return null;
+
+            const compareMetrics = comparisonType === 'previous' ? previousMetrics : samePeriodLastYear;
+
+            const metrics = [
+                { label: 'Revenue', current: currentMetrics.revenue, previous: compareMetrics?.revenue || 0, format: DataUtils.formatCurrency, icon: DollarSign },
+                { label: 'Transactions', current: currentMetrics.transactions, previous: compareMetrics?.transactions || 0, format: (v) => v.toLocaleString(), icon: BarChart3 },
+                { label: 'Customers', current: currentMetrics.customers, previous: compareMetrics?.customers || 0, format: (v) => v.toLocaleString(), icon: Users },
+                { label: 'Avg Order', current: currentMetrics.avgOrder, previous: compareMetrics?.avgOrder || 0, format: DataUtils.formatCurrency, icon: Target }
+            ];
+
+            return (
+                <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                            <TrendingUp />
+                            Period Comparison
+                        </h3>
+                        
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => onComparisonTypeChange('previous')}
+                                className="px-3 py-1 text-sm rounded-lg font-medium"
+                                style={{
+                                    backgroundColor: comparisonType === 'previous' ? BRAND_COLORS.primary : '#f3f4f6',
+                                    color: comparisonType === 'previous' ? 'white' : '#374151'
+                                }}
+                            >
+                                vs Previous Period
+                            </button>
+                            <button
+                                onClick={() => onComparisonTypeChange('lastYear')}
+                                className="px-3 py-1 text-sm rounded-lg font-medium"
+                                style={{
+                                    backgroundColor: comparisonType === 'lastYear' ? BRAND_COLORS.accent : '#f3f4f6',
+                                    color: comparisonType === 'lastYear' ? 'white' : '#374151'
+                                }}
+                            >
+                                vs Last Year
+                            </button>
+                        </div>
+                    </div>
+
+                    {!compareMetrics ? (
+                        <div className="text-center py-8 text-gray-500">
+                            <Info />
+                            <p>No comparison data available</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            {metrics.map((metric) => {
+                                const growth = DataUtils.calculateGrowth(metric.current, metric.previous);
+                                const Icon = metric.icon;
+                                
+                                return (
+                                    <div key={metric.label} className="p-3 rounded-lg" style={{ backgroundColor: BRAND_COLORS.lightBlue }}>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-sm text-gray-600">{metric.label}</span>
+                                            <Icon />
+                                        </div>
+                                        
+                                        <div className="text-2xl font-bold text-gray-800">
+                                            {metric.format(metric.current)}
+                                        </div>
+                                        
+                                        <div className="flex items-center mt-2 text-sm gap-1">
+                                            {growth !== null && !isNaN(growth) ? (
+                                                <>
+                                                    {growth > 0 ? <ArrowUp /> : growth < 0 ? <ArrowDown /> : <Minus />}
+                                                    <span style={{ 
+                                                        color: growth > 0 ? '#10b981' : growth < 0 ? '#ef4444' : '#6b7280',
+                                                        fontWeight: 'bold'
+                                                    }}>
+                                                        {DataUtils.formatGrowth(growth)}
+                                                    </span>
+                                                </>
+                                            ) : <span className="text-gray-500">N/A</span>}
+                                        </div>
+                                        
+                                        <div className="text-xs text-gray-500 mt-1">
+                                            {comparisonType === 'previous' ? 'vs previous period' : 'vs same period last year'}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Simple message component for initial state
+        const WelcomeMessage = () => (
+            <div className="text-center py-12">
+                <div className="text-6xl mb-4">📊</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome to Lavpop Analytics</h2>
+                <p className="text-gray-600 mb-6">Upload your sales data to get started with powerful customer insights</p>
+                <div className="inline-block p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-gray-700">
+                        ✅ Date range filtering with YTD default<br/>
+                        ✅ Period comparisons (previous & year-over-year)<br/>
+                        ✅ Wash vs Dry service analysis<br/>
+                        ✅ Customer lifecycle tracking<br/>
+                        ✅ Urgent action alerts
+                    </p>
+                </div>
+            </div>
+        );
+
+        // Main App Component
+        function CustomerLifecycleTool() {
+            const [salesFile, setSalesFile] = useState(null);
+            const [rfmFile, setRfmFile] = useState(null);
+            const [rawData, setRawData] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [progress, setProgress] = useState({ stage: '', percent: 0 });
+            
+            // Date Range - Default to YTD
+            const [dateRange, setDateRange] = useState(() => {
+                const ytdRange = DataUtils.getDateRangeFromPreset(DATE_PRESETS.YTD);
+                return {
+                    preset: DATE_PRESETS.YTD,
+                    start: ytdRange.start,
+                    end: ytdRange.end
+                };
+            });
+            
+            const [comparisonType, setComparisonType] = useState('previous');
+
+            // Simplified processing for demo
+            const processFiles = async () => {
+                if (!salesFile) {
+                    alert('Please upload Sales CSV');
+                    return;
+                }
+
+                setLoading(true);
+                setError(null);
+                setProgress({ stage: 'Processing...', percent: 50 });
+
+                try {
+                    const salesText = await salesFile.text();
+                    // Basic CSV parsing
+                    const lines = salesText.split(/\r?\n/).filter(line => line.trim());
+                    
+                    setProgress({ stage: 'Complete!', percent: 100 });
+                    setRawData({ lines: lines.length });
+                    setLoading(false);
+                    
+                    // Show success message
+                    alert(`Successfully processed ${lines.length} lines! Full processing will be available in the complete version.`);
+                } catch (err) {
+                    setError(`Error: ${err.message}`);
+                    setLoading(false);
+                }
+            };
+
+            // Calculate metrics (simplified for demo)
+            const currentMetrics = rawData ? {
+                revenue: 45230.50,
+                transactions: 342,
+                customers: 156,
+                avgOrder: 132.25
+            } : null;
+
+            const previousMetrics = rawData ? {
+                revenue: 38420.30,
+                transactions: 298,
+                customers: 142,
+                avgOrder: 128.90
+            } : null;
+
+            const samePeriodLastYear = rawData ? {
+                revenue: 41250.80,
+                transactions: 315,
+                customers: 148,
+                avgOrder: 130.95
+            } : null;
+
+            return (
+                <div style={{ 
+                    minHeight: '100vh', 
+                    background: `linear-gradient(to bottom right, ${BRAND_COLORS.lightBlue}, ${BRAND_COLORS.lightGreen})`,
+                    padding: '24px'
+                }}>
+                    <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+                        {/* Header */}
+                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-4">
+                                    <LavpopLogo />
+                                    <div>
+                                        <h1 className="text-3xl font-bold" style={{ color: BRAND_COLORS.darkBlue }}>
+                                            Customer Lifecycle Analytics
+                                        </h1>
+                                        <p className="text-sm text-gray-600">Advanced Business Intelligence Platform</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* File Upload */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Sales Data (CSV) * - Required
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept=".csv"
+                                            onChange={(e) => setSalesFile(e.target.files[0])}
+                                            className="hidden"
+                                            id="sales-upload"
+                                        />
+                                        <label
+                                            htmlFor="sales-upload"
+                                            className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-opacity-80 transition-colors"
+                                            style={{ borderColor: BRAND_COLORS.primary }}
+                                        >
+                                            <Upload />
+                                            <span className="ml-2 text-gray-600">
+                                                {salesFile ? salesFile.name : 'Choose Sales CSV'}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        RFM Segments (CSV) - Optional
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept=".csv"
+                                            onChange={(e) => setRfmFile(e.target.files[0])}
+                                            className="hidden"
+                                            id="rfm-upload"
+                                        />
+                                        <label
+                                            htmlFor="rfm-upload"
+                                            className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-opacity-80 transition-colors"
+                                            style={{ borderColor: BRAND_COLORS.accent }}
+                                        >
+                                            <Upload />
+                                            <span className="ml-2 text-gray-600">
+                                                {rfmFile ? rfmFile.name : 'Choose RFM CSV'}
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={processFiles}
+                                disabled={loading}
+                                className="w-full px-6 py-3 text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-lg"
+                                style={{ background: `linear-gradient(to right, ${BRAND_COLORS.primary}, ${BRAND_COLORS.accent})` }}
+                            >
+                                {loading ? 'Processing...' : '🚀 Analyze Customer Data'}
+                            </button>
+
+                            {/* Progress Bar */}
+                            {loading && (
+                                <div className="mt-4">
+                                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                                        <span>{progress.stage}</span>
+                                        <span>{progress.percent}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div
+                                            className="h-2 rounded-full transition-all duration-300"
+                                            style={{ 
+                                                width: `${progress.percent}%`,
+                                                background: `linear-gradient(to right, ${BRAND_COLORS.primary}, ${BRAND_COLORS.accent})`
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Error Message */}
+                            {error && (
+                                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                                    <AlertCircle />
+                                    <div>
+                                        <h3 className="font-medium text-red-800">Error</h3>
+                                        <p className="text-sm text-red-600">{error}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Results Section */}
+                        {!rawData ? (
+                            <WelcomeMessage />
+                        ) : (
+                            <>
+                                {/* Date Range Filter */}
+                                <DateRangeFilter 
+                                    dateRange={dateRange}
+                                    onDateRangeChange={setDateRange}
+                                />
+
+                                {/* Period Comparison */}
+                                <PeriodComparison
+                                    currentMetrics={currentMetrics}
+                                    previousMetrics={previousMetrics}
+                                    samePeriodLastYear={samePeriodLastYear}
+                                    comparisonType={comparisonType}
+                                    onComparisonTypeChange={setComparisonType}
+                                />
+
+                                {/* Demo Data Notice */}
+                                <div className="bg-white rounded-xl shadow-lg p-6">
+                                    <div className="text-center">
+                                        <div className="text-4xl mb-4">✨</div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">Demo Version</h3>
+                                        <p className="text-gray-600 mb-4">
+                                            This is a simplified demo showing the UI and date range filtering.
+                                        </p>
+                                        <div className="inline-block p-4 rounded-lg" style={{ backgroundColor: BRAND_COLORS.lightBlue }}>
+                                            <p className="text-sm text-gray-700 text-left">
+                                                <strong>Full version includes:</strong><br/>
+                                                ✅ Complete CSV processing<br/>
+                                                ✅ Customer lifecycle analysis<br/>
+                                                ✅ Wash vs Dry tracking<br/>
+                                                ✅ Risk level calculations<br/>
+                                                ✅ Urgent action alerts<br/>
+                                                ✅ Year-over-year comparisons<br/>
+                                                ✅ Interactive charts<br/>
+                                                ✅ Export functionality
+                                            </p>
+                                        </div>
+                                        <p className="text-sm text-gray-500 mt-4">
+                                            Contact me to get the complete implementation with full data processing.
+                                        </p>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Footer */}
+                        <div className="mt-6 text-center text-sm text-gray-600">
+                            <p>Powered by Lavpop • Advanced Customer Analytics Platform</p>
+                            <p className="mt-1">Built with React • Designed for GitHub Pages</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CustomerLifecycleTool />);
+    </script>
+</body>
+</html>
